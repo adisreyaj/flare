@@ -1,0 +1,28 @@
+{
+  "root": "apps/flare-e2e",
+  "sourceRoot": "apps/flare-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/flare-e2e/cypress.json",
+        "devServerTarget": "flare:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "flare:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/flare-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["flare"]
+}

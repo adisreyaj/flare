@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "projects": {
+    "api": "apps/api",
+    "api-interfaces": "libs/api-interfaces",
+    "flare": "apps/flare",
+    "flare-e2e": "apps/flare-e2e"
+  }
+}
