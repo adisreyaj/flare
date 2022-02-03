@@ -17,10 +17,12 @@ type User {
   email: String!
   password: String!
   bio: UserBio
+  followers: [User]
+  following: [User]
 }
 
 type UserBio {
-id: String!
+  id: String!
   description: String
   github: String
   twitter: String
@@ -31,7 +33,7 @@ id: String!
 }
 
 input UserBioInput {
-id: String
+  id: String
   description: String
   github: String
   twitter: String

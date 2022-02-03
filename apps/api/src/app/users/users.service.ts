@@ -11,6 +11,8 @@ export class UsersService {
     return this.prisma.user.findMany({
       include: {
         bio: true,
+        followers: true,
+        following: true,
       },
     });
   }
@@ -22,6 +24,8 @@ export class UsersService {
       },
       include: {
         bio: true,
+        followers: true,
+        following: true,
       },
     });
   }
@@ -71,6 +75,8 @@ export class UsersService {
         },
         include: {
           bio: true,
+          followers: true,
+          following: true,
         },
       })
     ).pipe(
