@@ -5,7 +5,6 @@ type Query {
 
 type Mutation {
   createFlare(input: CreateFlareInput!): Flare
-  updateFlare(input: UpdateFlareInput!): Flare
   deleteFlare(id: ID!): Flare
   addComment(input: AddCommentInput!): Flare
   addLike(input: AddLikeInput!): Flare
@@ -50,10 +49,6 @@ type Like {
 
 input CreateFlareInput {
   blocks: [CreateBlockInput!]!
-}
-
-input UpdateFlareInput {
-  likes: [ID!]
 }
 
 input CreateBlockInput {

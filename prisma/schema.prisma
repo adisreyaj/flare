@@ -67,21 +67,21 @@ model Image {
 model Comment {
   id        String   @id @default(cuid())
   text      String
-  author    User     @relation(fields: [authroId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now())
   flare     Flare?   @relation(fields: [flareId], references: [id])
   flareId   String?
-  authroId  String
+  authorId  String
 }
 
 model Like {
   id        String   @id @default(cuid())
-  author    User     @relation(fields: [userId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
   reaction  String
   createdAt DateTime @default(now())
   flare     Flare?   @relation(fields: [flareId], references: [id])
   flareId   String?
-  userId    String
+  authorId    String
 }
 
 model Slot {

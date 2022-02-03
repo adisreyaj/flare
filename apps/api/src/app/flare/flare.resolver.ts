@@ -1,6 +1,12 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { FlareService } from './flare.service';
-import { CreateFlareInput, UpdateFlareInput } from '@flare/api-interfaces';
+import {
+  AddCommentInput,
+  AddLikeInput,
+  CreateFlareInput,
+  RemoveCommentInput,
+  RemoveLikeInput,
+} from '@flare/api-interfaces';
 
 @Resolver('Flare')
 export class FlaresResolver {
@@ -21,13 +27,28 @@ export class FlaresResolver {
     return this.flareService.create(createFlareInput);
   }
 
-  @Mutation('updateFlare')
-  update(@Args('input') updateFlareInput: UpdateFlareInput) {
-    return this.flareService.update(updateFlareInput);
-  }
-
   @Mutation('deleteFlare')
   delete(@Args('id') id: string) {
     return this.flareService.delete(id);
+  }
+
+  @Mutation('addComment')
+  addComment(@Args('input') input: AddCommentInput) {
+    return this.flareService.addComment(input);
+  }
+
+  @Mutation('removeComment')
+  removeComment(@Args('input') input: RemoveCommentInput) {
+    return this.flareService.removeComment(input);
+  }
+
+  @Mutation('addLike')
+  addLike(@Args('input') input: AddLikeInput) {
+    return this.flareService.addLike(input);
+  }
+
+  @Mutation('removeLike')
+  removeLike(@Args('input') input: RemoveLikeInput) {
+    return this.flareService.removeLike(input);
   }
 }

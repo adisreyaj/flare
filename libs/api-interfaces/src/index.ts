@@ -11,10 +11,6 @@ export interface CreateFlareInput {
     blocks: CreateBlockInput[];
 }
 
-export interface UpdateFlareInput {
-    likes?: Nullable<string[]>;
-}
-
 export interface CreateBlockInput {
     type: string;
     content: string;
@@ -86,7 +82,6 @@ export interface IQuery {
 export interface IMutation {
     __typename?: 'IMutation';
     createFlare(input: CreateFlareInput): Nullable<Flare> | Promise<Nullable<Flare>>;
-    updateFlare(input: UpdateFlareInput): Nullable<Flare> | Promise<Nullable<Flare>>;
     deleteFlare(id: string): Nullable<Flare> | Promise<Nullable<Flare>>;
     addComment(input: AddCommentInput): Nullable<Flare> | Promise<Nullable<Flare>>;
     addLike(input: AddLikeInput): Nullable<Flare> | Promise<Nullable<Flare>>;
@@ -95,6 +90,8 @@ export interface IMutation {
     createUser(input?: Nullable<CreateUserInput>): Nullable<User> | Promise<Nullable<User>>;
     updateUser(input?: Nullable<UpdateUserInput>): Nullable<User> | Promise<Nullable<User>>;
     deleteUser(id: string): Nullable<User> | Promise<Nullable<User>>;
+    follow(userId: string): Nullable<User> | Promise<Nullable<User>>;
+    unfollow(userId: string): Nullable<User> | Promise<Nullable<User>>;
 }
 
 export interface Flare {
