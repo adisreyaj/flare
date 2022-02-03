@@ -1,0 +1,88 @@
+type Query {
+  flares: [Flare]
+  flare(id: ID!): Flare
+}
+
+type Mutation {
+  createFlare(input: CreateFlareInput!): Flare
+  updateFlare(input: UpdateFlareInput!): Flare
+  deleteFlare(id: ID!): Flare
+  addComment(input: AddCommentInput!): Flare
+  addLike(input: AddLikeInput!): Flare
+  removeComment(input: RemoveCommentInput!): Flare
+  removeLike(input: RemoveLikeInput!): Flare
+}
+
+type Flare {
+  id: ID!
+  blocks: [Block]
+  author: User
+  deleted: Boolean
+  likes: [Like]
+  comments: [Comment]
+  createdAt: String!
+}
+
+type Comment {
+  id: ID!
+  text: String
+  createdAt: String!
+}
+
+type Block {
+  id: ID!
+  type: String!
+  content: String!
+  images: [BlockImage]
+}
+
+type BlockImage {
+  id: ID!
+  name: String
+  url: String!
+}
+
+type Like {
+  id: ID!
+  reaction: String!
+  createdAt: String!
+}
+
+input CreateFlareInput {
+  blocks: [CreateBlockInput!]!
+}
+
+input UpdateFlareInput {
+  likes: [ID!]
+}
+
+input CreateBlockInput {
+  type: String!
+  content: String!
+  images: [CreateBlockImageInput]
+}
+
+input CreateBlockImageInput {
+  name: String
+  url: String!
+}
+
+input AddCommentInput {
+  flareId: ID!
+  text: String!
+}
+
+input AddLikeInput {
+  flareId: ID!
+  reaction: String!
+}
+
+input RemoveCommentInput {
+  flareId: ID!
+  commentId: ID!
+}
+
+input RemoveLikeInput {
+  flareId: ID!
+  likeId: ID!
+}
