@@ -1,0 +1,60 @@
+type Query {
+  users: [User]
+  user(id: ID!): User
+}
+
+type Mutation {
+  createUser(input: CreateUserInput): User
+  updateUser(input: UpdateUserInput): User
+  deleteUser(id: ID!): User
+}
+
+type User {
+  id: String!
+  image: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  bio: UserBio
+}
+
+type UserBio {
+id: String!
+  description: String
+  github: String
+  twitter: String
+  linkedin: String
+  facebook: String
+  hashnode: String
+  devto: String
+}
+
+input UserBioInput {
+id: String
+  description: String
+  github: String
+  twitter: String
+  linkedin: String
+  facebook: String
+  hashnode: String
+  devto: String
+}
+
+input CreateUserInput {
+  firstName: String!
+  image: String
+  lastName: String!
+  email: String!
+  password: String!
+  bio: UserBioInput
+}
+
+input UpdateUserInput {
+  id: String!
+  image: String
+  firstName: String
+  lastName: String
+  password: String
+  bio: UserBioInput
+}
