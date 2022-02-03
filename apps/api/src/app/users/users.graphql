@@ -7,6 +7,8 @@ type Mutation {
   createUser(input: CreateUserInput): User
   updateUser(input: UpdateUserInput): User
   deleteUser(id: ID!): User
+  follow(userId: ID!): User
+  unfollow(userId: ID!): User
 }
 
 type User {

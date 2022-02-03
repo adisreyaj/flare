@@ -1,6 +1,6 @@
+import { CreateUserInput, UpdateUserInput } from '@flare/api-interfaces';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { CreateUserInput, UpdateUserInput } from '@flare/api-interfaces';
 
 @Resolver('User')
 export class UsersResolver {
@@ -29,5 +29,15 @@ export class UsersResolver {
   @Mutation('deleteUser')
   delete(@Args('id') id: string) {
     return this.usersService.delete(id);
+  }
+
+  @Mutation('follow')
+  follow(@Args('userId') userId: string) {
+    return this.usersService.follow(userId);
+  }
+
+  @Mutation('unfollow')
+  unfollow(@Args('userId') userId: string) {
+    return this.usersService.unfollow(userId);
   }
 }

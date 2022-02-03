@@ -101,4 +101,38 @@ export class UsersService {
       })
     );
   }
+
+  follow(userId: string) {
+    return from(
+      this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          following: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      })
+    );
+  }
+
+  unfollow(userId: string) {
+    return from(
+      this.prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          following: {
+            disconnect: {
+              id: userId,
+            },
+          },
+        },
+      })
+    );
+  }
 }
