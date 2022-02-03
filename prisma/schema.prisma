@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,17 +8,23 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   firstName String
   lastName  String
-  email     String   @unique
+  email     String    @unique
   password  String
-  bio       UserBio? @relation(fields: [userBioId], references: [id])
+  followers User[]    @relation("UserFollows", references: [id])
+  following User[]    @relation("UserFollows", references: [id])
+  bio       UserBio?  @relation(fields: [userBioId], references: [id])
   userBioId String?
+  comments  Comment[]
+  flares    Flare[]   @relation("FlareAuthor")
+  likes     Like[]
+  bookings  Booking[]
 }
 
 model UserBio {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   description String?
   github      String?
   twitter     String?
@@ -30,4 +33,98 @@ model UserBio {
   hashnode    String?
   devto       String?
   User        User[]
+}
+
+model Flare {
+  id        String    @id @default(cuid())
+  blocks    Block[]
+  author    User      @relation(fields: [authorId], references: [id], name: "FlareAuthor")
+  deleted   Boolean
+  comments  Comment[]
+  likes     Like[]
+  createdAt DateTime  @default(now())
+  authorId  String
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  flare     Flare    @relation(fields: [flareId], references: [id])
+  type      String
+  content   String
+  images    Image[]
+  createdAt DateTime @default(now())
+  flareId   String
+}
+
+model Image {
+  id      String  @id @default(cuid())
+  name    String
+  url     String
+  block   Block?  @relation(fields: [blockId], references: [id])
+  blockId String?
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  author    User     @relation(fields: [authroId], references: [id])
+  createdAt DateTime @default(now())
+  flare     Flare?   @relation(fields: [flareId], references: [id])
+  flareId   String?
+  authroId  String
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  author    User     @relation(fields: [userId], references: [id])
+  reaction  String
+  createdAt DateTime @default(now())
+  flare     Flare?   @relation(fields: [flareId], references: [id])
+  flareId   String?
+  userId    String
+}
+
+model Slot {
+  id        String    @id @default(cuid())
+  name      String
+  date      Json
+  time      Json
+  days      Json
+  active    Boolean
+  paid      Boolean
+  plan      Json
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  bookings  Booking[]
+}
+
+model Booking {
+  id               String         @id @default(cuid())
+  date             DateTime
+  slot             Slot           @relation(fields: [slotId], references: [id])
+  invitee          User           @relation(fields: [userId], references: [id])
+  status           BookingStatus
+  paid             Boolean
+  plan             Json
+  payment          BookingPayment @relation(fields: [bookingPaymentId], references: [id])
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now())
+  bookingPaymentId String         @unique
+  userId           String
+  slotId           String
+}
+
+model BookingPayment {
+  id        String   @id @default(cuid())
+  amount    Float
+  currency  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  booking   Booking?
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
 }
