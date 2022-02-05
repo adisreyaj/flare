@@ -1,6 +1,7 @@
 import { CreateUserInput, UpdateUserInput } from '@flare/api-interfaces';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from './users.service';
+import { CurrentUser } from '@flare/api/shared';
 
 @Resolver('User')
 export class UsersResolver {
@@ -12,7 +13,8 @@ export class UsersResolver {
   }
 
   @Query('users')
-  findAll() {
+  findAll(@CurrentUser() user: any) {
+    console.log(user);
     return this.usersService.findAll();
   }
 

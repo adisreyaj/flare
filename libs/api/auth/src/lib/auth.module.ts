@@ -6,7 +6,6 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { LocalStrategy } from './strategies/local.strategy';
 import { PrismaModule } from '@flare/api/prisma';
 
 @Module({
@@ -18,7 +17,7 @@ import { PrismaModule } from '@flare/api/prisma';
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
         secret: config.get('JWT_SECRET'),
-        signOptions: { expiresIn: config.get('JWT_EXPIRY') },
+        signOptions: { expiresIn: '1d' },
       }),
     }),
     PrismaModule,
@@ -26,7 +25,7 @@ import { PrismaModule } from '@flare/api/prisma';
   controllers: [AuthController],
   providers: [
     AuthService,
-    LocalStrategy,
+    // LocalStrategy,
     JwtStrategy,
     GoogleStrategy,
     // GithubStrategy,
