@@ -6,7 +6,8 @@ import { FlareModule } from '@flare/api/flare';
 import { SponsorsModule } from '@flare/api/sponsors';
 import { TipsModule } from '@flare/api/tips';
 import { join } from 'path';
-import { AuthModule } from '@flare/api/auth';
+import { AuthGuard, AuthModule } from '@flare/api/auth';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -21,6 +22,11 @@ import { AuthModule } from '@flare/api/auth';
     TipsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
