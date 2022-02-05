@@ -7,3 +7,8 @@ export const CurrentUser = createParamDecorator(
     return ctx.getContext().req.user;
   }
 );
+
+export interface CurrentUser {
+  id: string;
+  email: string;
+}
