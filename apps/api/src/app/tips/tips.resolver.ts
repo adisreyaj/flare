@@ -1,4 +1,4 @@
-import { Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TipsService } from './tips.service';
 import { TipInput } from '@flare/api-interfaces';
 
@@ -12,12 +12,12 @@ export class TipsResolver {
   }
 
   @Query('tip')
-  getTip(id: string) {
+  getTip(@Args('id') id: string) {
     return this.tipsService.getTip(id);
   }
 
   @Mutation('tip')
-  tip(input: TipInput) {
+  tip(@Args('input') input: TipInput) {
     return this.tipsService.tip(input);
   }
 }
