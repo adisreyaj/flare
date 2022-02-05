@@ -10,13 +10,46 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "typeRoots": [
+      "node_modules/@types",
+      "./types"
+    ],
     "paths": {
-      "@flare/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+      "@flare/api-interfaces": [
+        "libs/api-interfaces/src/index.ts"
+      ],
+      "@flare/api/auth": [
+        "libs/api/auth/src/index.ts"
+      ],
+      "@flare/api/flare": [
+        "libs/api/flare/src/index.ts"
+      ],
+      "@flare/api/prisma": [
+        "libs/api/prisma/src/index.ts"
+      ],
+      "@flare/api/shared": [
+        "libs/api/shared/src/index.ts"
+      ],
+      "@flare/api/sponsors": [
+        "libs/api/sponsors/src/index.ts"
+      ],
+      "@flare/api/tips": [
+        "libs/api/tips/src/index.ts"
+      ],
+      "@flare/api/users": [
+        "libs/api/users/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

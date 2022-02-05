@@ -2,7 +2,14 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
+    "api-auth": "libs/api/auth",
+    "api-flare": "libs/api/flare",
     "api-interfaces": "libs/api-interfaces",
+    "api-prisma": "libs/api/prisma",
+    "api-shared": "libs/api/shared",
+    "api-sponsors": "libs/api/sponsors",
+    "api-tips": "libs/api/tips",
+    "api-users": "libs/api/users",
     "flare": "apps/flare",
     "flare-e2e": "apps/flare-e2e"
   }

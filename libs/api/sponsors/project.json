@@ -1,0 +1,23 @@
+{
+  "root": "libs/api/sponsors",
+  "sourceRoot": "libs/api/sponsors/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api/sponsors/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/api/sponsors"],
+      "options": {
+        "jestConfig": "libs/api/sponsors/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
