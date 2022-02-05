@@ -108,6 +108,7 @@ export interface IQuery {
     flare(id: string): Nullable<Flare> | Promise<Nullable<Flare>>;
     sponsors(): Nullable<Nullable<Sponsor>[]> | Promise<Nullable<Nullable<Sponsor>[]>>;
     sponsor(id: string): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
+    mySponsors(): Nullable<Nullable<Sponsor>[]> | Promise<Nullable<Nullable<Sponsor>[]>>;
     tips(): Nullable<Nullable<Tip>[]> | Promise<Nullable<Nullable<Tip>[]>>;
     tip(id: string): Nullable<Tip> | Promise<Nullable<Tip>>;
     users(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;

@@ -1,0 +1,38 @@
+type Query {
+  sponsors: [Sponsor]
+  sponsor(id: ID!): Sponsor
+  mySponsors: [Sponsor]
+}
+
+type Mutation {
+  sponsor(input: SponsorInput): Sponsor
+  cancelSponsorship(id: ID!): Sponsor
+}
+
+type Sponsor {
+  id: ID!
+  type: SponsoringType!
+  amount: Float!
+  currency: Currency!
+  user: User!
+  sponsoredBy: User!
+  createdAt: String!
+}
+
+enum SponsoringType {
+  ONE_TIME
+  MONTHLY
+  ANNUALLY
+}
+
+input SponsorInput {
+  type: SponsoringType!
+  amount: Float!
+  currency: CurrencyInput!
+  user: ID!
+  paymentDetails: PaymentDetailsInput!
+}
+
+input PaymentDetailsInput {
+  type: String!
+}
