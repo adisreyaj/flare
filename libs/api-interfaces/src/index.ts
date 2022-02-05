@@ -7,6 +7,12 @@
 
 /* tslint:disable */
 /* eslint-disable */
+export enum SponsoringType {
+    ONE_TIME = "ONE_TIME",
+    MONTHLY = "MONTHLY",
+    ANNUALLY = "ANNUALLY"
+}
+
 export interface CreateFlareInput {
     blocks: CreateBlockInput[];
 }
@@ -42,6 +48,31 @@ export interface RemoveLikeInput {
     likeId: string;
 }
 
+export interface CurrencyInput {
+    symbol: string;
+    code: string;
+}
+
+export interface SponsorInput {
+    type: SponsoringType;
+    amount: number;
+    currency: CurrencyInput;
+    user: string;
+    paymentDetails: PaymentDetailsInput;
+}
+
+export interface PaymentDetailsInput {
+    type: string;
+}
+
+export interface TipInput {
+    amount: number;
+    note?: Nullable<string>;
+    currency: CurrencyInput;
+    user: string;
+    flare: string;
+}
+
 export interface UserBioInput {
     id?: Nullable<string>;
     description?: Nullable<string>;
@@ -75,6 +106,10 @@ export interface IQuery {
     __typename?: 'IQuery';
     flares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
     flare(id: string): Nullable<Flare> | Promise<Nullable<Flare>>;
+    sponsors(): Nullable<Nullable<Sponsor>[]> | Promise<Nullable<Nullable<Sponsor>[]>>;
+    sponsor(id: string): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
+    tips(): Nullable<Nullable<Tip>[]> | Promise<Nullable<Nullable<Tip>[]>>;
+    tip(id: string): Nullable<Tip> | Promise<Nullable<Tip>>;
     users(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
 }
@@ -87,6 +122,9 @@ export interface IMutation {
     addLike(input: AddLikeInput): Nullable<Flare> | Promise<Nullable<Flare>>;
     removeComment(input: RemoveCommentInput): Nullable<Flare> | Promise<Nullable<Flare>>;
     removeLike(input: RemoveLikeInput): Nullable<Flare> | Promise<Nullable<Flare>>;
+    sponsor(input?: Nullable<SponsorInput>): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
+    cancelSponsorship(id: string): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
+    tip(input?: Nullable<TipInput>): Nullable<Tip> | Promise<Nullable<Tip>>;
     createUser(input?: Nullable<CreateUserInput>): Nullable<User> | Promise<Nullable<User>>;
     updateUser(input?: Nullable<UpdateUserInput>): Nullable<User> | Promise<Nullable<User>>;
     deleteUser(id: string): Nullable<User> | Promise<Nullable<User>>;
@@ -132,6 +170,35 @@ export interface Like {
     id: string;
     reaction: string;
     createdAt: string;
+}
+
+export interface Currency {
+    __typename?: 'Currency';
+    symbol: string;
+    code: string;
+}
+
+export interface Sponsor {
+    __typename?: 'Sponsor';
+    id: string;
+    type: SponsoringType;
+    amount: number;
+    currency: Currency;
+    user: User;
+    sponsoredBy: User;
+    createdAt: string;
+}
+
+export interface Tip {
+    __typename?: 'Tip';
+    id: string;
+    amount: number;
+    note?: Nullable<string>;
+    currency: Currency;
+    tippedBy: User;
+    user: User;
+    createdAt: string;
+    flare: Flare;
 }
 
 export interface User {

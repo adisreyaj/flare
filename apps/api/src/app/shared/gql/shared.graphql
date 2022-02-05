@@ -1,0 +1,9 @@
+type Currency {
+  symbol: String!
+  code: String!
+}
+
+input CurrencyInput {
+  symbol: String!
+  code: String!
+}

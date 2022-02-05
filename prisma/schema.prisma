@@ -8,19 +8,23 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  firstName String
-  lastName  String
-  email     String    @unique
-  password  String
-  followers User[]    @relation("UserFollows", references: [id])
-  following User[]    @relation("UserFollows", references: [id])
-  bio       UserBio?  @relation(fields: [userBioId], references: [id])
-  userBioId String?
-  comments  Comment[]
-  flares    Flare[]   @relation("FlareAuthor")
-  likes     Like[]
-  bookings  Booking[]
+  id         String    @id @default(cuid())
+  firstName  String
+  lastName   String
+  email      String    @unique
+  password   String
+  followers  User[]    @relation("UserFollows", references: [id])
+  following  User[]    @relation("UserFollows", references: [id])
+  bio        UserBio?  @relation(fields: [userBioId], references: [id])
+  userBioId  String?
+  comments   Comment[]
+  flares     Flare[]   @relation("FlareAuthor")
+  likes      Like[]
+  bookings   Booking[]
+  tips       Tip[]     @relation("TippingUser")
+  tipsGiven  Tip[]     @relation("TippedUser")
+  sponsors   Sponsor[] @relation("SponsoringUser")
+  sponsoring Sponsor[] @relation("SponsoredByUser")
 }
 
 model UserBio {
@@ -44,6 +48,7 @@ model Flare {
   likes     Like[]
   createdAt DateTime  @default(now())
   authorId  String
+  Tip       Tip[]
 }
 
 model Block {
@@ -81,7 +86,7 @@ model Like {
   createdAt DateTime @default(now())
   flare     Flare?   @relation(fields: [flareId], references: [id])
   flareId   String?
-  authorId    String
+  authorId  String
 }
 
 model Slot {
@@ -117,14 +122,47 @@ model Booking {
 model BookingPayment {
   id        String   @id @default(cuid())
   amount    Float
-  currency  String
+  currency  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   booking   Booking?
+}
+
+model Tip {
+  id             String   @id @default(cuid())
+  user           User     @relation(fields: [userId], references: [id], name: "TippingUser")
+  tippedBy       User     @relation(fields: [tippedById], references: [id], name: "TippedUser")
+  createdAt      DateTime @default(now())
+  amount         Float
+  currency       Json
+  flare          Flare    @relation(fields: [flareId], references: [id])
+  paymentDetails Json
+  flareId        String
+  userId         String
+  tippedById     String
+}
+
+model Sponsor {
+  id             String         @id @default(cuid())
+  type           SponsoringType
+  amount         Float
+  currency       Json
+  paymentDetails Json
+  user           User           @relation(fields: [userId], references: [id], name: "SponsoringUser")
+  sponsoredBy    User           @relation(fields: [sponsoredById], references: [id], name: "SponsoredByUser")
+  createdAt      DateTime       @default(now())
+  userId         String
+  sponsoredById  String
 }
 
 enum BookingStatus {
   PENDING
   CONFIRMED
   CANCELLED
+}
+
+enum SponsoringType {
+  ONE_TIME
+  MONTHLY
+  ANNUALLY
 }

@@ -1,0 +1,27 @@
+type Query {
+  tips: [Tip]
+  tip(id: ID!): Tip
+}
+
+type Mutation {
+  tip(input: TipInput): Tip
+}
+
+type Tip {
+  id: ID!
+  amount: Float!
+  note: String
+  currency: Currency!
+  tippedBy: User!
+  user: User!
+  createdAt: String!
+  flare: Flare!
+}
+
+input TipInput {
+  amount: Float!
+  note: String
+  currency: CurrencyInput!
+  user: String!
+  flare: String!
+}
