@@ -1,0 +1,67 @@
+<main class="grid lg:grid-cols-2 h-screen w-screen">
+  <section class="grid place-items-center">
+    <form class="max-w-sm w-full rounded-full">
+      <header class='mb-8'>
+        <h1 class='text-2xl font-bold mb-2'>Login</h1>
+        <p class='text-slate-500'>Share & document your developer journey!</p>
+      </header>
+      <div class="form-group mb-4">
+        <label class="text-sm font-medium text-slate-500" for="email"
+          >Email</label
+        >
+        <input class="w-full" id="email" readonly type="email" zzInput />
+      </div>
+      <div class="form-group">
+        <label class="text-sm font-medium text-slate-500" for="password"
+          >Password</label
+        >
+        <input class="w-full" id="password" readonly type="password" zzInput />
+      </div>
+      <footer class="mt-4">
+        <button class="w-full" variant="primary" zzButton>Login</button>
+      </footer>
+      <section class="mt-10">
+        <div class="text-center mb-8 text-sm text-slate-400">
+          <p class="separator mx-6">
+            &nbsp;&nbsp;or login using social accounts&nbsp;&nbsp;
+          </p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <button class="w-full" type="button" variant='outline' zzButton>
+            <div class="flex items-center justify-center">
+              <span>
+                <img
+                  alt="Login with Google"
+                  class="h-6 w-6"
+                  src="assets/icons/google.svg"
+                />
+              </span>
+              <span class="ml-2">Google</span>
+            </div>
+          </button>
+          <button class="w-full" type="button" variant='outline' zzButton>
+            <div class="flex items-center justify-center">
+              <span>
+                <img
+                  alt="Login with Github"
+                  class="h-6 w-6"
+                  src="assets/icons/github.svg"
+                />
+              </span>
+              <span class="ml-2">Github</span>
+            </div>
+          </button>
+        </div>
+      </section>
+      <section class='mt-10'>
+        <p class='text-slate-500 font-medium'>Don't have an account? <a class='text-primary font-semibold hover:underline underline-offset-2 decoration-dotted' routerLink='/signup'>Sign Up</a></p>
+      </section>
+      <section class='mt-8 text-slate-400 text-sm'>
+        <p>Copyright © Flare 2022. All rights reserved</p>
+      </section>
+    </form>
+  </section>
+  <section class="h-screen hidden lg:block">
+    <img alt="" class="object-cover h-full" src="assets/images/login-bg.svg" />
+  </section>
+</main>

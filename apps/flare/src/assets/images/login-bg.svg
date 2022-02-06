@@ -1,0 +1,17 @@
+<svg viewBox='0 0 700 700' xmlns='http://www.w3.org/2000/svg'>
+  <defs>
+    <linearGradient gradientTransform='rotate(150 .5 .5)' id='a' x1='50%' x2='50%' y1='0%' y2='100%'>
+      <stop offset='0%' stop-color='hsl(315, 100%, 72%)' />
+      <stop offset='100%' stop-color='hsl(227, 100%, 50%)' />
+    </linearGradient>
+    <filter color-interpolation-filters='sRGB' filterUnits='objectBoundingBox' height='140%' id='b' primitiveUnits='userSpaceOnUse' width='140%'
+            x='-20%' y='-20%'>
+      <feTurbulence baseFrequency='0.005 0.003' height='100%' numOctaves='2' result='turbulence' seed='2' stitchTiles='stitch'
+                    type='fractalNoise' width='100%' x='0%' y='0%' />
+      <feGaussianBlur height='100%' in='turbulence' result='blur' stdDeviation='20 0' width='100%' x='0%' y='0%' />
+      <feBlend height='100%' in='SourceGraphic' in2='blur' mode='color-dodge' result='blend' width='100%' x='0%'
+               y='0%' />
+    </filter>
+  </defs>
+  <path d='M0 0h700v700H0z' fill='url(#a)' filter='url(#b)' />
+</svg>

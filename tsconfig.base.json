@@ -45,6 +45,15 @@
       ],
       "@flare/api/users": [
         "libs/api/users/src/index.ts"
+      ],
+      "@flare/ui/auth": [
+        "libs/ui/auth/src/index.ts"
+      ],
+      "@flare/ui/profile": [
+        "libs/ui/profile/src/index.ts"
+      ],
+      "zigzag": [
+        "zigzag/projects/zigzag/src/public-api.ts"
       ]
     }
   },

@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/ui/auth",
+  "sourceRoot": "libs/ui/auth/src",
+  "prefix": "app",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ui/auth"],
+      "options": {
+        "jestConfig": "libs/ui/auth/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/auth/src/**/*.ts",
+          "libs/ui/auth/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

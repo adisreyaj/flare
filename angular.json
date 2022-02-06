@@ -11,6 +11,8 @@
     "api-tips": "libs/api/tips",
     "api-users": "libs/api/users",
     "flare": "apps/flare",
-    "flare-e2e": "apps/flare-e2e"
+    "flare-e2e": "apps/flare-e2e",
+    "ui-auth": "libs/ui/auth",
+    "ui-profile": "libs/ui/profile"
   }
 }

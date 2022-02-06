@@ -1,0 +1,3 @@
+[submodule "zigzag"]
+	path = zigzag
+	url = git@github.com:adisreyaj/zigzag.git
