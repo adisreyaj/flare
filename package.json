@@ -35,6 +35,7 @@
     "@nrwl/angular": "13.7.1",
     "@prisma/client": "^3.9.1",
     "@types/netlify-identity-widget": "^1.9.3",
+    "angular-remix-icon": "^3.0.0",
     "apollo-server-express": "^3.6.2",
     "bcrypt": "^5.0.1",
     "express-session": "^1.17.2",
