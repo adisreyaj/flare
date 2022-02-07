@@ -1,7 +1,14 @@
-import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  NgModule,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ButtonModule, FormInputModule } from 'zigzag';
+import { AuthProvider } from '@flare/api/auth';
+import { AUTH_CONFIG, AuthConfig } from '../auth.token';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +30,13 @@ import { ButtonModule, FormInputModule } from 'zigzag';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent {}
+export class LoginComponent {
+  providers = AuthProvider;
+  constructor(@Inject(AUTH_CONFIG) private readonly authConfig: AuthConfig) {}
+  onSocialLogin(provider: AuthProvider) {
+    location.href = `${this.authConfig.socialLoginURL}/${provider}`;
+  }
+}
 
 @NgModule({
   imports: [

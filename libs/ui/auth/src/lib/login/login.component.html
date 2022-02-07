@@ -1,9 +1,9 @@
 <main class="grid lg:grid-cols-2 h-screen w-screen">
   <section class="grid place-items-center">
     <form class="max-w-sm w-full rounded-full">
-      <header class='mb-8'>
-        <h1 class='text-2xl font-bold mb-2'>Login</h1>
-        <p class='text-slate-500'>Share & document your developer journey!</p>
+      <header class="mb-8">
+        <h1 class="text-2xl font-bold mb-2">Login</h1>
+        <p class="text-slate-500">Share & document your developer journey!</p>
       </header>
       <div class="form-group mb-4">
         <label class="text-sm font-medium text-slate-500" for="email"
@@ -27,7 +27,13 @@
           </p>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <button class="w-full" type="button" variant='outline' zzButton>
+          <button
+            (click)="onSocialLogin(providers.Google)"
+            class="w-full"
+            type="button"
+            variant="outline"
+            zzButton
+          >
             <div class="flex items-center justify-center">
               <span>
                 <img
@@ -39,7 +45,13 @@
               <span class="ml-2">Google</span>
             </div>
           </button>
-          <button class="w-full" type="button" variant='outline' zzButton>
+          <button
+            (click)="onSocialLogin(providers.Github)"
+            class="w-full"
+            type="button"
+            variant="outline"
+            zzButton
+          >
             <div class="flex items-center justify-center">
               <span>
                 <img
@@ -53,10 +65,17 @@
           </button>
         </div>
       </section>
-      <section class='mt-10'>
-        <p class='text-slate-500 font-medium'>Don't have an account? <a class='text-primary font-semibold hover:underline underline-offset-2 decoration-dotted' routerLink='/signup'>Sign Up</a></p>
+      <section class="mt-10">
+        <p class="text-slate-500 font-medium">
+          Don't have an account?
+          <a
+            class="text-primary font-semibold hover:underline underline-offset-2 decoration-dotted"
+            routerLink="/signup"
+            >Sign Up</a
+          >
+        </p>
       </section>
-      <section class='mt-8 text-slate-400 text-sm'>
+      <section class="mt-8 text-slate-400 text-sm">
         <p>Copyright © Flare 2022. All rights reserved</p>
       </section>
     </form>

@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BUTTON_CONFIG, FORM_INPUT_CONFIG } from 'zigzag';
+import { AUTH_CONFIG } from '@flare/ui/auth';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,6 +21,12 @@ import { BUTTON_CONFIG, FORM_INPUT_CONFIG } from 'zigzag';
       provide: FORM_INPUT_CONFIG,
       useValue: {
         rounded: 'full',
+      },
+    },
+    {
+      provide: AUTH_CONFIG,
+      useValue: {
+        socialLoginURL: 'http://localhost:3333/api/auth',
       },
     },
   ],
