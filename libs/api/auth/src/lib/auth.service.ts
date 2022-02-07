@@ -8,8 +8,7 @@ import { PrismaService } from '@flare/api/prisma';
 
 @Injectable()
 export class AuthService {
-  failureCallBackUrl = `${this.config.get('FRONT_END_URL')}/auth/login/failure`;
-  successCallBackUrl = `${this.config.get('FRONT_END_URL')}/auth/login/success`;
+  frontendCallBackUrl = this.config.get('FRONT_END_CALLBACK_URL');
 
   constructor(
     private readonly jwtService: JwtService,
@@ -43,7 +42,7 @@ export class AuthService {
   async handleSocialLogin(req: Request, res: Response) {
     console.info(req.user);
     if (!req.user) {
-      res.redirect(this.failureCallBackUrl);
+      res.redirect(this.frontendCallBackUrl);
       return;
     }
 
@@ -53,7 +52,7 @@ export class AuthService {
     if (user) {
       const accessToken = await this.generateAccessToken(user);
       res.redirect(
-        `${this.successCallBackUrl}?code=SUCCESS&token=${accessToken}`
+        `${this.frontendCallBackUrl}?code=SUCCESS&token=${accessToken}`
       );
       return;
     } else await this.signup(req, res);
@@ -72,12 +71,12 @@ export class AuthService {
       });
       const accessToken = await this.generateAccessToken(userCreated);
       res.redirect(
-        `${this.successCallBackUrl}?code=SUCCESS&token=${accessToken}`
+        `${this.frontendCallBackUrl}?code=SUCCESS&token=${accessToken}`
       );
     } catch (error) {
       console.error(error);
       res.redirect(
-        `${this.failureCallBackUrl}?code=ERROR&message=${error.message}`
+        `${this.frontendCallBackUrl}?code=ERROR&message=${error.message}`
       );
     }
   }
