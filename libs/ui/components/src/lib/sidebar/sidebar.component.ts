@@ -1,24 +1,40 @@
 import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'zigzag';
+import { IconModule } from '../icon/icon.module';
 
 @Component({
   selector: 'flare-sidebar',
   template: `
-    <div class="px-4 pt-10">
+    <div class="px-6 pt-10">
       <header class="mb-6 px-6">
         <p class="font-bold text-xl">Flare</p>
       </header>
       <nav>
         <ul class="gap-4 flex flex-col font-medium text-lg text-slate-700">
-          <li>Home</li>
-          <li>Explore</li>
-          <li>Notifications</li>
-          <li>Profile</li>
-          <li>Bookmarks</li>
+          <li>
+            <rmx-icon name="home-2-line"></rmx-icon>
+            Home
+          </li>
+          <li>
+            <rmx-icon name="compass-3-line"></rmx-icon>
+            Discover
+          </li>
+          <li>
+            <rmx-icon name="notification-4-line"></rmx-icon>
+            Notifications
+          </li>
+          <li>
+            <rmx-icon name="user-3-line"></rmx-icon>
+            Profile
+          </li>
+          <li>
+            <rmx-icon name="bookmark-line"></rmx-icon>
+            Bookmarks
+          </li>
         </ul>
       </nav>
-      <div class="mt-6">
+      <div class="mt-10">
         <button class="w-full text-lg" zzButton variant="primary">
           New Flare
         </button>
@@ -45,7 +61,7 @@ import { ButtonModule } from 'zigzag';
       }
 
       ul li {
-        @apply px-6 py-2 hover:bg-slate-200 text-slate-900 rounded-full cursor-pointer transition-all duration-200;
+        @apply flex items-center gap-2 px-6 py-2 hover:bg-slate-200 text-slate-900 rounded-full cursor-pointer transition-all duration-200;
       }
     `,
   ],
@@ -54,7 +70,7 @@ import { ButtonModule } from 'zigzag';
 export class SidebarComponent {}
 
 @NgModule({
-  imports: [CommonModule, ButtonModule],
+  imports: [CommonModule, ButtonModule, IconModule],
   declarations: [SidebarComponent],
   exports: [SidebarComponent],
 })
