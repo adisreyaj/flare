@@ -13,6 +13,7 @@
     "flare": "apps/flare",
     "flare-e2e": "apps/flare-e2e",
     "ui-auth": "libs/ui/auth",
+    "ui-components": "libs/ui/components",
     "ui-profile": "libs/ui/profile"
   }
 }
