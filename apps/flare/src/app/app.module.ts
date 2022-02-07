@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BUTTON_CONFIG, FORM_INPUT_CONFIG } from 'zigzag';
-import { AUTH_CONFIG } from '@flare/ui/auth';
+import { AUTH_CONFIG, AuthInterceptor } from '@flare/ui/auth';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,6 +29,7 @@ import { AUTH_CONFIG } from '@flare/ui/auth';
         socialLoginURL: 'http://localhost:3333/api/auth',
       },
     },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

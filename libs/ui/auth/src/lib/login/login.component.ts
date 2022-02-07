@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ButtonModule, FormInputModule } from 'zigzag';
-import { AuthProvider } from '@flare/api/auth';
+import { AuthProvider } from '@flare/api-interfaces';
 import { AUTH_CONFIG, AuthConfig } from '../auth.token';
 
 @Component({
