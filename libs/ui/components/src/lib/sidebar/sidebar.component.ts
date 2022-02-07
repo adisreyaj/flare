@@ -7,7 +7,8 @@ import { IconModule } from '../icon/icon.module';
   selector: 'flare-sidebar',
   template: `
     <div class="px-6 pt-10">
-      <header class="mb-6 px-6">
+      <header class="mb-6 px-6 flex items-center gap-2">
+        <img src="assets/images/flare.svg" alt="Flare" class="w-8 h-8" />
         <p class="font-bold text-xl">Flare</p>
       </header>
       <nav>
