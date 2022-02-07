@@ -14,6 +14,11 @@ import { RouterModule } from '@angular/router';
         loadChildren: () =>
           import('@flare/ui/auth').then((m) => m.SocialLoginHandlerComponent),
       },
+      {
+        path: '',
+        loadChildren: () =>
+          import('./pages/home/home.component').then((m) => m.HomeModule),
+      },
     ]),
   ],
   exports: [RouterModule],
