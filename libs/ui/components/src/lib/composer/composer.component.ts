@@ -3,32 +3,27 @@ import {
   Component,
   ElementRef,
   NgModule,
-  OnInit,
   ViewChild,
 } from '@angular/core';
-import { ButtonModule, TooltipModule } from 'zigzag';
+import { ButtonModule, ModalService, TooltipModule } from 'zigzag';
 import { IconModule } from '../icon/icon.module';
-import { exec, init, PellElement } from 'pell';
+import { init, PellElement } from 'pell';
 import Autolinker from 'autolinker';
-import { getHighlighter, Highlighter, setCDN } from 'shiki';
+import { CodeSnippetModalComponent } from './modals/code-snippet.modal';
 
 @Component({
   selector: 'flare-composer',
   templateUrl: 'composer.component.html',
 })
-export class ComposerComponent implements AfterViewInit, OnInit {
+export class ComposerComponent implements AfterViewInit {
   content = 'Share away what you are working on!';
   @ViewChild('editor', { static: true })
   private readonly editorRef?: ElementRef;
 
   editor!: PellElement;
-  highligher!: Highlighter;
-  async ngOnInit() {
-    setCDN('https://unpkg.com/shiki/');
-    this.highligher = await getHighlighter({
-      theme: 'nord',
-    });
-  }
+
+  constructor(private readonly modal: ModalService) {}
+
   ngAfterViewInit() {
     if (this.editorRef) {
       this.editor = init({
@@ -61,7 +56,9 @@ export class ComposerComponent implements AfterViewInit, OnInit {
   }
 
   addCodeSnippet() {
-    exec('code', '<pre><code>' + this.content + '</code></pre>');
+    this.modal.open(CodeSnippetModalComponent, {
+      size: 'lg',
+    });
   }
 }
 

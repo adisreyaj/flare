@@ -2,7 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@import '../../../node_modules/codemirror/lib/codemirror.css';
 @import 'styles/icon';
 
 * {
@@ -30,4 +30,12 @@ body {
   &-link {
     @apply text-primary;
   }
+}
+.CodeMirror {
+  height: 100%;
+  font-family: Fira Code, Consolas, DejaVu Sans Mono, monospace !important;
+}
+
+.modal-title {
+  @apply text-xl font-semibold;
 }

@@ -15,7 +15,11 @@
         "tsConfig": "apps/flare/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": ["apps/flare/src/favicon.ico", "apps/flare/src/assets"],
-        "styles": ["apps/flare/src/styles.scss", "zigzag/projects/zigzag/styles/components/index.scss"],
+        "styles": [
+          "apps/flare/src/styles.scss",
+          "apps/flare/src/styles/code-themes/material-palenight.css",
+          "zigzag/projects/zigzag/styles/components/index.scss"
+        ],
         "scripts": []
       },
       "configurations": {
