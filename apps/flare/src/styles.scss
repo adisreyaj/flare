@@ -3,6 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'styles/icon';
 
 * {
   box-sizing: border-box;
@@ -10,10 +11,23 @@
   padding: 0;
 }
 
-body{
+body {
   font-family: 'Raleway', sans-serif;
 }
 
 :root {
-  --primary: #E56B6F;
+  --primary: #e56b6f;
+  --primary-transparent-10: rgba(230, 108, 112, 0.1);
+}
+
+.flare-composer {
+  &-actionbar {
+    display: none;
+  }
+  &-content {
+    outline: none;
+  }
+  &-link {
+    @apply text-primary;
+  }
 }
