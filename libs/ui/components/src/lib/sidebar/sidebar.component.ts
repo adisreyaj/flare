@@ -58,11 +58,11 @@ import { IconModule } from '../icon/icon.module';
   styles: [
     `
       :host {
-        @apply flex flex-col justify-between w-full h-full rounded-lg border-r border-slate-200;
+        @apply flex flex-col justify-between w-full h-full border-r border-slate-200;
       }
 
       ul li {
-        @apply flex items-center gap-2 px-6 py-2 hover:bg-slate-200 text-slate-900 rounded-full cursor-pointer transition-all duration-200;
+        @apply flex items-center gap-2 px-6 py-2 hover:bg-primary-transparent-10 text-slate-900 rounded-full cursor-pointer transition-all duration-200;
       }
     `,
   ],
