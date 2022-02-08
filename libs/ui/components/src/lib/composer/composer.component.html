@@ -1,0 +1,38 @@
+<section class="w-full border-b border-slate-100 flex flex-col">
+  <div
+    class="flex flex-1 mt-[1px] focus-within:bg-slate-50 relative"
+    style="min-height: 100px"
+  >
+    <div
+      #editor
+      class="absolute top-0 left-0 z-10 w-full caret-slate-800 h-full p-4 font-medium text-transparent border-slate-100"
+    ></div>
+    <div
+      class="absolute top-0 left-0 z-20 pointer-events-none font-medium w-full h-full p-4 border-slate-100"
+      [innerHTML]="content"
+    ></div>
+  </div>
+  <footer class="flex items-center w-full justify-between px-6 py-2">
+    <div class="flex gap-2">
+      <button zzButton zzTooltip="Attach Image">
+        <rmx-icon class="icon-sm" name="image-line"></rmx-icon>
+      </button>
+      <button zzButton zzTooltip="Add Code Snippet" (click)="addCodeSnippet()">
+        <rmx-icon class="icon-sm" name="code-box-line"></rmx-icon>
+      </button>
+      <button zzButton zzTooltip="Add Install Command">
+        <rmx-icon class="icon-sm" name="terminal-box-line"></rmx-icon>
+      </button>
+      <button zzButton zzTooltip="Showcase Tech Stack">
+        <rmx-icon class="icon-sm" name="stack-line"></rmx-icon>
+      </button>
+      <button zzButton zzTooltip="Attach Github Repo">
+        <rmx-icon class="icon-sm" name="github-line"></rmx-icon>
+      </button>
+      <button zzButton zzTooltip="Start a Poll">
+        <rmx-icon class="icon-sm" name="chat-poll-line"></rmx-icon>
+      </button>
+    </div>
+    <button zzButton variant="primary">Flare It!</button>
+  </footer>
+</section>
