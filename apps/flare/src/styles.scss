@@ -22,17 +22,17 @@ body {
 
 .flare-composer {
   &-actionbar {
-    display: none;
+    @apply hidden;
   }
   &-content {
-    outline: none;
+    @apply h-full p-4 outline-none;
   }
   &-link {
     @apply text-primary;
   }
 }
 .CodeMirror {
-  height: 100%;
+  @apply h-full;
   font-family: Fira Code, Consolas, DejaVu Sans Mono, monospace !important;
 }
 
