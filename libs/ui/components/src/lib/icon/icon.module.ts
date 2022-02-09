@@ -16,6 +16,7 @@ import {
   RiShareLine,
   RiStackLine,
   RiTerminalBoxLine,
+  RiText,
   RiUser3Line,
 } from 'angular-remix-icon';
 
@@ -38,6 +39,7 @@ import {
       RiShareLine,
       RiFullscreenFill,
       RiFullscreenExitFill,
+      RiText,
     }),
   ],
   exports: [RemixIconModule],
