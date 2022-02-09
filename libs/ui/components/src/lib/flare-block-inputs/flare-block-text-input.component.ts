@@ -8,12 +8,12 @@ import { getPellEditorConfig } from './config';
 @Component({
   selector: 'flare-block-text-input',
   template: ` <div
-    class="relative mt-[1px] flex flex-1 rounded-md bg-slate-100 focus-within:bg-slate-50"
+    class="relative mt-[1px] flex flex-1 rounded-md bg-slate-100 ring-primary focus-within:ring-2"
     style="min-height: 100px"
   >
     <div
       #editor
-      class="absolute top-0 left-0 z-10 h-full w-full border-slate-100 p-4 font-medium text-transparent caret-slate-800"
+      class="absolute top-0 left-0 z-10 h-full w-full border-slate-100 font-medium text-transparent caret-slate-800"
     ></div>
     <div
       class="pointer-events-none absolute top-0 left-0 z-20 h-full w-full border-slate-100 p-4 font-medium"
