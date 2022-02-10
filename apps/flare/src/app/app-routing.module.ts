@@ -12,7 +12,7 @@ import { RouterModule } from '@angular/router';
       {
         path: 'auth/callback',
         loadChildren: () =>
-          import('@flare/ui/auth').then((m) => m.SocialLoginHandlerComponent),
+          import('@flare/ui/auth').then((m) => m.SocialLoginHandlerModule),
       },
       {
         path: '',

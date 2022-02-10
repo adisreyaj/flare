@@ -20,6 +20,10 @@ body {
   --primary-transparent-10: rgba(230, 108, 112, 0.1);
 }
 
+.flare-link {
+  @apply text-primary;
+}
+
 .flare-composer {
   &-actionbar {
     @apply hidden;
@@ -27,10 +31,24 @@ body {
   &-content {
     @apply h-full p-4 outline-none;
   }
-  &-link {
+}
+
+flare-block-text-input,
+flare-block-text-renderer {
+  .hashtag,
+  .mention {
     @apply text-primary;
   }
 }
+
+flare-block-text-renderer {
+  .flare-link,
+  .hashtag,
+  .mention {
+    @apply cursor-pointer font-medium;
+  }
+}
+
 .CodeMirror {
   @apply h-full;
   font-family: Fira Code, Consolas, DejaVu Sans Mono, monospace !important;
