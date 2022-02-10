@@ -23,7 +23,7 @@ import 'codemirror/mode/sass/sass';
 import 'codemirror/mode/shell/shell';
 import 'codemirror/mode/vue/vue';
 import 'codemirror/mode/yaml/yaml';
-import { defaultsDeep } from 'lodash-es';
+import { defaultsDeep, isNil } from 'lodash-es';
 
 @Component({
   selector: 'flare-code-input',
@@ -50,10 +50,12 @@ export class CodeInputComponent implements AfterViewInit {
   config: EditorConfiguration = {};
 
   @Input()
-  set value(value: string) {
-    this.valuePrivate = value;
-    if (this.editor) {
-      this.editor.setValue(value);
+  set value(value: string | null | undefined) {
+    if (!isNil(value)) {
+      this.valuePrivate = value;
+      if (this.editor) {
+        this.editor.setValue(value);
+      }
     }
   }
 

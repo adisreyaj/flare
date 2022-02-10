@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/ui/gql",
+  "sourceRoot": "libs/ui/gql/src",
+  "prefix": "flare",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ui/gql"],
+      "options": {
+        "jestConfig": "libs/ui/gql/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/gql/src/**/*.ts",
+          "libs/ui/gql/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
