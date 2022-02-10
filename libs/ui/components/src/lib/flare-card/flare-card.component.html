@@ -1,26 +1,38 @@
-<article class="p-4 border-b border-slate-200">
+<article class="border-b border-slate-200 p-4">
   <header>
     <div class="flex items-center gap-2">
       <img
         src="https://pbs.twimg.com/profile_images/1453540707294072838/nHn3I7UT_400x400.jpg"
         alt="Adithya Sreyaj"
-        class="w-10 h-10 rounded-full"
+        class="h-10 w-10 rounded-full"
       />
       <div class="gap-2">
-        <p class="font-medium text-sm">Adithya Sreyaj</p>
+        <p class="text-sm font-medium">
+          {{ flare.author.firstName }} {{ flare.author.lastName }}
+        </p>
         <p class="text-xs">@AdiSreyaj</p>
       </div>
     </div>
   </header>
   <div class="mt-4">
-    <p>
-      Presenting my #portfolio website Sparkles Finally took the time to update
-      the Readme for the repo: https://github.com/adisreyaj/portfolio Don't
-      forget to Medium star the repo if you liked it. #opensource #nextjs
-      #tailwindcss #webdevelopers #javascript
-    </p>
+    <ul class="flex flex-col gap-2">
+      <ng-container *ngFor="let block of flare.blocks">
+        <ng-container [ngSwitch]="block?.type">
+          <ng-container *ngSwitchCase="blockTypes.text">
+            <flare-block-text-renderer
+              [content]="block?.content"
+            ></flare-block-text-renderer>
+          </ng-container>
+          <ng-container *ngSwitchCase="blockTypes.script">
+            <flare-block-script-renderer
+              [content]="block?.content"
+            ></flare-block-script-renderer>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ul>
   </div>
-  <footer class="flex mt-4 gap-4">
+  <footer class="mt-4 flex gap-4">
     <button zzButton variant="link">
       <rmx-icon class="icon-xxs" name="heart-2-line"></rmx-icon></button
     ><button zzButton variant="link">
