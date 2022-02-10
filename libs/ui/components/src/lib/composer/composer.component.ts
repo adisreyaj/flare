@@ -1,4 +1,10 @@
-import { Component, EventEmitter, NgModule, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgModule,
+  Output,
+} from '@angular/core';
 import { ButtonModule, TooltipModule } from 'zigzag';
 import { IconModule } from '../icon/icon.module';
 import { BlockData, BlockType } from '@flare/api-interfaces';
@@ -6,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { FlareBlocksInputModule } from '../flare-block-inputs';
 import { BehaviorSubject } from 'rxjs';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { isNil } from 'lodash-es';
 
 @Component({
   selector: 'flare-composer',
@@ -13,22 +20,31 @@ import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 })
 export class ComposerComponent {
   blockTypes = BlockType;
-
-  blocks: FormArray = new FormArray([
-    new FormControl({
-      type: BlockType.text,
-      content: '',
-    }),
-  ]);
+  initBlock = {
+    type: BlockType.text,
+    content: {
+      value: '',
+    },
+  };
+  blocksFormArray: FormArray = new FormArray([new FormControl(this.initBlock)]);
 
   private readonly isFullScreenSubject = new BehaviorSubject(false);
   public readonly isFullScreen$ = this.isFullScreenSubject.asObservable();
+
+  @Input()
+  set blocks(blocks: BlockData[]) {
+    if (!isNil(blocks)) {
+      this.blocksFormArray = new FormArray(
+        blocks.map((block) => new FormControl(block))
+      );
+    }
+  }
 
   @Output()
   private readonly createFlare = new EventEmitter<BlockData[]>();
 
   addBlock(block: BlockType) {
-    this.blocks.push(
+    this.blocksFormArray.push(
       new FormControl({
         type: block,
         content: '',
@@ -37,7 +53,8 @@ export class ComposerComponent {
   }
 
   postFlare() {
-    this.createFlare.emit(this.blocks.value);
+    this.createFlare.emit(this.blocksFormArray.value);
+    this.blocksFormArray = new FormArray([new FormControl(this.initBlock)]);
   }
 
   toggleFullScreen() {

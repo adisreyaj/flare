@@ -10,11 +10,11 @@
     class="relative mt-4 flex flex-1 flex-col gap-4 px-4"
     style="min-height: 100px"
   >
-    <ng-container *ngFor="let block of blocks.controls; index as i">
+    <ng-container *ngFor="let block of blocksFormArray.controls; index as i">
       <ng-container [ngSwitch]="block.value?.type">
         <ng-container *ngSwitchDefault>
           <flare-block-text-input
-            [formControl]="$any(blocks.controls[i])"
+            [formControl]="$any(blocksFormArray.controls[i])"
           ></flare-block-text-input>
         </ng-container>
         <ng-container *ngSwitchCase="blockTypes.code">
@@ -24,7 +24,7 @@
           <flare-block-poll-input></flare-block-poll-input> </ng-container
         ><ng-container *ngSwitchCase="blockTypes.script">
           <flare-block-script-input
-            [formControl]="$any(blocks.controls[i])"
+            [formControl]="$any(blocksFormArray.controls[i])"
           ></flare-block-script-input>
         </ng-container>
         <ng-container *ngSwitchCase="blockTypes.githubRepo">
