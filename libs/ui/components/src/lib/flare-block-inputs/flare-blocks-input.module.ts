@@ -21,4 +21,4 @@ import { CommonModule } from '@angular/common';
     FlareBlockScriptInputComponent,
   ],
 })
-export class FlareBlocksModule {}
+export class FlareBlocksInputModule {}

@@ -7,7 +7,7 @@ export const getPellEditorConfig = (
   defaultParagraphSeparator: 'p',
   element,
   onChange,
-  styleWithCSS: true,
+  styleWithCSS: false,
   actions: ['code'],
   classes: {
     actionbar: 'flare-composer-actionbar',
