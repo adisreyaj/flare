@@ -2,6 +2,8 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  Inject,
+  OnDestroy,
   SecurityContext,
   ViewChild,
 } from '@angular/core';
@@ -12,6 +14,7 @@ import { BlockData, BlockType } from '@flare/api-interfaces';
 import { getPellEditorConfig } from './config';
 import { DomSanitizer } from '@angular/platform-browser';
 import { extractHashTags } from '@flare/ui/utils';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'flare-block-text-input',
@@ -45,7 +48,7 @@ import { extractHashTags } from '@flare/ui/utils';
   ],
 })
 export class FlareBlockTextInputComponent
-  implements ControlValueAccessor, AfterViewInit
+  implements ControlValueAccessor, AfterViewInit, OnDestroy
 {
   content = 'Add your text here';
   @ViewChild('editor', { static: true })
@@ -55,36 +58,31 @@ export class FlareBlockTextInputComponent
   onChanged!: (value: BlockData<BlockTextData>) => void;
   onTouched!: () => void;
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    @Inject(DOCUMENT) private readonly document: Document
+  ) {}
 
   ngAfterViewInit() {
-    const onChange = (html: string) => {
-      this.content = Autolinker.link(html, {
-        newWindow: true,
-        urls: {
-          tldMatches: true,
-          wwwMatches: true,
-        },
-        stripPrefix: false,
-        stripTrailingSlash: false,
-        className: 'flare-link',
-      });
-      this.content =
-        this.sanitizer.sanitize(
-          SecurityContext.HTML,
-          extractHashTags(this.content).content
-        ) ?? '';
-      this.onChanged({
-        type: BlockType.text,
-        content: { value: this.content },
-      });
-    };
     if (this.editorRef) {
       this.editor = init(
-        getPellEditorConfig(this.editorRef.nativeElement, onChange)
+        getPellEditorConfig(
+          this.editorRef.nativeElement,
+          this.handleEditorChanges
+        )
       );
+
+      this.editorRef.nativeElement.addEventListener('paste', this.pasteAsText);
     }
   }
+
+  ngOnDestroy() {
+    this.editorRef?.nativeElement.removeEventListener(
+      'paste',
+      this.pasteAsText
+    );
+  }
+
   writeValue(value: BlockData<BlockTextData>): void {
     this.content = value.content.value;
   }
@@ -95,6 +93,74 @@ export class FlareBlockTextInputComponent
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  /**
+   * Paste contents as text.
+   * Strips the HTML away
+   *
+   * @see https://htmldom.dev/paste-as-plain-text/
+   */
+  private pasteAsText = (e: ClipboardEvent) => {
+    // Prevent the default action
+    e.preventDefault();
+
+    // Get the copied text from the clipboard
+    const text = e.clipboardData ? e.clipboardData.getData('text/plain') : '';
+
+    if (this.document.queryCommandSupported('insertText')) {
+      this.document.execCommand('insertText', false, text);
+    } else {
+      // Insert text at the current position of caret
+      const range = this.document.getSelection()?.getRangeAt(0);
+      if (range) {
+        range.deleteContents();
+        const textNode = this.document.createTextNode(text);
+        range.insertNode(textNode);
+        range.selectNodeContents(textNode);
+        range.collapse(false);
+
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      }
+    }
+  };
+
+  /**
+   * Finds the links in the text and converts them to
+   * anchor tags and also extracts hashtags
+   * Content is sanitized to prevent XSS
+   *
+   * @param html - editor content
+   */
+  private handleEditorChanges = (html: string) => {
+    const linkified = this.convertLinksToAnchorTags(html);
+    const hashtagified = extractHashTags(linkified).content;
+    this.content =
+      this.sanitizer.sanitize(SecurityContext.HTML, hashtagified) ?? '';
+    this.onChanged({
+      type: BlockType.text,
+      content: { value: this.content },
+    });
+  };
+
+  /**
+   * Converts links to anchor tags
+   *
+   * @param html - editor content
+   */
+  protected convertLinksToAnchorTags(html: string) {
+    return Autolinker.link(html, {
+      newWindow: true,
+      urls: {
+        tldMatches: true,
+        wwwMatches: true,
+      },
+      stripPrefix: false,
+      stripTrailingSlash: false,
+      className: 'flare-link',
+    });
   }
 }
 
