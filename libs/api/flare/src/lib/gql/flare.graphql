@@ -1,3 +1,5 @@
+scalar JSON
+
 type Query {
   flares: [Flare]
   flare(id: ID!): Flare
@@ -14,11 +16,11 @@ type Mutation {
 
 type Flare {
   id: ID!
-  blocks: [Block]
-  author: User
+  blocks: [Block!]!
+  author: User!
   deleted: Boolean
-  likes: [Like]
-  comments: [Comment]
+  likes: [Like]!
+  comments: [Comment]!
   createdAt: String!
 }
 
@@ -31,7 +33,7 @@ type Comment {
 type Block {
   id: ID!
   type: String!
-  content: String!
+  content: JSON!
   images: [BlockImage]
 }
 
@@ -53,7 +55,7 @@ input CreateFlareInput {
 
 input CreateBlockInput {
   type: String!
-  content: String!
+  content: JSON!
   images: [CreateBlockImageInput]
 }
 
