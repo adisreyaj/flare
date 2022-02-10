@@ -32,8 +32,8 @@ export class FlaresResolver {
   }
 
   @Mutation('deleteFlare')
-  delete(@Args('id') id: string) {
-    return this.flareService.delete(id);
+  delete(@Args('id') id: string, @CurrentUser() user: CurrentUser) {
+    return this.flareService.delete(id, user);
   }
 
   @Mutation('addComment')

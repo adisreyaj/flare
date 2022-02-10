@@ -45,9 +45,10 @@ model Flare {
   id        String    @id @default(cuid())
   blocks    Block[]
   author    User      @relation(fields: [authorId], references: [id], name: "FlareAuthor")
-  deleted   Boolean
+  deleted   Boolean @default(false)
   comments  Comment[]
   likes     Like[]
+  tags      String @default("")
   createdAt DateTime  @default(now())
   authorId  String
   Tip       Tip[]

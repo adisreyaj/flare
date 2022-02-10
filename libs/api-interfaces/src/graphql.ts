@@ -146,6 +146,7 @@ export interface Flare {
     blocks: Block[];
     author: User;
     deleted?: Nullable<boolean>;
+    tags: string;
     likes: Nullable<Like>[];
     comments: Nullable<Comment>[];
     createdAt: string;

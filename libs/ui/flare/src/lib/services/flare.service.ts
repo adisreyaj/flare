@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { CreateFlareInput, Flare } from '@flare/api-interfaces';
-import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -9,40 +8,39 @@ import { map } from 'rxjs';
 export class FlareService {
   constructor(private readonly apollo: Apollo) {}
   getAll() {
-    return this.apollo
-      .watchQuery<{ flares: Flare[] }>({
-        query: gql`
-          query GetFlares {
-            flares {
+    return this.apollo.watchQuery<{ flares: Flare[] }>({
+      query: gql`
+        query GetFlares {
+          flares {
+            id
+            blocks {
               id
-              blocks {
-                id
-                type
-                content
-              }
-              author {
-                id
-                firstName
-                lastName
-                username
-              }
-              deleted
-              likes {
-                id
-                reaction
-                createdAt
-              }
-              comments {
-                id
-                text
-                createdAt
-              }
+              type
+              content
+            }
+            author {
+              id
+              firstName
+              lastName
+              image
+              username
+            }
+            deleted
+            likes {
+              id
+              reaction
               createdAt
             }
+            comments {
+              id
+              text
+              createdAt
+            }
+            createdAt
           }
-        `,
-      })
-      .valueChanges.pipe(map((result) => result.data.flares));
+        }
+      `,
+    });
   }
 
   newFlare(input: CreateFlareInput) {
@@ -60,6 +58,21 @@ export class FlareService {
       `,
       variables: {
         input,
+      },
+    });
+  }
+
+  delete(id: string) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation DeleteFlare($id: ID!) {
+          deleteFlare(id: $id) {
+            id
+          }
+        }
+      `,
+      variables: {
+        id,
       },
     });
   }
