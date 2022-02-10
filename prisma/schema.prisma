@@ -13,6 +13,7 @@ model User {
   lastName   String
   image      String?
   email      String    @unique
+  username   String    @unique
   password   String?
   followers  User[]    @relation("UserFollows", references: [id])
   following  User[]    @relation("UserFollows", references: [id])
@@ -56,7 +57,7 @@ model Block {
   id        String   @id @default(cuid())
   flare     Flare    @relation(fields: [flareId], references: [id])
   type      String
-  content   String
+  content   Json
   images    Image[]
   createdAt DateTime @default(now())
   flareId   String
