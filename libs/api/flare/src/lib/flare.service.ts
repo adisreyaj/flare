@@ -5,10 +5,14 @@ import {
   RemoveCommentInput,
   RemoveLikeInput,
 } from '@flare/api-interfaces';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { catchError, from, throwError } from 'rxjs';
 import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser } from '@flare/api/shared';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { catchError, from, switchMap, throwError } from 'rxjs';
 
 @Injectable()
 export class FlareService {
@@ -23,7 +27,11 @@ export class FlareService {
 
   findAll() {
     return this.prisma.flare.findMany({
+      where: {
+        deleted: false,
+      },
       include: this.include,
+      orderBy: { createdAt: 'desc' },
     });
   }
 
@@ -63,14 +71,29 @@ export class FlareService {
     );
   }
 
-  delete(id: string) {
+  delete(id: string, user: CurrentUser) {
     return from(
-      this.prisma.flare.delete({
-        where: {
-          id,
-        },
+      this.prisma.flare.findUnique({
+        where: { id },
+        select: { authorId: true },
       })
     ).pipe(
+      switchMap((flare) => {
+        if (flare.authorId === user.id) {
+          return from(
+            this.prisma.flare.update({
+              where: {
+                id,
+              },
+              data: {
+                deleted: true,
+              },
+            })
+          );
+        } else {
+          return throwError(() => new ForbiddenException());
+        }
+      }),
       catchError((err) => {
         console.log(err);
         return throwError(() => new InternalServerErrorException());

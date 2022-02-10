@@ -19,6 +19,7 @@ type Flare {
   blocks: [Block!]!
   author: User!
   deleted: Boolean
+  tags: String!
   likes: [Like]!
   comments: [Comment]!
   createdAt: String!

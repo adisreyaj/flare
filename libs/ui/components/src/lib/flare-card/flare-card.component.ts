@@ -1,5 +1,11 @@
-import { Component, Input, NgModule } from '@angular/core';
-import { ButtonModule, TooltipModule } from 'zigzag';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgModule,
+  Output,
+} from '@angular/core';
+import { ButtonModule, DropdownModule, TooltipModule } from 'zigzag';
 import { IconModule } from '@flare/ui/components';
 import { BlockType, Flare } from '@flare/api-interfaces';
 import { CommonModule } from '@angular/common';
@@ -14,6 +20,13 @@ export class FlareCardComponent {
 
   @Input()
   flare!: Flare;
+
+  @Output()
+  private readonly delete = new EventEmitter<Flare>();
+
+  deleteFlare(flare: Flare) {
+    this.delete.emit(flare);
+  }
 }
 
 @NgModule({
@@ -25,6 +38,7 @@ export class FlareCardComponent {
     TooltipModule,
     CommonModule,
     FlareBlocksRendererModule,
+    DropdownModule,
   ],
 })
 export class FlareCardModule {}
