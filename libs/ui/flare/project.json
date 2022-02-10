@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/ui/flare",
+  "sourceRoot": "libs/ui/flare/src",
+  "prefix": "flare",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ui/flare"],
+      "options": {
+        "jestConfig": "libs/ui/flare/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/flare/src/**/*.ts",
+          "libs/ui/flare/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
