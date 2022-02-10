@@ -67,7 +67,7 @@ import { User } from '@flare/api-interfaces';
   styles: [
     `
       :host {
-        @apply flex h-full w-full flex-col justify-between border-r border-slate-200;
+        @apply sticky top-0 flex h-screen w-full flex-col justify-between;
       }
 
       ul li {
