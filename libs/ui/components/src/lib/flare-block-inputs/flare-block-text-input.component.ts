@@ -52,7 +52,7 @@ export class FlareBlockTextInputComponent
   private readonly editorRef?: ElementRef;
 
   editor!: PellElement;
-  onChanged!: (value: BlockData) => void;
+  onChanged!: (value: BlockData<BlockTextData>) => void;
   onTouched!: () => void;
 
   constructor(private sanitizer: DomSanitizer) {}
@@ -85,8 +85,8 @@ export class FlareBlockTextInputComponent
       );
     }
   }
-  writeValue(value: BlockData<string>): void {
-    this.content = value.content;
+  writeValue(value: BlockData<BlockTextData>): void {
+    this.content = value.content.value;
   }
 
   registerOnChange(fn: any): void {
@@ -96,4 +96,8 @@ export class FlareBlockTextInputComponent
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
+}
+
+export interface BlockTextData {
+  value: string;
 }
