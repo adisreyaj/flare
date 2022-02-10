@@ -1,38 +1,103 @@
-<section class="w-full border-b border-slate-100 flex flex-col">
+<section
+  class="flex flex-col border-b border-slate-100 bg-white"
+  [class]="
+    (isFullScreen$ | async)
+      ? ['fixed', 'top-0', 'left-0', 'w-screen', 'h-screen', 'z-10']
+      : ['w-full', 'relative']
+  "
+>
   <div
-    class="flex flex-1 mt-[1px] focus-within:bg-slate-50 relative"
+    class="relative mt-4 flex flex-1 flex-col gap-4 px-4"
     style="min-height: 100px"
   >
-    <div
-      #editor
-      class="absolute top-0 left-0 z-10 w-full caret-slate-800 h-full p-4 font-medium text-transparent border-slate-100"
-    ></div>
-    <div
-      class="absolute top-0 left-0 z-20 pointer-events-none font-medium w-full h-full p-4 border-slate-100"
-      [innerHTML]="content"
-    ></div>
+    <ng-container *ngFor="let block of blocks.controls; index as i">
+      <ng-container [ngSwitch]="block.value?.type">
+        <ng-container *ngSwitchDefault>
+          <flare-block-text-input
+            [formControl]="$any(blocks.controls[i])"
+          ></flare-block-text-input>
+        </ng-container>
+        <ng-container *ngSwitchCase="blockTypes.code">
+          <flare-block-code-input></flare-block-code-input>
+        </ng-container>
+        <ng-container *ngSwitchCase="blockTypes.poll">
+          <flare-block-poll-input></flare-block-poll-input> </ng-container
+        ><ng-container *ngSwitchCase="blockTypes.script">
+          <flare-block-script-input
+            [formControl]="$any(blocks.controls[i])"
+          ></flare-block-script-input>
+        </ng-container>
+        <ng-container *ngSwitchCase="blockTypes.githubRepo">
+          <!--          <flare-block-github-repo-input></flare-block-github-repo-input>-->
+        </ng-container>
+        <ng-container *ngSwitchCase="blockTypes.images">
+          <!--          <flare-block-images-input></flare-block-images-input>-->
+        </ng-container>
+        <ng-container *ngSwitchCase="blockTypes.techStack">
+          <!--          <flare-block-tech-stack-input></flare-block-tech-stack-input>-->
+        </ng-container>
+      </ng-container>
+    </ng-container>
   </div>
-  <footer class="flex items-center w-full justify-between px-6 py-2">
+  <footer class="mt-4 flex w-full items-center justify-between px-6 py-2">
     <div class="flex gap-2">
-      <button zzButton zzTooltip="Attach Image">
+      <button zzButton zzTooltip="Add Text" (click)="addBlock(blockTypes.text)">
+        <rmx-icon class="icon-sm" name="text"></rmx-icon>
+      </button>
+      <button
+        zzButton
+        zzTooltip="Attach Image"
+        (click)="addBlock(blockTypes.code)"
+      >
         <rmx-icon class="icon-sm" name="image-line"></rmx-icon>
       </button>
-      <button zzButton zzTooltip="Add Code Snippet" (click)="addCodeSnippet()">
-        <rmx-icon class="icon-sm" name="code-box-line"></rmx-icon>
+      <button
+        zzButton
+        zzTooltip="Add Code Snippet"
+        (click)="addBlock(blockTypes.code)"
+      >
+        <rmx-icon class="icon-sm" name="code-line"></rmx-icon>
       </button>
-      <button zzButton zzTooltip="Add Install Command">
+      <button
+        zzButton
+        zzTooltip="Add Terminal Commands"
+        (click)="addBlock(blockTypes.script)"
+      >
         <rmx-icon class="icon-sm" name="terminal-box-line"></rmx-icon>
       </button>
-      <button zzButton zzTooltip="Showcase Tech Stack">
+      <button
+        zzButton
+        zzTooltip="Showcase Tech Stack"
+        (click)="addBlock(blockTypes.techStack)"
+      >
         <rmx-icon class="icon-sm" name="stack-line"></rmx-icon>
       </button>
-      <button zzButton zzTooltip="Attach Github Repo">
+      <button
+        zzButton
+        zzTooltip="Attach Github Repo"
+        (click)="addBlock(blockTypes.githubRepo)"
+      >
         <rmx-icon class="icon-sm" name="github-line"></rmx-icon>
       </button>
-      <button zzButton zzTooltip="Start a Poll">
+      <button
+        zzButton
+        zzTooltip="Start a Poll"
+        (click)="addBlock(blockTypes.poll)"
+      >
         <rmx-icon class="icon-sm" name="chat-poll-line"></rmx-icon>
       </button>
     </div>
-    <button zzButton variant="primary">Flare It!</button>
+    <div class="flex gap-2">
+      <button zzButton variant="neutral" (click)="toggleFullScreen()">
+        <rmx-icon
+          [name]="
+            (isFullScreen$ | async) ? 'fullscreen-exit-fill' : 'fullscreen-fill'
+          "
+        ></rmx-icon>
+      </button>
+      <button zzButton variant="primary" (click)="postFlare()">
+        Flare It!
+      </button>
+    </div>
   </footer>
 </section>

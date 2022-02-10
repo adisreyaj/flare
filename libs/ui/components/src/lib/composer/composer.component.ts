@@ -1,70 +1,60 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  NgModule,
-  ViewChild,
-} from '@angular/core';
-import { ButtonModule, ModalService, TooltipModule } from 'zigzag';
+import { Component, EventEmitter, NgModule, Output } from '@angular/core';
+import { ButtonModule, TooltipModule } from 'zigzag';
 import { IconModule } from '../icon/icon.module';
-import { init, PellElement } from 'pell';
-import Autolinker from 'autolinker';
-import { CodeSnippetModalComponent } from './modals/code-snippet.modal';
+import { BlockData, BlockType } from '@flare/api-interfaces';
+import { CommonModule } from '@angular/common';
+import { FlareBlocksInputModule } from '../flare-block-inputs';
+import { BehaviorSubject } from 'rxjs';
+import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'flare-composer',
   templateUrl: 'composer.component.html',
 })
-export class ComposerComponent implements AfterViewInit {
-  content = 'Share away what you are working on!';
-  @ViewChild('editor', { static: true })
-  private readonly editorRef?: ElementRef;
+export class ComposerComponent {
+  blockTypes = BlockType;
 
-  editor!: PellElement;
+  blocks: FormArray = new FormArray([
+    new FormControl({
+      type: BlockType.text,
+      content: '',
+    }),
+  ]);
 
-  constructor(private readonly modal: ModalService) {}
+  private readonly isFullScreenSubject = new BehaviorSubject(false);
+  public readonly isFullScreen$ = this.isFullScreenSubject.asObservable();
 
-  ngAfterViewInit() {
-    if (this.editorRef) {
-      this.editor = init({
-        element: this.editorRef.nativeElement,
-        onChange: (html) => {
-          this.content = Autolinker.link(html, {
-            newWindow: true,
-            urls: {
-              tldMatches: true,
-              wwwMatches: true,
-            },
-            stripPrefix: false,
-            stripTrailingSlash: false,
-            className: 'flare-composer-link',
-          });
-        },
-        defaultParagraphSeparator: 'p',
-        styleWithCSS: true,
-        actions: ['code'],
-        classes: {
-          actionbar: 'flare-composer-actionbar',
-          button: 'flare-composer-button',
-          content: 'flare-composer-content',
-          selected: 'flare-composer-selected',
-        },
-      });
+  @Output()
+  private readonly createFlare = new EventEmitter<BlockData[]>();
 
-      this.editor.content.innerHTML = 'Share away what you are working on!';
-    }
+  addBlock(block: BlockType) {
+    this.blocks.push(
+      new FormControl({
+        type: block,
+        content: '',
+      })
+    );
   }
 
-  addCodeSnippet() {
-    this.modal.open(CodeSnippetModalComponent, {
-      size: 'lg',
-    });
+  postFlare() {
+    this.createFlare.emit(this.blocks.value);
+  }
+
+  toggleFullScreen() {
+    this.isFullScreenSubject.next(!this.isFullScreenSubject.value);
   }
 }
 
 @NgModule({
   declarations: [ComposerComponent],
-  imports: [ButtonModule, IconModule, TooltipModule],
+  imports: [
+    ButtonModule,
+    IconModule,
+    TooltipModule,
+    CommonModule,
+    FlareBlocksInputModule,
+    ReactiveFormsModule,
+  ],
   exports: [ComposerComponent],
 })
 export class ComposerModule {}
