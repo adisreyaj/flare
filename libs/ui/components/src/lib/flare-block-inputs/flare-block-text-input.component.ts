@@ -1,9 +1,17 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  SecurityContext,
+  ViewChild,
+} from '@angular/core';
 import { init, PellElement } from 'pell';
 import Autolinker from 'autolinker';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BlockData, BlockType } from '@flare/api-interfaces';
 import { getPellEditorConfig } from './config';
+import { DomSanitizer } from '@angular/platform-browser';
+import { extractHashTags } from '@flare/ui/utils';
 
 @Component({
   selector: 'flare-block-text-input',
@@ -16,7 +24,7 @@ import { getPellEditorConfig } from './config';
       class="absolute top-0 left-0 z-10 h-full w-full border-slate-100 font-medium text-transparent caret-slate-800"
     ></div>
     <div
-      class="pointer-events-none z-20 h-full w-full border-slate-100 p-4 font-medium"
+      class="flare-block-text-input-rendered pointer-events-none z-20 h-full w-full border-slate-100 p-4 font-medium"
       [innerHTML]="content"
     ></div>
   </div>`,
@@ -47,6 +55,8 @@ export class FlareBlockTextInputComponent
   onChanged!: (value: BlockData) => void;
   onTouched!: () => void;
 
+  constructor(private sanitizer: DomSanitizer) {}
+
   ngAfterViewInit() {
     const onChange = (html: string) => {
       this.content = Autolinker.link(html, {
@@ -57,9 +67,17 @@ export class FlareBlockTextInputComponent
         },
         stripPrefix: false,
         stripTrailingSlash: false,
-        className: 'flare-composer-link',
+        className: 'flare-link',
       });
-      this.onChanged({ type: BlockType.text, content: this.content });
+      this.content =
+        this.sanitizer.sanitize(
+          SecurityContext.HTML,
+          extractHashTags(this.content).content
+        ) ?? '';
+      this.onChanged({
+        type: BlockType.text,
+        content: { value: this.content },
+      });
     };
     if (this.editorRef) {
       this.editor = init(
