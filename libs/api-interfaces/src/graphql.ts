@@ -24,7 +24,7 @@ export interface CreateFlareInput {
 
 export interface CreateBlockInput {
     type: string;
-    content: string;
+    content: JSON;
     images?: Nullable<Nullable<CreateBlockImageInput>[]>;
 }
 
@@ -119,6 +119,7 @@ export interface IQuery {
     tip(id: string): Nullable<Tip> | Promise<Nullable<Tip>>;
     users(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
+    me(): Nullable<User> | Promise<Nullable<User>>;
 }
 
 export interface IMutation {
@@ -142,11 +143,11 @@ export interface IMutation {
 export interface Flare {
     __typename?: 'Flare';
     id: string;
-    blocks?: Nullable<Nullable<Block>[]>;
-    author?: Nullable<User>;
+    blocks: Block[];
+    author: User;
     deleted?: Nullable<boolean>;
-    likes?: Nullable<Nullable<Like>[]>;
-    comments?: Nullable<Nullable<Comment>[]>;
+    likes: Nullable<Like>[];
+    comments: Nullable<Comment>[];
     createdAt: string;
 }
 
@@ -161,7 +162,7 @@ export interface Block {
     __typename?: 'Block';
     id: string;
     type: string;
-    content: string;
+    content: JSON;
     images?: Nullable<Nullable<BlockImage>[]>;
 }
 
@@ -209,6 +210,7 @@ export interface User {
     firstName: string;
     lastName: string;
     email: string;
+    username: string;
     password?: Nullable<string>;
     bio?: Nullable<UserBio>;
     followers?: Nullable<Nullable<User>[]>;
@@ -227,4 +229,5 @@ export interface UserBio {
     devto?: Nullable<string>;
 }
 
+export type JSON = any;
 type Nullable<T> = T | null;
