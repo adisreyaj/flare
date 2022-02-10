@@ -31,7 +31,7 @@ export class AuthService {
 
   async generateAccessToken(user: Partial<User>) {
     const payload = {
-      username: user.email,
+      email: user.email,
       sub: user.id,
       aud: 'flare-web',
       iss: 'flare',
@@ -61,6 +61,7 @@ export class AuthService {
   private async signup(req: Request, res: Response) {
     const user: Prisma.UserCreateInput = {
       email: req.user.email,
+      username: req.user.email,
       firstName: req.user.firstName,
       lastName: req.user.lastName,
       image: req.user.image,
