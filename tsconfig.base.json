@@ -10,7 +10,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": ["es2017", "dom", "esnext.asynciterable"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -26,7 +26,10 @@
       "@flare/api/users": ["libs/api/users/src/index.ts"],
       "@flare/ui/auth": ["libs/ui/auth/src/index.ts"],
       "@flare/ui/components": ["libs/ui/components/src/index.ts"],
+      "@flare/ui/flare": ["libs/ui/flare/src/index.ts"],
+      "@flare/ui/gql": ["libs/ui/gql/src/index.ts"],
       "@flare/ui/profile": ["libs/ui/profile/src/index.ts"],
+      "@flare/ui/utils": ["libs/ui/utils/src/index.ts"],
       "zigzag": ["zigzag/projects/zigzag/src/public-api.ts"]
     }
   },
