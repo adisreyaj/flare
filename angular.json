@@ -14,6 +14,9 @@
     "flare-e2e": "apps/flare-e2e",
     "ui-auth": "libs/ui/auth",
     "ui-components": "libs/ui/components",
-    "ui-profile": "libs/ui/profile"
+    "ui-flare": "libs/ui/flare",
+    "ui-gql": "libs/ui/gql",
+    "ui-profile": "libs/ui/profile",
+    "ui-utils": "libs/ui/utils"
   }
 }
