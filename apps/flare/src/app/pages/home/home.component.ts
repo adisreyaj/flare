@@ -35,7 +35,7 @@ import { EmptyObject } from 'apollo-angular/types';
     //language=SCSS
     `
       :host {
-        @apply mx-auto grid h-screen max-w-screen-xl;
+        @apply mx-auto grid h-screen max-w-screen-lg;
         grid-template-columns: 280px 1fr 0;
         grid-template-rows: 1fr;
       }
