@@ -1,6 +1,7 @@
 type Query {
   users: [User]
   user(id: ID!): User
+  me: User
 }
 
 type Mutation {
@@ -17,6 +18,7 @@ type User {
   firstName: String!
   lastName: String!
   email: String!
+  username: String!
   password: String
   bio: UserBio
   followers: [User]

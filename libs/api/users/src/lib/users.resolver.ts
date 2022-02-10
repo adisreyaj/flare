@@ -11,10 +11,13 @@ export class UsersResolver {
   findOne(@Args('id') id: string) {
     return this.usersService.findOne(id);
   }
+  @Query('me')
+  findMe(@CurrentUser() user: CurrentUser) {
+    return this.usersService.findOne(user.id);
+  }
 
   @Query('users')
-  findAll(@CurrentUser() user: any) {
-    console.log(user);
+  findAll() {
     return this.usersService.findAll();
   }
 

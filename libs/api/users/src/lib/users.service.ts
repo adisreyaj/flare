@@ -30,6 +30,7 @@ export class UsersService {
     });
   }
 
+  // TODO: Hash password
   create(user: CreateUserInput) {
     return from(
       this.prisma.user.create({
