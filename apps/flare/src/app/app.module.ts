@@ -5,7 +5,17 @@ import { AppComponent } from './app.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BUTTON_CONFIG, FORM_INPUT_CONFIG } from 'zigzag';
-import { AUTH_CONFIG, AuthInterceptor } from '@flare/ui/auth';
+import {
+  AUTH_CONFIG,
+  AuthInterceptor,
+  AuthService,
+  CURRENT_USER,
+} from '@flare/ui/auth';
+import { APOLLO_OPTIONS } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+import { ApolloLink, InMemoryCache } from '@apollo/client/core';
+import { environment } from '../environments/environment';
+import { setContext } from '@apollo/client/link/context';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,7 +40,43 @@ import { AUTH_CONFIG, AuthInterceptor } from '@flare/ui/auth';
       },
     },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {
+      provide: APOLLO_OPTIONS,
+      useFactory: createApollo,
+      deps: [HttpLink],
+    },
+    {
+      provide: CURRENT_USER,
+      useFactory: (auth: AuthService) => auth.me(),
+      deps: [AuthService],
+    },
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+export function createApollo(httpLink: HttpLink) {
+  const gqlAPI = `${environment.api}/graphql`;
+
+  const auth = setContext(() => {
+    const token = localStorage.getItem('token');
+
+    if (token === null) {
+      return {};
+    } else {
+      return {
+        headers: {
+          Authorization: `JWT ${token}`,
+        },
+      };
+    }
+  });
+
+  const link = ApolloLink.from([auth, httpLink.create({ uri: gqlAPI })]);
+  const cache = new InMemoryCache();
+
+  return {
+    link,
+    cache,
+  };
+}
