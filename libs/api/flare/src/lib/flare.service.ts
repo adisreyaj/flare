@@ -8,6 +8,7 @@ import {
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { catchError, from, throwError } from 'rxjs';
 import { PrismaService } from '@flare/api/prisma';
+import { CurrentUser } from '@flare/api/shared';
 
 @Injectable()
 export class FlareService {
@@ -35,7 +36,7 @@ export class FlareService {
     });
   }
 
-  create(flare: CreateFlareInput) {
+  create(flare: CreateFlareInput, user: CurrentUser) {
     return from(
       this.prisma.flare.create({
         data: {
@@ -50,7 +51,7 @@ export class FlareService {
             },
           },
           deleted: false,
-          authorId: '', //TODO: Get user id from jwt
+          authorId: user.id,
         },
         include: this.include,
       })
@@ -77,7 +78,7 @@ export class FlareService {
     );
   }
 
-  addComment(input: AddCommentInput) {
+  addComment(input: AddCommentInput, user: CurrentUser) {
     return from(
       this.prisma.flare.update({
         where: {
@@ -87,7 +88,7 @@ export class FlareService {
           comments: {
             create: {
               text: input.text,
-              authorId: '', //TODO: Get user id from jwt
+              authorId: user.id,
             },
           },
         },
@@ -114,7 +115,7 @@ export class FlareService {
     );
   }
 
-  addLike(input: AddLikeInput) {
+  addLike(input: AddLikeInput, user: CurrentUser) {
     return from(
       this.prisma.flare.update({
         where: {
@@ -124,7 +125,7 @@ export class FlareService {
           likes: {
             create: {
               reaction: input.reaction,
-              authorId: '', //TODO: Get user id from jwt
+              authorId: user.id,
             },
           },
         },

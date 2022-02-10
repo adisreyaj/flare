@@ -7,6 +7,7 @@ import {
   RemoveCommentInput,
   RemoveLikeInput,
 } from '@flare/api-interfaces';
+import { CurrentUser } from '@flare/api/shared';
 
 @Resolver('Flare')
 export class FlaresResolver {
@@ -23,8 +24,11 @@ export class FlaresResolver {
   }
 
   @Mutation('createFlare')
-  create(@Args('input') createFlareInput: CreateFlareInput) {
-    return this.flareService.create(createFlareInput);
+  create(
+    @Args('input') createFlareInput: CreateFlareInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.flareService.create(createFlareInput, user);
   }
 
   @Mutation('deleteFlare')
@@ -33,8 +37,11 @@ export class FlaresResolver {
   }
 
   @Mutation('addComment')
-  addComment(@Args('input') input: AddCommentInput) {
-    return this.flareService.addComment(input);
+  addComment(
+    @Args('input') input: AddCommentInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.flareService.addComment(input, user);
   }
 
   @Mutation('removeComment')
@@ -43,8 +50,11 @@ export class FlaresResolver {
   }
 
   @Mutation('addLike')
-  addLike(@Args('input') input: AddLikeInput) {
-    return this.flareService.addLike(input);
+  addLike(
+    @Args('input') input: AddLikeInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.flareService.addLike(input, user);
   }
 
   @Mutation('removeLike')
