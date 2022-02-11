@@ -125,6 +125,8 @@ export interface IMutation {
     addLike(input: AddLikeInput): Nullable<Flare> | Promise<Nullable<Flare>>;
     removeComment(input: RemoveCommentInput): Nullable<Flare> | Promise<Nullable<Flare>>;
     removeLike(input: RemoveLikeInput): Nullable<Flare> | Promise<Nullable<Flare>>;
+    bookmark(flareId: string): Nullable<Bookmark> | Promise<Nullable<Bookmark>>;
+    removeBookmark(id: string): Nullable<Success> | Promise<Nullable<Success>>;
     sponsor(input?: Nullable<SponsorInput>): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
     cancelSponsorship(id: string): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
     tip(input?: Nullable<TipInput>): Nullable<Tip> | Promise<Nullable<Tip>>;
@@ -135,6 +137,11 @@ export interface IMutation {
     unfollow(userId: string): Nullable<User> | Promise<Nullable<User>>;
 }
 
+export interface Success {
+    __typename?: 'Success';
+    success: boolean;
+}
+
 export interface Flare {
     __typename?: 'Flare';
     id: string;
@@ -143,6 +150,7 @@ export interface Flare {
     deleted?: Nullable<boolean>;
     tags: string;
     likes: Like[];
+    bookmarks: Bookmark[];
     _count?: Nullable<JSON>;
     comments: Nullable<Comment>[];
     createdAt: string;
@@ -168,6 +176,14 @@ export interface Like {
     reaction: string;
     createdAt: string;
     author: User;
+}
+
+export interface Bookmark {
+    __typename?: 'Bookmark';
+    id: string;
+    flare: Flare;
+    author: User;
+    createdAt: string;
 }
 
 export interface Sponsor {
