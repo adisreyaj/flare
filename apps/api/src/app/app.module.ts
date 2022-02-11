@@ -9,12 +9,13 @@ import { join } from 'path';
 import { AuthGuard, AuthModule } from '@flare/api/auth';
 import { APP_GUARD } from '@nestjs/core';
 import GraphQLJSON from 'graphql-type-json';
+import { GraphQLUpload } from 'graphql-upload';
 
 @Module({
   imports: [
     GraphQLModule.forRoot({
       typePaths: [join(process.cwd(), 'libs/**/*.graphql'), './**/*.graphql'],
-      resolvers: { JSON: GraphQLJSON },
+      resolvers: { JSON: GraphQLJSON, UPLOAD: GraphQLUpload },
     }),
     AuthModule,
     UsersModule,

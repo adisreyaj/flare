@@ -1,5 +1,5 @@
 scalar JSON
-
+scalar UPLOAD
 type Query {
   flares: [Flare]
   flare(id: ID!): Flare
@@ -20,7 +20,8 @@ type Flare {
   author: User!
   deleted: Boolean
   tags: String!
-  likes: [Like]!
+  likes: [Like!]!
+  _count: JSON
   comments: [Comment]!
   createdAt: String!
 }
@@ -35,19 +36,13 @@ type Block {
   id: ID!
   type: String!
   content: JSON!
-  images: [BlockImage]
-}
-
-type BlockImage {
-  id: ID!
-  name: String
-  url: String!
 }
 
 type Like {
   id: ID!
   reaction: String!
   createdAt: String!
+  author: User!
 }
 
 input CreateFlareInput {
@@ -57,12 +52,7 @@ input CreateFlareInput {
 input CreateBlockInput {
   type: String!
   content: JSON!
-  images: [CreateBlockImageInput]
-}
-
-input CreateBlockImageInput {
-  name: String
-  url: String!
+  images: [UPLOAD]
 }
 
 input AddCommentInput {

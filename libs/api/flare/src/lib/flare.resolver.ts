@@ -14,13 +14,13 @@ export class FlaresResolver {
   constructor(private readonly flareService: FlareService) {}
 
   @Query('flare')
-  findOne(@Args('id') id: string) {
-    return this.flareService.findOne(id);
+  findOne(@Args('id') id: string, @CurrentUser() user: CurrentUser) {
+    return this.flareService.findOne(id, user);
   }
 
   @Query('flares')
-  findAll() {
-    return this.flareService.findAll();
+  findAll(@CurrentUser() user: CurrentUser) {
+    return this.flareService.findAll(user);
   }
 
   @Mutation('createFlare')
@@ -45,8 +45,11 @@ export class FlaresResolver {
   }
 
   @Mutation('removeComment')
-  removeComment(@Args('input') input: RemoveCommentInput) {
-    return this.flareService.removeComment(input);
+  removeComment(
+    @Args('input') input: RemoveCommentInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.flareService.removeComment(input, user);
   }
 
   @Mutation('addLike')
@@ -58,7 +61,10 @@ export class FlaresResolver {
   }
 
   @Mutation('removeLike')
-  removeLike(@Args('input') input: RemoveLikeInput) {
-    return this.flareService.removeLike(input);
+  removeLike(
+    @Args('input') input: RemoveLikeInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.flareService.removeLike(input, user);
   }
 }

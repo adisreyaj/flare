@@ -8,7 +8,7 @@ import {
 } from '@flare/ui/components';
 import { FlareService } from '@flare/ui/flare';
 import { CURRENT_USER } from '@flare/ui/auth';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   BlockData,
   CreateBlockInput,
@@ -16,8 +16,6 @@ import {
   Flare,
   User,
 } from '@flare/api-interfaces';
-import { QueryRef } from 'apollo-angular';
-import { EmptyObject } from 'apollo-angular/types';
 
 @Component({
   selector: 'flare-home',
@@ -27,7 +25,7 @@ import { EmptyObject } from 'apollo-angular/types';
     <main class="border-x border-slate-200">
       <flare-composer (createFlare)="this.createFlare($event)"></flare-composer>
       <ng-container *ngFor="let flare of flares$ | async">
-        <flare-card [flare]="flare" (delete)="deleteFlare($event)"></flare-card>
+        <flare-card [flare]="flare"></flare-card>
       </ng-container>
     </main>
     <aside></aside>`,
@@ -44,40 +42,19 @@ import { EmptyObject } from 'apollo-angular/types';
 })
 export class HomeComponent {
   flares$: Observable<Flare[]>;
-  getAllFlaresRef: QueryRef<{ flares: Flare[] }, EmptyObject>;
   constructor(
     private readonly flareService: FlareService,
     @Inject(CURRENT_USER) public readonly user$: Observable<User>
   ) {
-    this.getAllFlaresRef = this.flareService.getAll();
-    this.flares$ = this.getAllFlaresRef.valueChanges.pipe(
-      map((result) => result.data.flares)
-    );
+    this.flareService.getAll();
+    this.flares$ = this.flareService.flares$;
   }
 
   createFlare(blocks: BlockData[]) {
     const input: CreateFlareInput = {
       blocks: blocks as CreateBlockInput[],
     };
-    this.flareService.newFlare(input).subscribe({
-      next: () => {
-        this.getAllFlaresRef.refetch();
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
-  }
-
-  deleteFlare(flare: Flare) {
-    this.flareService.delete(flare.id).subscribe({
-      next: () => {
-        this.getAllFlaresRef.refetch();
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
+    this.flareService.newFlare(input).subscribe();
   }
 }
 
