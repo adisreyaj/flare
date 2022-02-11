@@ -8,25 +8,26 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(cuid())
+  id         String     @id @default(cuid())
   firstName  String
   lastName   String
   image      String?
-  email      String    @unique
-  username   String    @unique
+  email      String     @unique
+  username   String     @unique
   password   String?
-  followers  User[]    @relation("UserFollows", references: [id])
-  following  User[]    @relation("UserFollows", references: [id])
-  bio        UserBio?  @relation(fields: [userBioId], references: [id])
+  followers  User[]     @relation("UserFollows", references: [id])
+  following  User[]     @relation("UserFollows", references: [id])
+  bio        UserBio?   @relation(fields: [userBioId], references: [id])
   userBioId  String?
   comments   Comment[]
-  flares     Flare[]   @relation("FlareAuthor")
+  flares     Flare[]    @relation("FlareAuthor")
   likes      Like[]
   bookings   Booking[]
-  tips       Tip[]     @relation("TippingUser")
-  tipsGiven  Tip[]     @relation("TippedUser")
-  sponsors   Sponsor[] @relation("SponsoringUser")
-  sponsoring Sponsor[] @relation("SponsoredByUser")
+  tips       Tip[]      @relation("TippingUser")
+  tipsGiven  Tip[]      @relation("TippedUser")
+  sponsors   Sponsor[]  @relation("SponsoringUser")
+  sponsoring Sponsor[]  @relation("SponsoredByUser")
+  bookmarks  Bookmark[]
 }
 
 model UserBio {
@@ -38,20 +39,21 @@ model UserBio {
   facebook    String?
   hashnode    String?
   devto       String?
-  User        User[]
+  user        User[]
 }
 
 model Flare {
-  id        String    @id @default(cuid())
+  id        String     @id @default(cuid())
   blocks    Block[]
-  author    User      @relation(fields: [authorId], references: [id], name: "FlareAuthor")
-  deleted   Boolean @default(false)
+  author    User       @relation(fields: [authorId], references: [id], name: "FlareAuthor")
+  deleted   Boolean    @default(false)
   comments  Comment[]
   likes     Like[]
-  tags      String @default("")
-  createdAt DateTime  @default(now())
+  tags      String     @default("")
+  createdAt DateTime   @default(now())
   authorId  String
-  Tip       Tip[]
+  tips      Tip[]
+  bookmarks Bookmark[]
 }
 
 model Block {
@@ -59,17 +61,8 @@ model Block {
   flare     Flare    @relation(fields: [flareId], references: [id])
   type      String
   content   Json
-  images    Image[]
   createdAt DateTime @default(now())
   flareId   String
-}
-
-model Image {
-  id      String  @id @default(cuid())
-  name    String
-  url     String
-  block   Block?  @relation(fields: [blockId], references: [id])
-  blockId String?
 }
 
 model Comment {
@@ -90,6 +83,15 @@ model Like {
   flare     Flare?   @relation(fields: [flareId], references: [id])
   flareId   String?
   authorId  String
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  flare     Flare    @relation(fields: [flareId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  flareId   String
+  authorId    String
 }
 
 model Slot {

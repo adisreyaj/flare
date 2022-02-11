@@ -12,6 +12,12 @@ type Mutation {
   addLike(input: AddLikeInput!): Flare
   removeComment(input: RemoveCommentInput!): Flare
   removeLike(input: RemoveLikeInput!): Flare
+  bookmark(flareId: ID!): Bookmark
+  removeBookmark(id: ID!): Success
+}
+
+type Success {
+  success: Boolean!
 }
 
 type Flare {
@@ -21,6 +27,7 @@ type Flare {
   deleted: Boolean
   tags: String!
   likes: [Like!]!
+  bookmarks: [Bookmark!]!
   _count: JSON
   comments: [Comment]!
   createdAt: String!
@@ -43,6 +50,13 @@ type Like {
   reaction: String!
   createdAt: String!
   author: User!
+}
+
+type Bookmark {
+  id: ID!
+  flare: Flare!
+  author: User!
+  createdAt: String!
 }
 
 input CreateFlareInput {

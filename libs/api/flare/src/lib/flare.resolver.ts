@@ -8,10 +8,14 @@ import {
   RemoveLikeInput,
 } from '@flare/api-interfaces';
 import { CurrentUser } from '@flare/api/shared';
+import { BookmarkService } from './bookmark.service';
 
 @Resolver('Flare')
 export class FlaresResolver {
-  constructor(private readonly flareService: FlareService) {}
+  constructor(
+    private readonly flareService: FlareService,
+    private readonly bookmarkService: BookmarkService
+  ) {}
 
   @Query('flare')
   findOne(@Args('id') id: string, @CurrentUser() user: CurrentUser) {
@@ -66,5 +70,15 @@ export class FlaresResolver {
     @CurrentUser() user: CurrentUser
   ) {
     return this.flareService.removeLike(input, user);
+  }
+
+  @Mutation('bookmark')
+  bookmark(@Args('flareId') flareId: string, @CurrentUser() user: CurrentUser) {
+    return this.bookmarkService.bookmark(flareId, user);
+  }
+
+  @Mutation('removeBookmark')
+  removeBookmark(@Args('id') id: string, @CurrentUser() user: CurrentUser) {
+    return this.bookmarkService.removeBookmark(id, user);
   }
 }

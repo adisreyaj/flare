@@ -30,6 +30,9 @@ export class FlareService {
               type
               content
             }
+            bookmarks {
+              id
+            }
             author {
               id
               firstName
@@ -41,7 +44,6 @@ export class FlareService {
             likes {
               id
               reaction
-              createdAt
             }
             comments {
               id
@@ -126,6 +128,40 @@ export class FlareService {
         variables: {
           flareId,
           likeId,
+        },
+      })
+      .pipe(tap(() => this.updateSubject.next()));
+  }
+
+  bookmark(flareId: string) {
+    return this.apollo
+      .mutate({
+        mutation: gql`
+          mutation BookmarkFlare($flareId: ID!) {
+            bookmark(flareId: $flareId) {
+              id
+            }
+          }
+        `,
+        variables: {
+          flareId,
+        },
+      })
+      .pipe(tap(() => this.updateSubject.next()));
+  }
+
+  removeBookmark(bookmarkId: string) {
+    return this.apollo
+      .mutate({
+        mutation: gql`
+          mutation RemoveBookmark($bookmarkId: ID!) {
+            removeBookmark(id: $bookmarkId) {
+              success
+            }
+          }
+        `,
+        variables: {
+          bookmarkId,
         },
       })
       .pipe(tap(() => this.updateSubject.next()));

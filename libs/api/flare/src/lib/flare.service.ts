@@ -28,6 +28,13 @@ export class FlareService {
         authorId: userId,
       },
     },
+    bookmarks: {
+      where: {
+        author: {
+          id: userId,
+        },
+      },
+    },
     _count: {
       select: {
         likes: true,
