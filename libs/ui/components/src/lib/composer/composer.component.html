@@ -1,11 +1,20 @@
 <section
-  class="flex flex-col border-b border-slate-100 bg-white"
+  (fileDropped)="handleFileUploads($event)"
   [class]="
     (isFullScreen$ | async)
       ? ['fixed', 'top-0', 'left-0', 'w-screen', 'h-screen', 'z-10']
       : ['w-full', 'relative']
   "
+  class="relative mt-[2px] flex flex-col border-b border-slate-100 bg-white"
+  flareFileDrop
 >
+  <div
+    class="file-drop-overlay absolute top-0 left-0 z-10 hidden h-full w-full place-items-center bg-primary-transparent-10"
+  >
+    <div class="text-md font-medium">
+      <p>Drop files here</p>
+    </div>
+  </div>
   <div
     class="relative mt-4 flex flex-1 flex-col gap-4 px-4"
     style="min-height: 100px"
@@ -31,7 +40,10 @@
           <!--          <flare-block-github-repo-input></flare-block-github-repo-input>-->
         </ng-container>
         <ng-container *ngSwitchCase="blockTypes.images">
-          <!--          <flare-block-images-input></flare-block-images-input>-->
+          <flare-block-image-input
+            (remove)="removeImageFromBlock($event, i)"
+            [content]="$any(blocksFormArray.controls[i].value.content)"
+          ></flare-block-image-input>
         </ng-container>
         <ng-container *ngSwitchCase="blockTypes.techStack">
           <!--          <flare-block-tech-stack-input></flare-block-tech-stack-input>-->
@@ -41,61 +53,61 @@
   </div>
   <footer class="mt-4 flex w-full items-center justify-between px-6 py-2">
     <div class="flex gap-2">
-      <button zzButton zzTooltip="Add Text" (click)="addBlock(blockTypes.text)">
+      <button (click)="addBlock(blockTypes.text)" zzButton zzTooltip="Add Text">
         <rmx-icon class="icon-sm" name="text"></rmx-icon>
       </button>
       <button
+        (click)="addBlock(blockTypes.code)"
         zzButton
         zzTooltip="Attach Image"
-        (click)="addBlock(blockTypes.code)"
       >
         <rmx-icon class="icon-sm" name="image-line"></rmx-icon>
       </button>
       <button
+        (click)="addBlock(blockTypes.code)"
         zzButton
         zzTooltip="Add Code Snippet"
-        (click)="addBlock(blockTypes.code)"
       >
         <rmx-icon class="icon-sm" name="code-line"></rmx-icon>
       </button>
       <button
+        (click)="addBlock(blockTypes.script)"
         zzButton
         zzTooltip="Add Terminal Commands"
-        (click)="addBlock(blockTypes.script)"
       >
         <rmx-icon class="icon-sm" name="terminal-box-line"></rmx-icon>
       </button>
       <button
+        (click)="addBlock(blockTypes.techStack)"
         zzButton
         zzTooltip="Showcase Tech Stack"
-        (click)="addBlock(blockTypes.techStack)"
       >
         <rmx-icon class="icon-sm" name="stack-line"></rmx-icon>
       </button>
       <button
+        (click)="addBlock(blockTypes.githubRepo)"
         zzButton
         zzTooltip="Attach Github Repo"
-        (click)="addBlock(blockTypes.githubRepo)"
       >
         <rmx-icon class="icon-sm" name="github-line"></rmx-icon>
       </button>
       <button
+        (click)="addBlock(blockTypes.poll)"
         zzButton
         zzTooltip="Start a Poll"
-        (click)="addBlock(blockTypes.poll)"
       >
         <rmx-icon class="icon-sm" name="chat-poll-line"></rmx-icon>
       </button>
     </div>
     <div class="flex gap-2">
-      <button zzButton variant="neutral" (click)="toggleFullScreen()">
+      <button (click)="toggleFullScreen()" variant="neutral" zzButton>
         <rmx-icon
           [name]="
             (isFullScreen$ | async) ? 'fullscreen-exit-fill' : 'fullscreen-fill'
           "
         ></rmx-icon>
       </button>
-      <button zzButton variant="primary" (click)="postFlare()">
+      <button (click)="postFlare()" variant="primary" zzButton>
         Flare It!
       </button>
     </div>

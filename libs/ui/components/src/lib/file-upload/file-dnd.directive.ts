@@ -7,8 +7,7 @@ import {
 } from '@angular/core';
 
 @Directive({
-  // eslint-disable-next-line @angular-eslint/directive-selector
-  selector: '[fileDnD]',
+  selector: '[flareFileDrop]',
 })
 export class FileDndDirective {
   dragging = 0;
