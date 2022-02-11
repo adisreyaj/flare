@@ -10,3 +10,10 @@ services:
       - '3307:3306'
     volumes:
       - /Users/adisreyaj/Desktop/code/db:/var/lib/mysql
+  cache:
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - /Users/adisreyaj/Desktop/code/cache:/var/lib/redis

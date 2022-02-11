@@ -5,6 +5,7 @@
     "api-auth": "libs/api/auth",
     "api-flare": "libs/api/flare",
     "api-interfaces": "libs/api-interfaces",
+    "api-media": "libs/api/media",
     "api-prisma": "libs/api/prisma",
     "api-shared": "libs/api/shared",
     "api-sponsors": "libs/api/sponsors",
