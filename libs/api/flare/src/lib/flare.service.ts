@@ -12,35 +12,46 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { catchError, from, switchMap, throwError } from 'rxjs';
 
 @Injectable()
 export class FlareService {
-  include = {
+  constructor(private prisma: PrismaService) {}
+
+  include = (userId: string): Prisma.FlareInclude => ({
     comments: true,
     author: true,
     blocks: true,
-    likes: true,
-  };
+    likes: {
+      where: {
+        authorId: userId,
+      },
+    },
+    _count: {
+      select: {
+        likes: true,
+        comments: true,
+      },
+    },
+  });
 
-  constructor(private prisma: PrismaService) {}
-
-  findAll() {
+  findAll(user: CurrentUser) {
     return this.prisma.flare.findMany({
       where: {
         deleted: false,
       },
-      include: this.include,
+      include: this.include(user.id),
       orderBy: { createdAt: 'desc' },
     });
   }
 
-  findOne(id: string) {
+  findOne(id: string, user: CurrentUser) {
     return this.prisma.flare.findUnique({
       where: {
         id,
       },
-      include: this.include,
+      include: this.include(user.id),
     });
   }
 
@@ -61,7 +72,7 @@ export class FlareService {
           deleted: false,
           authorId: user.id,
         },
-        include: this.include,
+        include: this.include(user.id),
       })
     ).pipe(
       catchError((err) => {
@@ -115,12 +126,12 @@ export class FlareService {
             },
           },
         },
-        include: this.include,
+        include: this.include(user.id),
       })
     );
   }
 
-  removeComment(input: RemoveCommentInput) {
+  removeComment(input: RemoveCommentInput, user: CurrentUser) {
     return from(
       this.prisma.flare.update({
         where: {
@@ -133,7 +144,7 @@ export class FlareService {
             },
           },
         },
-        include: this.include,
+        include: this.include(user.id),
       })
     );
   }
@@ -152,12 +163,12 @@ export class FlareService {
             },
           },
         },
-        include: this.include,
+        include: this.include(user.id),
       })
     );
   }
 
-  removeLike(input: RemoveLikeInput) {
+  removeLike(input: RemoveLikeInput, user: CurrentUser) {
     return from(
       this.prisma.flare.update({
         where: {
@@ -170,7 +181,7 @@ export class FlareService {
             },
           },
         },
-        include: this.include,
+        include: this.include(user.id),
       })
     );
   }

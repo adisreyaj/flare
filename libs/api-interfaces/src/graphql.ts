@@ -25,12 +25,7 @@ export interface CreateFlareInput {
 export interface CreateBlockInput {
     type: string;
     content: JSON;
-    images?: Nullable<Nullable<CreateBlockImageInput>[]>;
-}
-
-export interface CreateBlockImageInput {
-    name?: Nullable<string>;
-    url: string;
+    images?: Nullable<Nullable<UPLOAD>[]>;
 }
 
 export interface AddCommentInput {
@@ -147,7 +142,8 @@ export interface Flare {
     author: User;
     deleted?: Nullable<boolean>;
     tags: string;
-    likes: Nullable<Like>[];
+    likes: Like[];
+    _count?: Nullable<JSON>;
     comments: Nullable<Comment>[];
     createdAt: string;
 }
@@ -164,14 +160,6 @@ export interface Block {
     id: string;
     type: string;
     content: JSON;
-    images?: Nullable<Nullable<BlockImage>[]>;
-}
-
-export interface BlockImage {
-    __typename?: 'BlockImage';
-    id: string;
-    name?: Nullable<string>;
-    url: string;
 }
 
 export interface Like {
@@ -179,6 +167,7 @@ export interface Like {
     id: string;
     reaction: string;
     createdAt: string;
+    author: User;
 }
 
 export interface Sponsor {
@@ -231,4 +220,5 @@ export interface UserBio {
 }
 
 export type JSON = any;
+export type UPLOAD = any;
 type Nullable<T> = T | null;

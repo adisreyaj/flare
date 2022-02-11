@@ -1,13 +1,13 @@
 <article class="relative border-b border-slate-200 p-4">
   <div class="absolute top-2 right-2 z-10">
-    <button zzButton [zzDropdownTrigger]="flareMoreOptions" variant="link">
+    <button [zzDropdownTrigger]="flareMoreOptions" variant="link" zzButton>
       <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
       <zz-dropdown #flareMoreOptions>
         <div
-          zzDropdownItem
+          (click)="deleteFlare(flare)"
           class="text-red-600"
           zzDropdownCloseOnClick
-          (click)="deleteFlare(flare)"
+          zzDropdownItem
         >
           Delete
         </div>
@@ -17,8 +17,8 @@
   <header class="relative flex items-center justify-start">
     <div class="flex items-center gap-2">
       <img
-        [src]="flare.author.image"
         [alt]="flare.author.firstName"
+        [src]="flare.author.image"
         class="h-10 w-10 rounded-full"
       />
       <div class="gap-2">
@@ -48,13 +48,22 @@
     </ul>
   </div>
   <footer class="mt-4 flex gap-4">
-    <button zzButton variant="link">
-      <rmx-icon class="icon-xxs" name="heart-2-line"></rmx-icon></button
-    ><button zzButton variant="link">
-      <rmx-icon class="icon-xxs" name="chat-1-line"></rmx-icon></button
-    ><button zzButton variant="link">
-      <rmx-icon class="icon-xxs" name="bookmark-line"></rmx-icon></button
-    ><button zzButton variant="link">
+    <button (click)="toggleLike(flare)" size="sm" variant="link" zzButton>
+      <div class="flex items-center gap-2">
+        <rmx-icon [name]="flare | flareLikeIcon" class="icon-xxs"></rmx-icon>
+        <p>{{ flare._count?.likes }}</p>
+      </div>
+    </button>
+    <button class="flex items-center gap-2" size="sm" variant="link" zzButton>
+      <div class="flex items-center gap-1">
+        <rmx-icon class="icon-xxs" name="chat-1-line"></rmx-icon>
+        <p>{{ flare._count?.comments }}</p>
+      </div>
+    </button>
+    <button variant="link" zzButton>
+      <rmx-icon class="icon-xxs" name="bookmark-line"></rmx-icon>
+    </button>
+    <button variant="link" zzButton>
       <rmx-icon class="icon-xxs" name="share-line"></rmx-icon>
     </button>
   </footer>
