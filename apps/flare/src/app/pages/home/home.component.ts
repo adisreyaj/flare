@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import {
   ComposerModule,
+  CreateFlareEvent,
   FlareCardModule,
   SidebarComponentModule,
 } from '@flare/ui/components';
@@ -10,7 +11,6 @@ import { FlareService } from '@flare/ui/flare';
 import { CURRENT_USER } from '@flare/ui/auth';
 import { Observable } from 'rxjs';
 import {
-  BlockData,
   CreateBlockInput,
   CreateFlareInput,
   Flare,
@@ -50,9 +50,10 @@ export class HomeComponent {
     this.flares$ = this.flareService.flares$;
   }
 
-  createFlare(blocks: BlockData[]) {
+  createFlare({ blocks, jobId }: CreateFlareEvent) {
     const input: CreateFlareInput = {
       blocks: blocks as CreateBlockInput[],
+      jobId,
     };
     this.flareService.newFlare(input).subscribe();
   }

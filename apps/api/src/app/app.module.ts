@@ -12,6 +12,7 @@ import { ApiMediaModule } from '@flare/api/media';
 import { AuthGuard, AuthModule } from '@flare/api/auth';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
@@ -28,6 +29,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         },
       }),
       inject: [ConfigService],
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    LoggerModule.forRoot({
+      exclude: ['auth'],
     }),
     AuthModule,
     UsersModule,

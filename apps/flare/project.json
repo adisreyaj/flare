@@ -8,6 +8,7 @@
       "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "allowedCommonJsDependencies": ["codemirror"],
         "outputPath": "dist/apps/flare",
         "index": "apps/flare/src/index.html",
         "main": "apps/flare/src/main.ts",
