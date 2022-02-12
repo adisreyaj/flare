@@ -30,6 +30,7 @@
       "@flare/ui/flare": ["libs/ui/flare/src/index.ts"],
       "@flare/ui/gql": ["libs/ui/gql/src/index.ts"],
       "@flare/ui/profile": ["libs/ui/profile/src/index.ts"],
+      "@flare/ui/shared": ["libs/ui/shared/src/index.ts"],
       "@flare/ui/utils": ["libs/ui/utils/src/index.ts"],
       "zigzag": ["zigzag/projects/zigzag/src/public-api.ts"]
     }

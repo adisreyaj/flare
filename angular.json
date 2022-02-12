@@ -18,6 +18,7 @@
     "ui-flare": "libs/ui/flare",
     "ui-gql": "libs/ui/gql",
     "ui-profile": "libs/ui/profile",
+    "ui-shared": "libs/ui/shared",
     "ui-utils": "libs/ui/utils"
   }
 }
