@@ -1,5 +1,4 @@
 scalar JSON
-scalar UPLOAD
 type Query {
   flares: [Flare]
   flare(id: ID!): Flare
@@ -61,12 +60,12 @@ type Bookmark {
 
 input CreateFlareInput {
   blocks: [CreateBlockInput!]!
+  jobId: ID
 }
 
 input CreateBlockInput {
   type: String!
   content: JSON!
-  images: [UPLOAD]
 }
 
 input AddCommentInput {

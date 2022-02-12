@@ -1,5 +1,6 @@
 import {
   Controller,
+  Logger,
   Post,
   UploadedFiles,
   UseInterceptors,
@@ -8,9 +9,13 @@ import { ApiMediaService } from './api-media.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import { Public } from '@flare/api/shared';
+import { FileWithMeta } from './api-media.interface';
+import { MediaUploadResponse } from '@flare/api-interfaces';
 
 @Controller('media')
 export class ApiMediaController {
+  private readonly logger = new Logger(ApiMediaController.name);
+
   constructor(private apiMediaService: ApiMediaService) {
     console.log(multer.name);
   }
@@ -18,22 +23,26 @@ export class ApiMediaController {
   @Public()
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files'))
-  async uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
+  async uploadFile(
+    @UploadedFiles() files: FileWithMeta[]
+  ): Promise<MediaUploadResponse> {
     /**
-     * TODO: start a job to clean up files
      *
      * Create a job id and pass it to the client.
-     * Needs to be send back with the tweet.
+     * Needs to be sent back with the flare.
      *
      * Job will be added to delete the files after the expiry time.
-     * If the tweet is successful, the job can be promoted to run immediately.
+     * If the flare is successful, the job can be promoted to run immediately.
      */
     const job = await this.apiMediaService.cleanup(files);
-    return files.map((file) => ({
-      fileName: file.filename,
-      size: file.size,
-      mime: file.mimetype,
-      job: job.id,
-    }));
+    this.logger.verbose(`Cleanup job created: ${job.id}`);
+    return {
+      files: files.map((file) => ({
+        name: file.filename,
+        size: file.size,
+        mime: file.mimetype,
+      })),
+      jobId: job.id,
+    };
   }
 }

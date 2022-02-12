@@ -20,12 +20,12 @@ export interface CurrencyInput {
 
 export interface CreateFlareInput {
     blocks: CreateBlockInput[];
+    jobId?: Nullable<string>;
 }
 
 export interface CreateBlockInput {
     type: string;
     content: JSON;
-    images?: Nullable<Nullable<UPLOAD>[]>;
 }
 
 export interface AddCommentInput {
@@ -236,5 +236,4 @@ export interface UserBio {
 }
 
 export type JSON = any;
-export type UPLOAD = any;
 type Nullable<T> = T | null;

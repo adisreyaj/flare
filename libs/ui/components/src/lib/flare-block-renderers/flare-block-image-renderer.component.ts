@@ -1,27 +1,22 @@
-import { Component, Input, SecurityContext } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { DomSanitizer } from '@angular/platform-browser';
-import { isNil } from 'lodash-es';
+import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'flare-block-text-renderer',
-  template: ` <div [innerHTML]="content$ | async"></div>`,
+  selector: 'flare-block-image-renderer',
+  template: `<div class="rounded-md border border-slate-200 p-2">
+    <ul class="flex flex-wrap gap-2">
+      <ng-container *ngFor="let image of content; index as i">
+        <li class="group relative">
+          <img
+            class="h-24 w-24 rounded-md"
+            [src]="image.name | mediaUrl"
+            alt=""
+          />
+        </li>
+      </ng-container>
+    </ul>
+  </div>`,
 })
-export class FlareBlockTextRendererComponent {
-  private readonly contentSubject = new BehaviorSubject<string>('');
-  public readonly content$ = this.contentSubject.asObservable();
-
-  constructor(private readonly sanitizer: DomSanitizer) {}
+export class FlareBlockImageRendererComponent {
   @Input()
-  set content(content: any) {
-    if (!isNil(content)) {
-      const sanitized = this.sanitizer.sanitize(
-        SecurityContext.HTML,
-        content?.value
-      );
-      if (sanitized) {
-        this.contentSubject.next(sanitized);
-      }
-    }
-  }
+  content!: any;
 }

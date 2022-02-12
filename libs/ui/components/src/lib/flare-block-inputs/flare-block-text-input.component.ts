@@ -13,7 +13,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BlockData, BlockType } from '@flare/api-interfaces';
 import { getPellEditorConfig } from './config';
 import { DomSanitizer } from '@angular/platform-browser';
-import { extractHashTags } from '@flare/ui/utils';
+import { extractHashTags } from '@flare/ui/shared';
 import { DOCUMENT } from '@angular/common';
 
 @Component({
@@ -51,12 +51,11 @@ export class FlareBlockTextInputComponent
   implements ControlValueAccessor, AfterViewInit, OnDestroy
 {
   content = 'Add your text here';
-  @ViewChild('editor', { static: true })
-  private readonly editorRef?: ElementRef;
-
   editor!: PellElement;
   onChanged!: (value: BlockData<BlockTextData>) => void;
   onTouched!: () => void;
+  @ViewChild('editor', { static: true })
+  private readonly editorRef?: ElementRef;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -93,6 +92,24 @@ export class FlareBlockTextInputComponent
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  /**
+   * Converts links to anchor tags
+   *
+   * @param html - editor content
+   */
+  protected convertLinksToAnchorTags(html: string) {
+    return Autolinker.link(html, {
+      newWindow: true,
+      urls: {
+        tldMatches: true,
+        wwwMatches: true,
+      },
+      stripPrefix: false,
+      stripTrailingSlash: false,
+      className: 'flare-link',
+    });
   }
 
   /**
@@ -144,24 +161,6 @@ export class FlareBlockTextInputComponent
       content: { value: this.content },
     });
   };
-
-  /**
-   * Converts links to anchor tags
-   *
-   * @param html - editor content
-   */
-  protected convertLinksToAnchorTags(html: string) {
-    return Autolinker.link(html, {
-      newWindow: true,
-      urls: {
-        tldMatches: true,
-        wwwMatches: true,
-      },
-      stripPrefix: false,
-      stripTrailingSlash: false,
-      className: 'flare-link',
-    });
-  }
 }
 
 export interface BlockTextData {

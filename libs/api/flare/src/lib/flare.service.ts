@@ -1,6 +1,7 @@
 import {
   AddCommentInput,
   AddLikeInput,
+  BlockType,
   CreateFlareInput,
   RemoveCommentInput,
   RemoveLikeInput,
@@ -9,15 +10,24 @@ import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser } from '@flare/api/shared';
 import {
   ForbiddenException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { catchError, from, switchMap, throwError } from 'rxjs';
+import { catchError, from, of, switchMap, tap, throwError } from 'rxjs';
+import { ApiMediaService } from '@flare/api/media';
+import { isNil } from 'lodash';
 
 @Injectable()
 export class FlareService {
-  constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(FlareService.name);
+
+  constructor(
+    private prisma: PrismaService,
+    private readonly mediaService: ApiMediaService
+  ) {}
 
   include = (userId: string): Prisma.FlareInclude => ({
     comments: true,
@@ -63,27 +73,63 @@ export class FlareService {
   }
 
   create(flare: CreateFlareInput, user: CurrentUser) {
-    return from(
-      this.prisma.flare.create({
-        data: {
-          blocks: {
-            createMany: {
-              data: flare.blocks.map((block) => ({
-                ...block,
-                ...(block?.images
-                  ? { images: { create: { data: block.images } } }
-                  : {}),
-              })),
+    return from(this.mediaService.getJobData(flare.jobId)).pipe(
+      switchMap((data) => {
+        if (isNil(data)) {
+          this.logger.error('Job Data not found');
+          return throwError(
+            () => new InternalServerErrorException('Media upload error')
+          );
+        } else {
+          return from(this.mediaService.uploadToCloud(data.files));
+        }
+      }),
+      switchMap((data) => {
+        if (isNil(data)) {
+          return throwError(
+            () => new InternalServerErrorException('Media upload error')
+          );
+        } else {
+          return of(data);
+        }
+      }),
+      switchMap((data) => {
+        return from(
+          this.prisma.flare.create({
+            data: {
+              blocks: {
+                createMany: {
+                  data: flare.blocks.map((block) => ({
+                    ...block,
+                    ...(block.type === BlockType.images
+                      ? {
+                          content: (data ?? []).map((file) => ({
+                            name: file.filename,
+                            type: file.mimetype,
+                            size: file.size,
+                          })),
+                        }
+                      : {}),
+                  })),
+                },
+              },
+              deleted: false,
+              authorId: user.id,
             },
-          },
-          deleted: false,
-          authorId: user.id,
-        },
-        include: this.include(user.id),
-      })
-    ).pipe(
+            include: this.include(user.id),
+          })
+        );
+      }),
+      tap(() => {
+        this.mediaService.runJobImmediately(flare.jobId).then(() => {
+          this.logger.log(`Job ${flare.jobId} promoted to start immediately`);
+        });
+      }),
       catchError((err) => {
-        console.log(err);
+        this.logger.error(err);
+        if (err instanceof HttpException) {
+          return throwError(() => err);
+        }
         return throwError(() => new InternalServerErrorException());
       })
     );

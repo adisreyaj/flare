@@ -1,5 +1,5 @@
 <section
-  (fileDropped)="handleFileUploads($event)"
+  (fileDropped)="handleFileDrop($event)"
   [class]="
     (isFullScreen$ | async)
       ? ['fixed', 'top-0', 'left-0', 'w-screen', 'h-screen', 'z-10']

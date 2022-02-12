@@ -6,11 +6,12 @@ import {
 } from '@nestjs/bull';
 import { Job } from 'bull';
 import * as fs from 'fs-extra';
+import { FileWithMeta } from '../api-media.interface';
 
 @Processor('media')
 export class MediaQueueConsumer {
   @Process('cleanup-images')
-  async cleanupImages(job: Job<{ files: Express.Multer.File[] }>) {
+  async cleanupImages(job: Job<{ files: FileWithMeta[] }>) {
     const deleteFilesPromises = job.data.files.map((file) =>
       fs.remove(file.path)
     );
