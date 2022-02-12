@@ -21,6 +21,14 @@ export class MediaQueueService {
       }
     );
   }
+
+  async runJobImmediately(jobId: string) {
+    const job = await this.mediaQueue.getJob(jobId);
+    if (job) {
+      return await job.promote();
+    }
+    return;
+  }
 }
 
 const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;

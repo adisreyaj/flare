@@ -9,4 +9,14 @@ export class ApiMediaService {
   cleanup(files: Express.Multer.File[]) {
     return this.mediaQueue.cleanupImage(files, cuid(), 10000);
   }
+
+  /**
+   * Run job immediately regardless of the delay.
+   * Call when the flare is posted successfully. This will immediately
+   * run the cleanup for flare images used in the flare.
+   * @param jobId - job id
+   */
+  runJobImmediately(jobId: string) {
+    return this.mediaQueue.runJobImmediately(jobId);
+  }
 }
