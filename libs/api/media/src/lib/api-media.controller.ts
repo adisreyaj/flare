@@ -18,7 +18,7 @@ export class ApiMediaController {
   @Public()
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files'))
-  uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
+  async uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
     /**
      * TODO: start a job to clean up files
      *
@@ -28,10 +28,12 @@ export class ApiMediaController {
      * Job will be added to delete the files after the expiry time.
      * If the tweet is successful, the job can be promoted to run immediately.
      */
+    const job = await this.apiMediaService.cleanup(files);
     return files.map((file) => ({
       fileName: file.filename,
       size: file.size,
       mime: file.mimetype,
+      job: job.id,
     }));
   }
 }

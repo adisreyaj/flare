@@ -42,4 +42,4 @@ Thumbs.db
 # Remove once stabilized
 prisma/migrations
 .env
-uploads
+uploads/
