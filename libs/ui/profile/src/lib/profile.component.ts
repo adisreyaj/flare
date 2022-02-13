@@ -1,16 +1,18 @@
 import { Component, Inject } from '@angular/core';
 import { CURRENT_USER } from '@flare/ui/auth';
-import { Observable } from 'rxjs';
+import { map, Observable, switchMap, withLatestFrom } from 'rxjs';
 import { Blog, Kudos, User } from '@flare/api-interfaces';
 import { DevToService } from './services/devto.service';
 import { HashnodeService } from './services/hashnode.service';
 import { KudosService } from './services/kudos.service';
+import { ActivatedRoute } from '@angular/router';
+import { UsersService } from './services/users.service';
 
 @Component({
   selector: 'flare-profile',
   template: `
     <ng-container *ngIf="user$ | async as user">
-      <header style="height: 300px">
+      <header style="height: 280px">
         <div class="h-full">
           <img
             src="https://source.unsplash.com/1600x900"
@@ -92,15 +94,33 @@ export class ProfileComponent {
   latestHashnodeBlogs$: Observable<Blog[]>;
   latestDevToBlogs$: Observable<Blog[]>;
   kudos$: Observable<Kudos[]>;
+
+  user$: Observable<User>;
   constructor(
-    @Inject(CURRENT_USER) public readonly user$: Observable<User>,
+    @Inject(CURRENT_USER) public readonly loggedInUser$: Observable<User>,
     private readonly hashnodeService: HashnodeService,
     private readonly devToService: DevToService,
-    private readonly kudosService: KudosService
+    private readonly kudosService: KudosService,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly usersService: UsersService
   ) {
     this.latestHashnodeBlogs$ =
       this.hashnodeService.getLatestBlogs('adisreyaj');
     this.latestDevToBlogs$ = this.devToService.getLatestBlogs('adisreyaj');
     this.kudos$ = this.kudosService.kudos$;
+
+    this.user$ = this.activatedRoute.data.pipe(
+      withLatestFrom(
+        this.activatedRoute.params.pipe(
+          map((param) => param['username'] ?? null)
+        )
+      ),
+      switchMap(([data, username]) => {
+        if (data?.['external'] && username) {
+          return this.usersService.getByUsername(username);
+        }
+        return this.loggedInUser$;
+      })
+    );
   }
 }

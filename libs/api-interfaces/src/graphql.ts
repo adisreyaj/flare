@@ -120,6 +120,7 @@ export interface IQuery {
     tip(id: string): Nullable<Tip> | Promise<Nullable<Tip>>;
     users(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
+    userByUsername(username: string): Nullable<User> | Promise<Nullable<User>>;
     me(): Nullable<User> | Promise<Nullable<User>>;
 }
 

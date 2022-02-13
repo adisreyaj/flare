@@ -22,6 +22,31 @@ export class UsersService {
     });
   }
 
+  findByUsername(username: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        username: username,
+      },
+      include: {
+        bio: true,
+        followers: true,
+        following: true,
+        kudos: {
+          include: {
+            kudosBy: true,
+          },
+        },
+        kudosGiven: true,
+        _count: {
+          select: {
+            following: true,
+            followers: true,
+          },
+        },
+      },
+    });
+  }
+
   findOne(id: string) {
     return this.prisma.user.findUnique({
       where: {
