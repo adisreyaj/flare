@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Queue } from 'bull';
+import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { FileWithMeta } from '../api-media.interface';
 import cuid = require('cuid');
@@ -37,7 +37,7 @@ export class MediaQueueService {
     id: string
   ): Promise<Data> {
     try {
-      const job = await this.mediaQueue.getJob(id);
+      const job: Job<Data> = await this.mediaQueue.getJob(id);
       if (job) {
         return job.data;
       }

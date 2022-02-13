@@ -59,6 +59,6 @@ export class ApiMediaService {
   }
 
   getJobData(jobId: string) {
-    return this.mediaQueue.getJobData(jobId);
+    return this.mediaQueue.getJobData<{ files: FileWithMeta[] }>(jobId);
   }
 }
