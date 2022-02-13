@@ -5,9 +5,9 @@ import { IconModule } from '@flare/ui/components';
 @Component({
   selector: 'flare-feeds-header',
   template: ` <div
-    class="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-slate-200 bg-white bg-opacity-50 px-4 backdrop-blur"
+    class="sticky top-0 z-20 flex h-14 items-center justify-between bg-white bg-opacity-70 px-4 backdrop-blur"
   >
-    <div class="text-lg font-semibold text-slate-800">
+    <div class="text-lg font-bold text-slate-800">
       <h3>{{ title }}</h3>
     </div>
     <div class="">
