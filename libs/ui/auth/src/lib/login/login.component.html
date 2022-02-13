@@ -1,8 +1,8 @@
-<main class="grid lg:grid-cols-2 h-screen w-screen">
+<main class="grid h-screen w-screen lg:grid-cols-2">
   <section class="grid place-items-center">
-    <form class="max-w-sm w-full rounded-full">
+    <form class="w-full max-w-sm rounded-full">
       <header class="mb-8">
-        <h1 class="text-2xl font-bold mb-2">Login</h1>
+        <h1 class="mb-2 text-2xl font-bold">Login</h1>
         <p class="text-slate-500">Share & document your developer journey!</p>
       </header>
       <div class="form-group mb-4">
@@ -21,7 +21,7 @@
         <button class="w-full" variant="primary" zzButton>Login</button>
       </footer>
       <section class="mt-10">
-        <div class="text-center mb-8 text-sm text-slate-400">
+        <div class="mb-8 text-center text-sm text-slate-400">
           <p class="separator mx-6">
             &nbsp;&nbsp;or login using social accounts&nbsp;&nbsp;
           </p>
@@ -66,21 +66,25 @@
         </div>
       </section>
       <section class="mt-10">
-        <p class="text-slate-500 font-medium">
+        <p class="font-medium text-slate-500">
           Don't have an account?
           <a
-            class="text-primary font-semibold hover:underline underline-offset-2 decoration-dotted"
+            class="font-semibold text-primary decoration-dotted underline-offset-2 hover:underline"
             routerLink="/signup"
             >Sign Up</a
           >
         </p>
       </section>
-      <section class="mt-8 text-slate-400 text-sm">
+      <section class="mt-8 text-sm text-slate-400">
         <p>Copyright © Flare 2022. All rights reserved</p>
       </section>
     </form>
   </section>
-  <section class="h-screen hidden lg:block">
-    <img alt="" class="object-cover h-full" src="assets/images/login-bg.svg" />
+  <section class="hidden h-screen lg:block">
+    <img
+      alt=""
+      class="h-full w-full object-cover"
+      src="assets/images/login-bg.svg"
+    />
   </section>
 </main>

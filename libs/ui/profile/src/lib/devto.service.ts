@@ -6,43 +6,28 @@ import { Blog } from '../../../../api-interfaces/src/blogs.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class HashnodeService {
+export class DevToService {
   constructor(private readonly http: HttpClient) {}
-
+  // TODO: Call backend due to CORS issue
   getLatestBlogs(user: string): Observable<Blog[]> {
     return this.http
-      .post<any>(HASHNODE_API_URL, {
-        query: getLatestBlogs(user),
+      .get<any>(DEVTO_API_URL, {
+        params: {
+          username: user,
+        },
       })
       .pipe(
         map((res) =>
-          (res.data.user.publication.posts ?? []).map((post: any) => ({
+          (res ?? []).map((post: any) => ({
             title: post.title,
-            image: post.coverImage,
-            link: `https://${res.data.user.publicationDomain}/${post.slug}`,
-            description: post.brief,
-            dateUpdated: post.dateUpdated,
+            image: post.cover_image,
+            link: post.url,
+            description: post.description,
+            dateUpdated: post.published_at,
           }))
         )
       );
   }
 }
 
-const HASHNODE_API_URL = 'https://api.hashnode.com/';
-const getLatestBlogs = (author: string) => `
-    query {
-      user(username: "${author}") {
-        publicationDomain
-        publication {
-          posts(page: 0) {
-            title
-            coverImage
-            slug
-            cuid
-            totalReactions
-            brief
-            dateUpdated
-          }
-        }
-      }
-    }`;
+const DEVTO_API_URL = 'https://dev.to/api/articles';

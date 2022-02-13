@@ -21,6 +21,7 @@ export class AuthService {
               image
               firstName
               lastName
+              _count
               bio {
                 id
                 description

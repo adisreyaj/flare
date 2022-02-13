@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { CURRENT_USER } from '@flare/ui/auth';
 import { Observable } from 'rxjs';
-import { User } from '@flare/api-interfaces';
-import { DevToService, HashnodeService } from './hashnode.service';
-import { Blog } from '../../../../api-interfaces/src/blogs.interface';
+import { Blog, User } from '@flare/api-interfaces';
+import { DevToService } from './devto.service';
+import { HashnodeService } from './hashnode.service';
 
 @Component({
   selector: 'flare-profile',
@@ -19,9 +19,10 @@ import { Blog } from '../../../../api-interfaces/src/blogs.interface';
         </div>
       </header>
       <div
-        class="-mt-14 flex flex-col items-center border-b border-slate-200 pb-6"
+        class="relative flex flex-col items-center border-b border-slate-200 pb-6"
       >
-        <div class="rounded-full bg-white p-2">
+        <button class="absolute top-4 right-3" zzButton>Edit Profile</button>
+        <div class="-mt-14 rounded-full bg-white p-2">
           <img
             [src]="user.image"
             [alt]="user.firstName"
@@ -33,6 +34,22 @@ import { Blog } from '../../../../api-interfaces/src/blogs.interface';
             {{ user?.firstName }} {{ user?.lastName }}
           </h1>
           <p class="text-center">@{{ user?.username }}</p>
+        </section>
+        <section class="my-1">
+          <div class="flex gap-4">
+            <p>
+              <strong class="font-semibold">{{
+                user._count?.followers
+              }}</strong>
+              Followers
+            </p>
+            <p>
+              <strong class="font-semibold">{{
+                user._count?.following
+              }}</strong>
+              Followers
+            </p>
+          </div>
         </section>
         <section class="mt-4 px-6 text-center">
           <!--          <p>{{ user?.bio?.description }}</p>-->
@@ -123,14 +140,6 @@ import { Blog } from '../../../../api-interfaces/src/blogs.interface';
       <section class="p-6">
         <header class="mb-4">
           <h4 class="font-semibold">Latest Hashnode Blogs</h4>
-        </header>
-        <flare-profile-blogs
-          [blogs]="latestHashnodeBlogs$ | async"
-        ></flare-profile-blogs>
-      </section>
-      <section class="p-6">
-        <header class="mb-4">
-          <h4 class="font-semibold">Latest Dev.to Blogs</h4>
         </header>
         <flare-profile-blogs
           [blogs]="latestHashnodeBlogs$ | async"

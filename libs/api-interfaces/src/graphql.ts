@@ -220,6 +220,7 @@ export interface User {
     username: string;
     password?: Nullable<string>;
     bio?: Nullable<UserBio>;
+    _count?: Nullable<JSON>;
     followers?: Nullable<Nullable<User>[]>;
     following?: Nullable<Nullable<User>[]>;
 }
