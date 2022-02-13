@@ -34,7 +34,7 @@ import {
     `
       :host {
         @apply mx-auto grid h-screen max-w-screen-lg;
-        grid-template-columns: 280px 1fr 0;
+        grid-template-columns: 250px 1fr 250px;
         grid-template-rows: 1fr;
       }
     `,

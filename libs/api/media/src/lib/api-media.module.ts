@@ -9,8 +9,8 @@ import { MediaQueueService } from './queue/api-media.queue';
 import { MediaQueueConsumer } from './queue/api-media-queue.consumer';
 import { S3Service } from './s3.service';
 import { ConfigModule } from '@nestjs/config';
-import * as mime from 'mime';
 import { FileWithMeta } from './api-media.interface';
+import { getExtension } from 'mime';
 
 const ALLOWED_MIME_TYPE = ['image/jpeg', 'image/png', 'image/gif'];
 @Module({
@@ -44,7 +44,7 @@ const ALLOWED_MIME_TYPE = ['image/jpeg', 'image/png', 'image/gif'];
       storage: multer.diskStorage({
         destination: 'uploads',
         filename: (req, file, cb) => {
-          cb(null, `${cuid()}.${mime.getExtension(file.mimetype)}`);
+          cb(null, `${cuid()}.${getExtension(file.mimetype)}`);
         },
       }),
     }),

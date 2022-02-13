@@ -5,7 +5,7 @@ import {
   NgModule,
   Output,
 } from '@angular/core';
-import { ButtonModule, TooltipModule } from 'zigzag';
+import { ButtonModule, DropdownModule, TooltipModule } from 'zigzag';
 import { IconModule } from '../icon/icon.module';
 import {
   BlockData,
@@ -19,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { isNil } from 'lodash-es';
 import { FileUploadModule } from '../file-upload/file-upload.module';
-import { MediaService } from '../../../../../../apps/flare/src/app/core/services/media/media.service';
+import { MediaService } from '@flare/ui/shared';
 
 @Component({
   selector: 'flare-composer',
@@ -134,7 +134,10 @@ export class ComposerComponent {
       // TODO: Call API to Upload more files
     }
   }
-
+  handleFileSelect(event: Event) {
+    const fileList = (event.target as HTMLInputElement).files;
+    if (fileList) this.handleFileDrop(fileList);
+  }
   removeImageFromBlock($event: number, i: number) {
     const existingBlock: ImageBlockData =
       this.blocksFormArray.controls[i].value;
@@ -168,6 +171,7 @@ export class ComposerComponent {
     FlareBlocksInputModule,
     ReactiveFormsModule,
     FileUploadModule,
+    DropdownModule,
   ],
   exports: [ComposerComponent],
 })

@@ -51,16 +51,20 @@
       </ng-container>
     </ng-container>
   </div>
+  <input
+    #mediaInput
+    (change)="handleFileSelect($event)"
+    id="media"
+    multiple
+    style="display: none"
+    type="file"
+  />
   <footer class="mt-4 flex w-full items-center justify-between px-6 py-2">
     <div class="flex gap-2">
       <button (click)="addBlock(blockTypes.text)" zzButton zzTooltip="Add Text">
         <rmx-icon class="icon-sm" name="text"></rmx-icon>
       </button>
-      <button
-        (click)="addBlock(blockTypes.code)"
-        zzButton
-        zzTooltip="Attach Image"
-      >
+      <button (click)="mediaInput.click()" zzButton zzTooltip="Attach Image">
         <rmx-icon class="icon-sm" name="image-line"></rmx-icon>
       </button>
       <button
@@ -77,36 +81,62 @@
       >
         <rmx-icon class="icon-sm" name="terminal-box-line"></rmx-icon>
       </button>
+
       <button
-        (click)="addBlock(blockTypes.techStack)"
+        [zzDropdownTrigger]="flareMoreOptions"
+        placement="bottom-start"
+        variant="link"
         zzButton
-        zzTooltip="Showcase Tech Stack"
       >
-        <rmx-icon class="icon-sm" name="stack-line"></rmx-icon>
-      </button>
-      <button
-        (click)="addBlock(blockTypes.githubRepo)"
-        zzButton
-        zzTooltip="Attach Github Repo"
-      >
-        <rmx-icon class="icon-sm" name="github-line"></rmx-icon>
-      </button>
-      <button
-        (click)="addBlock(blockTypes.poll)"
-        zzButton
-        zzTooltip="Start a Poll"
-      >
-        <rmx-icon class="icon-sm" name="chat-poll-line"></rmx-icon>
+        <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
+        <zz-dropdown #flareMoreOptions>
+          <button
+            (click)="addBlock(blockTypes.githubRepo)"
+            class="w-full rounded-md"
+            size="sm"
+            variant="link"
+            zzButton
+          >
+            <div class="flex items-center gap-2">
+              <rmx-icon class="icon-sm" name="github-line"></rmx-icon>
+              <p>Add Github Repo</p>
+            </div>
+          </button>
+          <button
+            (click)="addBlock(blockTypes.techStack)"
+            class="w-full rounded-md"
+            size="sm"
+            variant="link"
+            zzButton
+          >
+            <div class="flex items-center gap-2">
+              <rmx-icon class="icon-sm" name="stack-line"></rmx-icon>
+              <p>Add Tech Stack</p>
+            </div>
+          </button>
+          <button
+            (click)="addBlock(blockTypes.poll)"
+            class="w-full rounded-md"
+            size="sm"
+            variant="link"
+            zzButton
+          >
+            <div class="flex items-center gap-2">
+              <rmx-icon class="icon-sm" name="chat-poll-line"></rmx-icon>
+              <p>Add Poll</p>
+            </div>
+          </button>
+        </zz-dropdown>
       </button>
     </div>
     <div class="flex gap-2">
-      <button (click)="toggleFullScreen()" variant="neutral" zzButton>
+      <!--      <button (click)="toggleFullScreen()" variant="neutral" zzButton>
         <rmx-icon
           [name]="
             (isFullScreen$ | async) ? 'fullscreen-exit-fill' : 'fullscreen-fill'
           "
         ></rmx-icon>
-      </button>
+      </button> -->
       <button (click)="postFlare()" variant="primary" zzButton>
         Flare It!
       </button>
