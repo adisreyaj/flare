@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { gql } from '@apollo/client/core';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { User } from '@flare/api-interfaces';
 
 @Injectable({
@@ -41,5 +41,47 @@ export class UsersService {
         },
       })
       .pipe(map((result) => result.data.userByUsername));
+  }
+
+  follow(userId: string): Observable<void> {
+    return this.apollo
+      .mutate<{ follow: User }>({
+        mutation: gql`
+          mutation FollowUser($userId: ID!) {
+            follow(userId: $userId) {
+              id
+            }
+          }
+        `,
+        variables: {
+          userId: userId,
+        },
+      })
+      .pipe(
+        map(() => {
+          return;
+        })
+      );
+  }
+
+  unfollow(userId: string): Observable<void> {
+    return this.apollo
+      .mutate<{ unfollow: User }>({
+        mutation: gql`
+          mutation UnfollowUser($userId: ID!) {
+            unfollow(userId: $userId) {
+              id
+            }
+          }
+        `,
+        variables: {
+          userId: userId,
+        },
+      })
+      .pipe(
+        map(() => {
+          return;
+        })
+      );
   }
 }

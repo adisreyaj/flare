@@ -66,6 +66,8 @@ export class UsersService {
           select: {
             following: true,
             followers: true,
+            kudos: true,
+            bookmarks: true,
           },
         },
       },
@@ -146,11 +148,11 @@ export class UsersService {
     );
   }
 
-  follow(userId: string) {
+  follow(userId: string, user: CurrentUser) {
     return from(
       this.prisma.user.update({
         where: {
-          id: userId,
+          id: user.id,
         },
         data: {
           following: {
@@ -163,11 +165,11 @@ export class UsersService {
     );
   }
 
-  unfollow(userId: string) {
+  unfollow(userId: string, user: CurrentUser) {
     return from(
       this.prisma.user.update({
         where: {
-          id: userId,
+          id: user.id,
         },
         data: {
           following: {
