@@ -27,6 +27,11 @@ export class FlaresResolver {
     return this.flareService.findAll(user);
   }
 
+  @Query('bookmarkedFlares')
+  findAllBookmarks(@CurrentUser() user: CurrentUser) {
+    return this.bookmarkService.findAllBookmarked(user);
+  }
+
   @Mutation('createFlare')
   create(
     @Args('input') createFlareInput: CreateFlareInput,

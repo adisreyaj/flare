@@ -15,10 +15,10 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { catchError, from, of, switchMap, tap, throwError } from 'rxjs';
 import { ApiMediaService } from '@flare/api/media';
 import { isNil } from 'lodash';
+import { getFlareFieldsToInclude } from './flare.helper';
 
 @Injectable()
 export class FlareService {
@@ -29,36 +29,12 @@ export class FlareService {
     private readonly mediaService: ApiMediaService
   ) {}
 
-  include = (userId: string): Prisma.FlareInclude => ({
-    comments: true,
-    author: true,
-    blocks: true,
-    likes: {
-      where: {
-        authorId: userId,
-      },
-    },
-    bookmarks: {
-      where: {
-        author: {
-          id: userId,
-        },
-      },
-    },
-    _count: {
-      select: {
-        likes: true,
-        comments: true,
-      },
-    },
-  });
-
   findAll(user: CurrentUser) {
     return this.prisma.flare.findMany({
       where: {
         deleted: false,
       },
-      include: this.include(user.id),
+      include: getFlareFieldsToInclude(user.id),
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -68,7 +44,7 @@ export class FlareService {
       where: {
         id,
       },
-      include: this.include(user.id),
+      include: getFlareFieldsToInclude(user.id),
     });
   }
 
@@ -116,7 +92,7 @@ export class FlareService {
               deleted: false,
               authorId: user.id,
             },
-            include: this.include(user.id),
+            include: getFlareFieldsToInclude(user.id),
           })
         );
       }),
@@ -179,7 +155,7 @@ export class FlareService {
             },
           },
         },
-        include: this.include(user.id),
+        include: getFlareFieldsToInclude(user.id),
       })
     );
   }
@@ -197,7 +173,7 @@ export class FlareService {
             },
           },
         },
-        include: this.include(user.id),
+        include: getFlareFieldsToInclude(user.id),
       })
     );
   }
@@ -216,7 +192,7 @@ export class FlareService {
             },
           },
         },
-        include: this.include(user.id),
+        include: getFlareFieldsToInclude(user.id),
       })
     );
   }
@@ -234,7 +210,7 @@ export class FlareService {
             },
           },
         },
-        include: this.include(user.id),
+        include: getFlareFieldsToInclude(user.id),
       })
     );
   }

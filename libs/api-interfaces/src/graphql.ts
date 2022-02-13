@@ -107,6 +107,7 @@ export interface IQuery {
     __typename?: 'IQuery';
     flares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
     flare(id: string): Nullable<Flare> | Promise<Nullable<Flare>>;
+    bookmarkedFlares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
     sponsors(): Nullable<Nullable<Sponsor>[]> | Promise<Nullable<Nullable<Sponsor>[]>>;
     sponsor(id: string): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
     mySponsors(): Nullable<Nullable<Sponsor>[]> | Promise<Nullable<Nullable<Sponsor>[]>>;
