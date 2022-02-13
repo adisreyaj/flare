@@ -46,13 +46,13 @@ export class UsersResolver {
   }
 
   @Mutation('follow')
-  follow(@Args('userId') userId: string) {
-    return this.usersService.follow(userId);
+  follow(@Args('userId') userId: string, @CurrentUser() user: CurrentUser) {
+    return this.usersService.follow(userId, user);
   }
 
   @Mutation('unfollow')
-  unfollow(@Args('userId') userId: string) {
-    return this.usersService.unfollow(userId);
+  unfollow(@Args('userId') userId: string, @CurrentUser() user: CurrentUser) {
+    return this.usersService.unfollow(userId, user);
   }
 
   @Mutation('giveKudos')

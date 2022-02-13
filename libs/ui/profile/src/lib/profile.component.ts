@@ -52,12 +52,14 @@ import { UsersService } from './services/users.service';
               <strong class="font-semibold">{{
                 data.user._count?.following
               }}</strong>
-              Followers
+              Following
             </p>
           </div>
         </section>
-        <section class="mt-2">
-          <button variant="primary" zzButton>Follow</button>
+        <section class="mt-2" *ngIf="data.isExternalMode">
+          <button variant="primary" zzButton (click)="follow(data.user)">
+            Follow
+          </button>
         </section>
         <section class="w-full py-6 px-6 text-center">
           <p class="text-slate-600">
@@ -131,5 +133,13 @@ export class ProfileComponent {
         );
       })
     );
+  }
+
+  follow(user: User) {
+    this.usersService.follow(user.id).subscribe();
+  }
+
+  unfollow(user: User) {
+    this.usersService.unfollow(user.id).subscribe();
   }
 }
