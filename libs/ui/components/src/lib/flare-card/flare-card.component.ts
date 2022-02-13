@@ -7,6 +7,7 @@ import { FlareBlocksRendererModule } from '../flare-block-renderers/flare-blocks
 import { FlareService } from '@flare/ui/flare';
 import { FlareLikeIconPipeModule } from './flare-like.pipe';
 import { FlareBookmarkIconPipeModule } from './flare-bookmark.pipe';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'flare-card',
@@ -63,6 +64,7 @@ export class FlareCardComponent {
     DropdownModule,
     FlareLikeIconPipeModule,
     FlareBookmarkIconPipeModule,
+    RouterModule,
   ],
 })
 export class FlareCardModule {}
