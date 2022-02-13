@@ -2,6 +2,7 @@ scalar JSON
 type Query {
   flares: [Flare]
   flare(id: ID!): Flare
+  bookmarkedFlares: [Flare]
 }
 
 type Mutation {
