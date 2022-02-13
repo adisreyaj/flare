@@ -26,6 +26,7 @@
       "@flare/api/tips": ["libs/api/tips/src/index.ts"],
       "@flare/api/users": ["libs/api/users/src/index.ts"],
       "@flare/ui/auth": ["libs/ui/auth/src/index.ts"],
+      "@flare/ui/bookmark": ["libs/ui/bookmark/src/index.ts"],
       "@flare/ui/components": ["libs/ui/components/src/index.ts"],
       "@flare/ui/flare": ["libs/ui/flare/src/index.ts"],
       "@flare/ui/gql": ["libs/ui/gql/src/index.ts"],

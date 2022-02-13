@@ -1,4 +1,4 @@
-import { Component, Inject, NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import {
@@ -8,44 +8,25 @@ import {
   SidebarComponentModule,
 } from '@flare/ui/components';
 import { FlareService } from '@flare/ui/flare';
-import { CURRENT_USER } from '@flare/ui/auth';
 import { Observable } from 'rxjs';
 import {
   CreateBlockInput,
   CreateFlareInput,
   Flare,
-  User,
 } from '@flare/api-interfaces';
 
 @Component({
   selector: 'flare-home',
-  template: `<aside>
-      <flare-sidebar [user]="user$ | async"></flare-sidebar>
-    </aside>
-    <main class="border-x border-slate-200">
-      <flare-composer (createFlare)="this.createFlare($event)"></flare-composer>
-      <ng-container *ngFor="let flare of flares$ | async">
-        <flare-card [flare]="flare"></flare-card>
-      </ng-container>
-    </main>
-    <aside></aside>`,
-  styles: [
-    //language=SCSS
-    `
-      :host {
-        @apply mx-auto grid h-screen max-w-screen-lg;
-        grid-template-columns: 250px 1fr 250px;
-        grid-template-rows: 1fr;
-      }
-    `,
-  ],
+  template: ` <flare-composer
+      (createFlare)="this.createFlare($event)"
+    ></flare-composer>
+    <ng-container *ngFor="let flare of flares$ | async">
+      <flare-card [flare]="flare"></flare-card>
+    </ng-container>`,
 })
 export class HomeComponent {
   flares$: Observable<Flare[]>;
-  constructor(
-    private readonly flareService: FlareService,
-    @Inject(CURRENT_USER) public readonly user$: Observable<User>
-  ) {
+  constructor(private readonly flareService: FlareService) {
     this.flareService.getAll();
     this.flares$ = this.flareService.flares$;
   }

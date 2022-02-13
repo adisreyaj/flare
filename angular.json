@@ -14,11 +14,11 @@
     "flare": "apps/flare",
     "flare-e2e": "apps/flare-e2e",
     "ui-auth": "libs/ui/auth",
+    "ui-bookmark": "libs/ui/bookmark",
     "ui-components": "libs/ui/components",
     "ui-flare": "libs/ui/flare",
     "ui-gql": "libs/ui/gql",
     "ui-profile": "libs/ui/profile",
-    "ui-shared": "libs/ui/shared",
-    "ui-utils": "libs/ui/utils"
+    "ui-shared": "libs/ui/shared"
   }
 }

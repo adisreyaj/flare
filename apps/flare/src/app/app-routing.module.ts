@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ShellComponent } from './shell.component';
 
 @NgModule({
   imports: [
@@ -16,8 +17,25 @@ import { RouterModule } from '@angular/router';
       },
       {
         path: '',
-        loadChildren: () =>
-          import('./pages/home/home.component').then((m) => m.HomeModule),
+        component: ShellComponent,
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadChildren: () =>
+              import('./pages/home/home.component').then((m) => m.HomeModule),
+          },
+          {
+            path: 'bookmarks',
+            loadChildren: () =>
+              import('@flare/ui/bookmark').then((m) => m.UiBookmarkModule),
+          },
+          {
+            path: 'profile',
+            loadChildren: () =>
+              import('@flare/ui/profile').then((m) => m.UiProfileModule),
+          },
+        ],
       },
     ]),
   ],

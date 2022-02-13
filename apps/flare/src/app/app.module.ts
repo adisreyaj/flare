@@ -17,10 +17,17 @@ import { ApolloLink, InMemoryCache } from '@apollo/client/core';
 import { environment } from '../environments/environment';
 import { setContext } from '@apollo/client/link/context';
 import { API_CONFIG } from '@flare/ui/shared';
+import { ShellComponent } from './shell.component';
+import { SidebarComponentModule } from '@flare/ui/components';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, HttpClientModule, AppRoutingModule],
+  declarations: [AppComponent, ShellComponent],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    SidebarComponentModule,
+  ],
   providers: [
     {
       provide: BUTTON_CONFIG,

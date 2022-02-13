@@ -13,8 +13,8 @@ import { Component, Input } from '@angular/core';
       <ng-container *ngFor="let image of content; index as i">
         <li class="group relative">
           <img
-            class="h-full object-fill"
-            style="max-height: 500px"
+            class="h-full w-full object-cover"
+            style="max-height: 400px"
             [src]="image.name | mediaUrl"
             [alt]="image.alt"
           />
