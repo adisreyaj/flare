@@ -1,7 +1,12 @@
-import { CreateUserInput, UpdateUserInput } from '@flare/api-interfaces';
+import {
+  CreateUserInput,
+  GiveKudosInput,
+  UpdateUserInput,
+} from '@flare/api-interfaces';
+import { PrismaService } from '@flare/api/prisma';
+import { CurrentUser } from '@flare/api/shared';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { catchError, from, throwError } from 'rxjs';
-import { PrismaService } from '@flare/api/prisma';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +31,12 @@ export class UsersService {
         bio: true,
         followers: true,
         following: true,
+        kudos: {
+          include: {
+            kudosBy: true,
+          },
+        },
+        kudosGiven: true,
         _count: {
           select: {
             following: true,
@@ -142,5 +153,25 @@ export class UsersService {
         },
       })
     );
+  }
+
+  giveKudos(input: GiveKudosInput, user: CurrentUser) {
+    console.log(input, user);
+    return this.prisma.kudos.create({
+      data: {
+        kudosById: user.id,
+        content: input.content,
+        userId: input.userId,
+      },
+    });
+  }
+
+  removeKudos(id: string, user: CurrentUser) {
+    return this.prisma.kudos.deleteMany({
+      where: {
+        id,
+        kudosById: user.id,
+      },
+    });
   }
 }

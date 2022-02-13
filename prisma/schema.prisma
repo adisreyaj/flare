@@ -28,6 +28,8 @@ model User {
   sponsors   Sponsor[]  @relation("SponsoringUser")
   sponsoring Sponsor[]  @relation("SponsoredByUser")
   bookmarks  Bookmark[]
+  kudos      Kudos[]    @relation("KudosUser")
+  kudosGiven Kudos[]    @relation("KudosByUser")
 }
 
 model UserBio {
@@ -91,7 +93,7 @@ model Bookmark {
   author    User     @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now())
   flareId   String
-  authorId    String
+  authorId  String
 }
 
 model Slot {
@@ -158,6 +160,16 @@ model Sponsor {
   createdAt      DateTime       @default(now())
   userId         String
   sponsoredById  String
+}
+
+model Kudos {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], name: "KudosUser")
+  kudosBy   User     @relation(fields: [kudosById], references: [id], name: "KudosByUser")
+  createdAt DateTime @default(now())
+  content   Json
+  kudosById String
+  userId    String
 }
 
 enum BookingStatus {

@@ -1,4 +1,8 @@
-import { CreateUserInput, UpdateUserInput } from '@flare/api-interfaces';
+import {
+  CreateUserInput,
+  GiveKudosInput,
+  UpdateUserInput,
+} from '@flare/api-interfaces';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { CurrentUser } from '@flare/api/shared';
@@ -44,5 +48,18 @@ export class UsersResolver {
   @Mutation('unfollow')
   unfollow(@Args('userId') userId: string) {
     return this.usersService.unfollow(userId);
+  }
+
+  @Mutation('giveKudos')
+  giveKudos(
+    @Args('input') input: GiveKudosInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.usersService.giveKudos(input, user);
+  }
+
+  @Mutation('removeKudos')
+  removeKudos(@Args('id') id: string, @CurrentUser() user: CurrentUser) {
+    return this.usersService.removeKudos(id, user);
   }
 }
