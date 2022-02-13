@@ -20,6 +20,11 @@ export class UsersResolver {
     return this.usersService.findOne(user.id);
   }
 
+  @Query('userByUsername')
+  findByUsername(@Args('username') username: string) {
+    return this.usersService.findByUsername(username);
+  }
+
   @Query('users')
   findAll() {
     return this.usersService.findAll();

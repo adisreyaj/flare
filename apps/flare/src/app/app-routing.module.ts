@@ -35,6 +35,14 @@ import { ShellComponent } from './shell.component';
             loadChildren: () =>
               import('@flare/ui/profile').then((m) => m.UiProfileModule),
           },
+          {
+            path: ':username',
+            loadChildren: () =>
+              import('@flare/ui/profile').then((m) => m.UiProfileModule),
+            data: {
+              external: true,
+            },
+          },
         ],
       },
     ]),
