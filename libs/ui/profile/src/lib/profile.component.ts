@@ -1,9 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { CURRENT_USER } from '@flare/ui/auth';
 import { Observable } from 'rxjs';
-import { Blog, User } from '@flare/api-interfaces';
-import { DevToService } from './devto.service';
-import { HashnodeService } from './hashnode.service';
+import { Blog, Kudos, User } from '@flare/api-interfaces';
+import { DevToService } from './services/devto.service';
+import { HashnodeService } from './services/hashnode.service';
+import { KudosService } from './services/kudos.service';
 
 @Component({
   selector: 'flare-profile',
@@ -21,7 +22,9 @@ import { HashnodeService } from './hashnode.service';
       <div
         class="relative flex flex-col items-center border-b border-slate-200 pb-6"
       >
-        <button class="absolute top-4 right-3" zzButton>Edit Profile</button>
+        <button class="absolute top-4 right-3" zzButton size="sm">
+          Edit Profile
+        </button>
         <div class="-mt-14 rounded-full bg-white p-2">
           <img
             [src]="user.image"
@@ -51,89 +54,26 @@ import { HashnodeService } from './hashnode.service';
             </p>
           </div>
         </section>
-        <section class="mt-4 px-6 text-center">
-          <!--          <p>{{ user?.bio?.description }}</p>-->
+        <section class="py-6 px-6 text-center">
           <p class="text-slate-600">
             A Full stack developer working with Web technologies. Loves to build
             highly scalable and maintainable web applications and back-ends.
             Loves everything JavaScript
           </p>
         </section>
-        <section class="mt-6">
-          <ul class="flex items-center gap-4">
-            <li>
-              <a
-                class="flex items-center gap-1 rounded-full outline-none ring-primary hover:ring-2 focus:ring-2"
-                href=""
-              >
-                <img
-                  class="h-10 w-10 rounded-full bg-slate-100 p-1"
-                  src="assets/icons/social/twitter.svg"
-                  alt=""
-                />
-              </a>
-            </li>
-            <li>
-              <a
-                class="flex items-center gap-1 rounded-full outline-none ring-primary hover:ring-2 focus:ring-2"
-                href=""
-              >
-                <img
-                  class="h-10 w-10 rounded-full bg-slate-100 p-1"
-                  src="assets/icons/social/linkedin.svg"
-                  alt=""
-                />
-              </a>
-            </li>
-            <li>
-              <a
-                class="flex items-center gap-1 rounded-full outline-none ring-primary hover:ring-2 focus:ring-2"
-                href=""
-              >
-                <img
-                  class="h-10 w-10 rounded-full bg-slate-100 p-1"
-                  src="assets/icons/social/github.svg"
-                  alt=""
-                />
-              </a>
-            </li>
-            <li>
-              <a
-                class="flex items-center gap-1 rounded-full outline-none ring-primary hover:ring-2 focus:ring-2"
-                href=""
-              >
-                <img
-                  class="h-10 w-10 rounded-full bg-slate-100 p-1"
-                  src="assets/icons/social/devto.svg"
-                  alt=""
-                />
-              </a>
-            </li>
-            <li>
-              <a
-                class="flex items-center gap-1 rounded-full outline-none ring-primary hover:ring-2 focus:ring-2"
-                href=""
-              >
-                <img
-                  class="h-10 w-10 rounded-full bg-slate-100 p-1"
-                  src="assets/icons/social/hashnode.svg"
-                  alt=""
-                />
-              </a>
-            </li>
-            <li>
-              <a
-                class="flex items-center gap-1 rounded-full outline-none ring-primary hover:ring-2 focus:ring-2"
-                href=""
-              >
-                <img
-                  class="h-10 w-10 rounded-full bg-slate-100 p-1"
-                  src="assets/icons/social/instagram.svg"
-                  alt=""
-                />
-              </a>
-            </li>
-          </ul>
+        <section
+          class="flex w-full justify-center border-b border-slate-200 py-6"
+        >
+          <flare-profile-social></flare-profile-social>
+        </section>
+        <section class="py-6 px-6">
+          <header class="mb-4 flex items-center justify-between">
+            <h4 class="font-semibold">Kudos</h4>
+            <div>
+              <button zzButton size="sm">Give Kudos</button>
+            </div>
+          </header>
+          <flare-profile-kudos [kudos]="kudos$ | async"></flare-profile-kudos>
         </section>
       </div>
 
@@ -151,13 +91,16 @@ import { HashnodeService } from './hashnode.service';
 export class ProfileComponent {
   latestHashnodeBlogs$: Observable<Blog[]>;
   latestDevToBlogs$: Observable<Blog[]>;
+  kudos$: Observable<Kudos[]>;
   constructor(
     @Inject(CURRENT_USER) public readonly user$: Observable<User>,
     private readonly hashnodeService: HashnodeService,
-    private readonly devToService: DevToService
+    private readonly devToService: DevToService,
+    private readonly kudosService: KudosService
   ) {
     this.latestHashnodeBlogs$ =
       this.hashnodeService.getLatestBlogs('adisreyaj');
     this.latestDevToBlogs$ = this.devToService.getLatestBlogs('adisreyaj');
+    this.kudos$ = this.kudosService.kudos$;
   }
 }
