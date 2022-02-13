@@ -25,7 +25,12 @@
         <p class="text-sm font-medium">
           {{ flare.author.firstName }} {{ flare.author.lastName }}
         </p>
-        <p class="text-xs">@{{ flare.author.username }}</p>
+        <p
+          [routerLink]="['/', flare.author.username]"
+          class="cursor-pointer text-xs font-medium hover:text-primary"
+        >
+          @{{ flare.author.username }}
+        </p>
       </div>
     </div>
   </header>
