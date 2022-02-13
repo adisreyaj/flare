@@ -10,6 +10,8 @@ type Mutation {
   deleteUser(id: ID!): User
   follow(userId: ID!): User
   unfollow(userId: ID!): User
+  giveKudos(input: GiveKudosInput): User
+  removeKudos(id: ID!): User
 }
 
 type User {
@@ -24,6 +26,8 @@ type User {
   _count: JSON
   followers: [User]
   following: [User]
+  kudos: [Kudos]
+  kudosGiven: [Kudos]
 }
 
 type UserBio {
@@ -35,6 +39,14 @@ type UserBio {
   facebook: String
   hashnode: String
   devto: String
+}
+
+type Kudos {
+  id: String!
+  user: User!
+  kudosBy: User!
+  content: JSON!
+  createdAt: String!
 }
 
 input UserBioInput {
@@ -64,4 +76,9 @@ input UpdateUserInput {
   lastName: String
   password: String
   bio: UserBioInput
+}
+
+input GiveKudosInput{
+userId: ID!
+content: JSON!
 }

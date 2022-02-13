@@ -5,7 +5,9 @@ import { Logger as NestLogger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
-  app.useLogger(app.get(Logger));
+  if (process.env.NODE_ENV === 'production') {
+    app.useLogger(app.get(Logger));
+  }
   const globalPrefix = 'api';
   app.enableCors({
     origin: ['http://localhost:4200'],

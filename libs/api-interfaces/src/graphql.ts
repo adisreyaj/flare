@@ -97,6 +97,11 @@ export interface UpdateUserInput {
     bio?: Nullable<UserBioInput>;
 }
 
+export interface GiveKudosInput {
+    userId: string;
+    content: JSON;
+}
+
 export interface Currency {
     __typename?: 'Currency';
     symbol: string;
@@ -136,6 +141,8 @@ export interface IMutation {
     deleteUser(id: string): Nullable<User> | Promise<Nullable<User>>;
     follow(userId: string): Nullable<User> | Promise<Nullable<User>>;
     unfollow(userId: string): Nullable<User> | Promise<Nullable<User>>;
+    giveKudos(input?: Nullable<GiveKudosInput>): Nullable<User> | Promise<Nullable<User>>;
+    removeKudos(id: string): Nullable<User> | Promise<Nullable<User>>;
 }
 
 export interface Success {
@@ -223,6 +230,8 @@ export interface User {
     _count?: Nullable<JSON>;
     followers?: Nullable<Nullable<User>[]>;
     following?: Nullable<Nullable<User>[]>;
+    kudos?: Nullable<Nullable<Kudos>[]>;
+    kudosGiven?: Nullable<Nullable<Kudos>[]>;
 }
 
 export interface UserBio {
@@ -235,6 +244,15 @@ export interface UserBio {
     facebook?: Nullable<string>;
     hashnode?: Nullable<string>;
     devto?: Nullable<string>;
+}
+
+export interface Kudos {
+    __typename?: 'Kudos';
+    id: string;
+    user: User;
+    kudosBy: User;
+    content: JSON;
+    createdAt: string;
 }
 
 export type JSON = any;
