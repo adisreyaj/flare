@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/ui/shared",
+  "sourceRoot": "libs/ui/shared/src",
+  "prefix": "flare",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ui/shared"],
+      "options": {
+        "jestConfig": "libs/ui/shared/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/shared/src/**/*.ts",
+          "libs/ui/shared/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

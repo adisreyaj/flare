@@ -5,6 +5,7 @@
     "api-auth": "libs/api/auth",
     "api-flare": "libs/api/flare",
     "api-interfaces": "libs/api-interfaces",
+    "api-media": "libs/api/media",
     "api-prisma": "libs/api/prisma",
     "api-shared": "libs/api/shared",
     "api-sponsors": "libs/api/sponsors",
@@ -13,10 +14,11 @@
     "flare": "apps/flare",
     "flare-e2e": "apps/flare-e2e",
     "ui-auth": "libs/ui/auth",
+    "ui-bookmark": "libs/ui/bookmark",
     "ui-components": "libs/ui/components",
     "ui-flare": "libs/ui/flare",
     "ui-gql": "libs/ui/gql",
     "ui-profile": "libs/ui/profile",
-    "ui-utils": "libs/ui/utils"
+    "ui-shared": "libs/ui/shared"
   }
 }

@@ -6,11 +6,14 @@ import { CodeInputModule } from '../code-input/code-input.component';
 import { IconModule } from '@flare/ui/components';
 import { TooltipModule } from 'zigzag';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { FlareBlockImageRendererComponent } from './flare-block-image-renderer.component';
+import { MediaUrlPipeModule } from '../../../../shared/src/pipes/media-url.pipe';
 
 @NgModule({
   declarations: [
     FlareBlockTextRendererComponent,
     FlareBlockScriptRendererComponent,
+    FlareBlockImageRendererComponent,
   ],
   imports: [
     CommonModule,
@@ -18,7 +21,12 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     IconModule,
     TooltipModule,
     ClipboardModule,
+    MediaUrlPipeModule,
   ],
-  exports: [FlareBlockTextRendererComponent, FlareBlockScriptRendererComponent],
+  exports: [
+    FlareBlockTextRendererComponent,
+    FlareBlockScriptRendererComponent,
+    FlareBlockImageRendererComponent,
+  ],
 })
 export class FlareBlocksRendererModule {}

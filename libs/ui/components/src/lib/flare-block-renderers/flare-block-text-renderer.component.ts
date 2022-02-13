@@ -17,7 +17,7 @@ export class FlareBlockTextRendererComponent {
     if (!isNil(content)) {
       const sanitized = this.sanitizer.sanitize(
         SecurityContext.HTML,
-        content.value
+        content?.value
       );
       if (sanitized) {
         this.contentSubject.next(sanitized);

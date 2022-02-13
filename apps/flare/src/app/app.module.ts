@@ -16,10 +16,18 @@ import { HttpLink } from 'apollo-angular/http';
 import { ApolloLink, InMemoryCache } from '@apollo/client/core';
 import { environment } from '../environments/environment';
 import { setContext } from '@apollo/client/link/context';
+import { API_CONFIG } from '@flare/ui/shared';
+import { ShellComponent } from './shell.component';
+import { SidebarComponentModule } from '@flare/ui/components';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, HttpClientModule, AppRoutingModule],
+  declarations: [AppComponent, ShellComponent],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    SidebarComponentModule,
+  ],
   providers: [
     {
       provide: BUTTON_CONFIG,
@@ -39,6 +47,13 @@ import { setContext } from '@apollo/client/link/context';
         socialLoginURL: 'http://localhost:3333/api/auth',
       },
     },
+    {
+      provide: API_CONFIG,
+      useValue: {
+        baseURL: `${environment.apiURL}/api`,
+        mediaURL: environment.mediaURL,
+      },
+    },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     {
       provide: APOLLO_OPTIONS,
@@ -56,7 +71,7 @@ import { setContext } from '@apollo/client/link/context';
 export class AppModule {}
 
 export function createApollo(httpLink: HttpLink) {
-  const gqlAPI = `${environment.api}/graphql`;
+  const gqlAPI = `${environment.apiURL}/graphql`;
 
   const auth = setContext(() => {
     const token = localStorage.getItem('token');

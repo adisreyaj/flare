@@ -6,8 +6,8 @@ import { FlareBlockScriptInputComponent } from './flare-block-script-input.compo
 import { CodeInputModule } from '../code-input/code-input.component';
 import { CommonModule } from '@angular/common';
 import { FlareBlockImageInputComponent } from './flare-block-image-input.component';
-import { SanitizeUrlPipeModule } from '../../../../utils/src';
 import { IconModule } from '../icon/icon.module';
+import { SanitizeUrlPipeModule } from '@flare/ui/shared';
 
 @NgModule({
   declarations: [

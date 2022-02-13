@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'zigzag';
 import { IconModule } from '../icon/icon.module';
 import { User } from '@flare/api-interfaces';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'flare-sidebar',
@@ -19,24 +20,36 @@ import { User } from '@flare/api-interfaces';
       </header>
       <nav>
         <ul class="flex flex-col gap-4 text-lg font-medium text-slate-700">
-          <li>
-            <rmx-icon name="home-2-line"></rmx-icon>
+          <li
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <rmx-icon class="inactive-icon" name="home-2-line"></rmx-icon>
+            <rmx-icon class="active-icon" name="home-2-fill"></rmx-icon>
             Home
           </li>
-          <li>
-            <rmx-icon name="compass-3-line"></rmx-icon>
+          <li routerLink="/discover" routerLinkActive="active">
+            <rmx-icon class="inactive-icon" name="compass-3-line"></rmx-icon>
+            <rmx-icon class="active-icon" name="compass-3-fill"></rmx-icon>
             Discover
           </li>
-          <li>
-            <rmx-icon name="notification-4-line"></rmx-icon>
+          <li routerLink="/notifications" routerLinkActive="active">
+            <rmx-icon
+              class="inactive-icon"
+              name="notification-4-line"
+            ></rmx-icon>
+            <rmx-icon class="active-icon" name="notification-4-fill"></rmx-icon>
             Notifications
           </li>
-          <li>
-            <rmx-icon name="user-3-line"></rmx-icon>
+          <li routerLink="/profile" routerLinkActive="active">
+            <rmx-icon class="inactive-icon" name="user-3-line"></rmx-icon>
+            <rmx-icon class="active-icon" name="user-3-fill"></rmx-icon>
             Profile
           </li>
-          <li>
-            <rmx-icon name="bookmark-line"></rmx-icon>
+          <li routerLink="/bookmarks" routerLinkActive="active">
+            <rmx-icon class="inactive-icon" name="bookmark-line"></rmx-icon>
+            <rmx-icon class="active-icon" name="bookmark-fill"></rmx-icon>
             Bookmarks
           </li>
         </ul>
@@ -65,6 +78,7 @@ import { User } from '@flare/api-interfaces';
     </footer>
   `,
   styles: [
+    //language=SCSS
     `
       :host {
         @apply sticky top-0 flex h-screen w-full flex-col justify-between;
@@ -72,6 +86,22 @@ import { User } from '@flare/api-interfaces';
 
       ul li {
         @apply flex cursor-pointer items-center gap-2 rounded-full px-6 py-2 text-slate-900 transition-all duration-200 hover:bg-primary-transparent-10;
+        .inactive-icon {
+          display: block;
+        }
+        .active-icon {
+          @apply text-primary;
+          display: none;
+        }
+        &.active {
+          @apply text-primary;
+          .inactive-icon {
+            display: none;
+          }
+          .active-icon {
+            display: block;
+          }
+        }
       }
     `,
   ],
@@ -83,7 +113,7 @@ export class SidebarComponent {
 }
 
 @NgModule({
-  imports: [CommonModule, ButtonModule, IconModule],
+  imports: [CommonModule, ButtonModule, IconModule, RouterModule],
   declarations: [SidebarComponent],
   exports: [SidebarComponent],
 })
