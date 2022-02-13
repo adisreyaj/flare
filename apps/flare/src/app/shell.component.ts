@@ -23,8 +23,12 @@ import { User } from '@flare/api-interfaces';
       }
       .content {
         @apply mx-auto grid h-screen max-w-screen-xl;
-        grid-template-columns: 250px 1fr 250px;
+        grid-template-columns: 80px 1fr 250px;
         grid-template-rows: 1fr;
+
+        @media screen and (min-width: 768px) {
+          grid-template-columns: 250px 1fr 250px;
+        }
       }
     `,
   ],
