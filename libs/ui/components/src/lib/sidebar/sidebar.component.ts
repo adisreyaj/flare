@@ -13,10 +13,12 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'flare-sidebar',
   template: `
-    <div class="px-6 pt-10">
-      <header class="mb-6 flex items-center gap-2 px-6">
+    <div class="px-2 pt-10 md:px-6">
+      <header
+        class="mb-6 flex items-center justify-center gap-2 md:justify-start md:px-6"
+      >
         <img src="assets/images/flare.svg" alt="Flare" class="h-8 w-8" />
-        <p class="text-xl font-bold">Flare</p>
+        <p class="hidden text-xl font-bold md:block">Flare</p>
       </header>
       <nav>
         <ul class="flex flex-col gap-4 text-lg font-medium text-slate-700">
@@ -27,12 +29,12 @@ import { RouterModule } from '@angular/router';
           >
             <rmx-icon class="inactive-icon" name="home-2-line"></rmx-icon>
             <rmx-icon class="active-icon" name="home-2-fill"></rmx-icon>
-            Home
+            <p class="hidden md:block">Home</p>
           </li>
           <li routerLink="/discover" routerLinkActive="active">
             <rmx-icon class="inactive-icon" name="compass-3-line"></rmx-icon>
             <rmx-icon class="active-icon" name="compass-3-fill"></rmx-icon>
-            Discover
+            <p class="hidden md:block">Discover</p>
           </li>
           <li routerLink="/notifications" routerLinkActive="active">
             <rmx-icon
@@ -40,23 +42,30 @@ import { RouterModule } from '@angular/router';
               name="notification-4-line"
             ></rmx-icon>
             <rmx-icon class="active-icon" name="notification-4-fill"></rmx-icon>
-            Notifications
+            <p class="hidden md:block">Notifications</p>
           </li>
           <li routerLink="/profile" routerLinkActive="active">
             <rmx-icon class="inactive-icon" name="user-3-line"></rmx-icon>
             <rmx-icon class="active-icon" name="user-3-fill"></rmx-icon>
-            Profile
+            <p class="hidden md:block">Profile</p>
           </li>
           <li routerLink="/bookmarks" routerLinkActive="active">
             <rmx-icon class="inactive-icon" name="bookmark-line"></rmx-icon>
             <rmx-icon class="active-icon" name="bookmark-fill"></rmx-icon>
-            Bookmarks
+            <p class="hidden md:block">Bookmarks</p>
           </li>
         </ul>
       </nav>
-      <div class="mt-10">
-        <button class="w-full text-lg" zzButton variant="primary">
-          New Flare
+      <div class="mt-10 px-2 md:px-0">
+        <button
+          class="w-full justify-center text-lg"
+          zzButton
+          variant="primary"
+        >
+          <div class="flex items-center justify-center">
+            <rmx-icon class="icon-sm" name="quill-pen-line"></rmx-icon>
+            <p class="ml-2 hidden md:block">New Flare</p>
+          </div>
         </button>
       </div>
     </div>
@@ -69,7 +78,7 @@ import { RouterModule } from '@angular/router';
         [alt]="user.firstName"
         class="h-10 w-10 rounded-full"
       />
-      <div class="">
+      <div class="hidden md:block">
         <p class="-mb-1 font-semibold">
           {{ user.firstName }} {{ user.lastName }}
         </p>
@@ -85,7 +94,7 @@ import { RouterModule } from '@angular/router';
       }
 
       ul li {
-        @apply flex cursor-pointer items-center gap-2 rounded-full px-6 py-2 text-slate-900 transition-all duration-200 hover:bg-primary-transparent-10;
+        @apply flex cursor-pointer items-center justify-center gap-2 rounded-full py-2 text-slate-900 transition-all duration-200 hover:bg-primary-transparent-10 md:justify-start md:px-6;
         .inactive-icon {
           display: block;
         }
