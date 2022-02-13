@@ -21,6 +21,7 @@ type User {
   username: String!
   password: String
   bio: UserBio
+  _count: JSON
   followers: [User]
   following: [User]
 }

@@ -26,6 +26,12 @@ export class UsersService {
         bio: true,
         followers: true,
         following: true,
+        _count: {
+          select: {
+            following: true,
+            followers: true,
+          },
+        },
       },
     });
   }

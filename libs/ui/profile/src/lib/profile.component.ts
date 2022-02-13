@@ -2,6 +2,8 @@ import { Component, Inject } from '@angular/core';
 import { CURRENT_USER } from '@flare/ui/auth';
 import { Observable } from 'rxjs';
 import { User } from '@flare/api-interfaces';
+import { DevToService, HashnodeService } from './hashnode.service';
+import { Blog } from '../../../../api-interfaces/src/blogs.interface';
 
 @Component({
   selector: 'flare-profile',
@@ -16,7 +18,9 @@ import { User } from '@flare/api-interfaces';
           />
         </div>
       </header>
-      <div class="-mt-14 flex flex-col items-center">
+      <div
+        class="-mt-14 flex flex-col items-center border-b border-slate-200 pb-6"
+      >
         <div class="rounded-full bg-white p-2">
           <img
             [src]="user.image"
@@ -115,9 +119,36 @@ import { User } from '@flare/api-interfaces';
           </ul>
         </section>
       </div>
+
+      <section class="p-6">
+        <header class="mb-4">
+          <h4 class="font-semibold">Latest Hashnode Blogs</h4>
+        </header>
+        <flare-profile-blogs
+          [blogs]="latestHashnodeBlogs$ | async"
+        ></flare-profile-blogs>
+      </section>
+      <section class="p-6">
+        <header class="mb-4">
+          <h4 class="font-semibold">Latest Dev.to Blogs</h4>
+        </header>
+        <flare-profile-blogs
+          [blogs]="latestHashnodeBlogs$ | async"
+        ></flare-profile-blogs>
+      </section>
     </ng-container>
   `,
 })
 export class ProfileComponent {
-  constructor(@Inject(CURRENT_USER) public readonly user$: Observable<User>) {}
+  latestHashnodeBlogs$: Observable<Blog[]>;
+  latestDevToBlogs$: Observable<Blog[]>;
+  constructor(
+    @Inject(CURRENT_USER) public readonly user$: Observable<User>,
+    private readonly hashnodeService: HashnodeService,
+    private readonly devToService: DevToService
+  ) {
+    this.latestHashnodeBlogs$ =
+      this.hashnodeService.getLatestBlogs('adisreyaj');
+    this.latestDevToBlogs$ = this.devToService.getLatestBlogs('adisreyaj');
+  }
 }
