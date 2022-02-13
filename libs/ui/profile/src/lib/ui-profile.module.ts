@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { ProfileComponent } from './profile.component';
 import { ProfileBlogsModule } from './profile-blogs.component';
 import { ButtonModule } from 'zigzag';
+import { ProfileSocialModule } from './profile-social.component';
+import { ProfileKudosModule } from './profile-kudos.component';
 
 @NgModule({
   declarations: [ProfileComponent],
@@ -17,6 +19,8 @@ import { ButtonModule } from 'zigzag';
     ]),
     ProfileBlogsModule,
     ButtonModule,
+    ProfileSocialModule,
+    ProfileKudosModule,
   ],
 })
 export class UiProfileModule {}
