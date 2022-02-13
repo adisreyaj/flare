@@ -5,6 +5,7 @@ import {
   ComposerModule,
   CreateFlareEvent,
   FlareCardModule,
+  FlareFeedsHeaderModule,
   SidebarComponentModule,
 } from '@flare/ui/components';
 import { FlareService } from '@flare/ui/flare';
@@ -17,9 +18,8 @@ import {
 
 @Component({
   selector: 'flare-home',
-  template: ` <flare-composer
-      (createFlare)="this.createFlare($event)"
-    ></flare-composer>
+  template: ` <flare-feeds-header title="What's Trending?"></flare-feeds-header>
+    <flare-composer (createFlare)="this.createFlare($event)"></flare-composer>
     <ng-container *ngFor="let flare of flares$ | async">
       <flare-card [flare]="flare"></flare-card>
     </ng-container>`,
@@ -49,6 +49,7 @@ export class HomeComponent {
     ComposerModule,
     FlareCardModule,
     FlareCardModule,
+    FlareFeedsHeaderModule,
   ],
   exports: [HomeComponent],
 })
