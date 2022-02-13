@@ -44,7 +44,7 @@ import { RouterModule } from '@angular/router';
             <rmx-icon class="active-icon" name="notification-4-fill"></rmx-icon>
             <p class="hidden md:block">Notifications</p>
           </li>
-          <li routerLink="/profile" routerLinkActive="active">
+          <li [routerLink]="['/', user?.username]" routerLinkActive="active">
             <rmx-icon class="inactive-icon" name="user-3-line"></rmx-icon>
             <rmx-icon class="active-icon" name="user-3-fill"></rmx-icon>
             <p class="hidden md:block">Profile</p>

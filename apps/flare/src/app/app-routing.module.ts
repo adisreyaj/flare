@@ -31,17 +31,9 @@ import { ShellComponent } from './shell.component';
               import('@flare/ui/bookmark').then((m) => m.UiBookmarkModule),
           },
           {
-            path: 'profile',
-            loadChildren: () =>
-              import('@flare/ui/profile').then((m) => m.UiProfileModule),
-          },
-          {
             path: ':username',
             loadChildren: () =>
               import('@flare/ui/profile').then((m) => m.UiProfileModule),
-            data: {
-              external: true,
-            },
           },
         ],
       },

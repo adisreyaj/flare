@@ -11,7 +11,7 @@ export class AuthService {
 
   me() {
     return this.apollo
-      .watchQuery<{ me: User }>({
+      .query<{ me: User }>({
         query: gql`
           query me {
             me {
@@ -36,6 +36,6 @@ export class AuthService {
           }
         `,
       })
-      .valueChanges.pipe(map((result) => result.data.me));
+      .pipe(map((result) => result.data.me));
   }
 }

@@ -1,12 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { CURRENT_USER } from '@flare/ui/auth';
-import {
-  combineLatest,
-  map,
-  Observable,
-  switchMap,
-  withLatestFrom,
-} from 'rxjs';
+import { map, Observable, switchMap, withLatestFrom } from 'rxjs';
 import { Blog, Kudos, User } from '@flare/api-interfaces';
 import { DevToService } from './services/devto.service';
 import { HashnodeService } from './services/hashnode.service';
@@ -62,6 +56,9 @@ import { UsersService } from './services/users.service';
             </p>
           </div>
         </section>
+        <section class="mt-2">
+          <button variant="primary" zzButton>Follow</button>
+        </section>
         <section class="w-full py-6 px-6 text-center">
           <p class="text-slate-600">
             A Full stack developer working with Web technologies. Loves to build
@@ -101,11 +98,6 @@ export class ProfileComponent {
   latestHashnodeBlogs$: Observable<Blog[]>;
   latestDevToBlogs$: Observable<Blog[]>;
   kudos$: Observable<Kudos[]>;
-  user$: Observable<User>;
-  /**
-   * Whether the user is other user's profile
-   */
-  isExternalMode$: Observable<boolean>;
 
   data$: Observable<{
     isExternalMode: boolean;
@@ -124,31 +116,19 @@ export class ProfileComponent {
       this.hashnodeService.getLatestBlogs('adisreyaj');
     this.latestDevToBlogs$ = this.devToService.getLatestBlogs('adisreyaj');
     this.kudos$ = this.kudosService.kudos$;
-    this.isExternalMode$ = this.activatedRoute.data.pipe(
-      map((data) => data['external'] ?? false)
-    );
     const userName$: Observable<string> = this.activatedRoute.params
       .pipe()
       .pipe(map((params) => params['username']));
 
-    this.user$ = this.getUser(userName$);
-
-    this.data$ = combineLatest([this.user$, this.isExternalMode$]).pipe(
-      map(([user, isExternalMode]) => ({
-        isExternalMode,
-        user,
-      }))
-    );
-  }
-
-  private getUser(userName$: Observable<string>) {
-    return this.isExternalMode$.pipe(
+    this.data$ = this.loggedInUser$.pipe(
       withLatestFrom(userName$),
-      switchMap(([isExternal, username]) => {
-        if (isExternal) {
-          return this.usersService.getByUsername(username);
-        }
-        return this.loggedInUser$;
+      switchMap(([loggedInUser, username]) => {
+        return this.usersService.getByUsername(username).pipe(
+          map((data) => ({
+            user: data,
+            isExternalMode: loggedInUser.username !== username,
+          }))
+        );
       })
     );
   }
