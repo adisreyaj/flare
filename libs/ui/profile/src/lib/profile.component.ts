@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { CURRENT_USER } from '@flare/ui/auth';
-import { map, Observable, switchMap, withLatestFrom } from 'rxjs';
+import { combineLatest, map, Observable, switchMap } from 'rxjs';
 import { Blog, Kudos, User } from '@flare/api-interfaces';
 import { DevToService } from './services/devto.service';
 import { HashnodeService } from './services/hashnode.service';
@@ -122,8 +122,7 @@ export class ProfileComponent {
       .pipe()
       .pipe(map((params) => params['username']));
 
-    this.data$ = this.loggedInUser$.pipe(
-      withLatestFrom(userName$),
+    this.data$ = combineLatest([this.loggedInUser$, userName$]).pipe(
       switchMap(([loggedInUser, username]) => {
         return this.usersService.getByUsername(username).pipe(
           map((data) => ({
