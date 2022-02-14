@@ -183,7 +183,6 @@ export class UsersService {
   }
 
   giveKudos(input: GiveKudosInput, user: CurrentUser) {
-    console.log(input, user);
     return this.prisma.kudos.create({
       data: {
         kudosById: user.id,

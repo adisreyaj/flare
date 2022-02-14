@@ -19,12 +19,15 @@ import { setContext } from '@apollo/client/link/context';
 import { API_CONFIG } from '@flare/ui/shared';
 import { ShellComponent } from './shell.component';
 import { SidebarComponentModule } from '@flare/ui/components';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent, ShellComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     SidebarComponentModule,
   ],

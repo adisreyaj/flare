@@ -71,7 +71,7 @@ import { RouterModule } from '@angular/router';
     </div>
     <footer
       *ngIf="user"
-      class="flex cursor-pointer gap-2 border-t border-slate-200 p-4 hover:bg-slate-100"
+      class="flex cursor-pointer gap-2  p-4 hover:bg-slate-100"
     >
       <img
         [src]="user.image"

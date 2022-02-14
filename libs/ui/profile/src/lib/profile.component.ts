@@ -1,12 +1,22 @@
 import { Component, Inject } from '@angular/core';
 import { CURRENT_USER } from '@flare/ui/auth';
-import { combineLatest, map, Observable, switchMap } from 'rxjs';
+import {
+  combineLatest,
+  filter,
+  map,
+  Observable,
+  switchMap,
+  tap,
+  withLatestFrom,
+} from 'rxjs';
 import { Blog, Kudos, User } from '@flare/api-interfaces';
 import { DevToService } from './services/devto.service';
 import { HashnodeService } from './services/hashnode.service';
 import { KudosService } from './services/kudos.service';
 import { ActivatedRoute } from '@angular/router';
 import { UsersService } from './services/users.service';
+import { ModalService } from 'zigzag';
+import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos-modal.component';
 
 @Component({
   selector: 'flare-profile',
@@ -78,7 +88,9 @@ import { UsersService } from './services/users.service';
             <h4 class="font-semibold">Kudos</h4>
             <ng-container *ngIf="data.isExternalMode">
               <div>
-                <button zzButton size="sm">Give Kudos</button>
+                <button zzButton size="sm" (click)="giveKudos()">
+                  Give Kudos
+                </button>
               </div>
             </ng-container>
           </header>
@@ -112,12 +124,12 @@ export class ProfileComponent {
     private readonly devToService: DevToService,
     private readonly kudosService: KudosService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    private readonly modal: ModalService
   ) {
     this.latestHashnodeBlogs$ =
       this.hashnodeService.getLatestBlogs('adisreyaj');
     this.latestDevToBlogs$ = this.devToService.getLatestBlogs('adisreyaj');
-    this.kudos$ = this.kudosService.kudos$;
     const userName$: Observable<string> = this.activatedRoute.params
       .pipe()
       .pipe(map((params) => params['username']));
@@ -132,6 +144,10 @@ export class ProfileComponent {
         );
       })
     );
+    this.kudos$ = this.data$.pipe(
+      tap((data) => console.log(`Getting Kudos for ${data.user.username}`)),
+      switchMap((data) => this.kudosService.getKudos(data.user.username))
+    );
   }
 
   follow(user: User) {
@@ -140,5 +156,21 @@ export class ProfileComponent {
 
   unfollow(user: User) {
     this.usersService.unfollow(user.id).subscribe();
+  }
+
+  giveKudos() {
+    const modalRef = this.modal.open(ProfileKudosModalComponent, {
+      size: 'md',
+    });
+
+    modalRef.afterClosed$
+      .pipe(
+        filter((result) => !!result),
+        withLatestFrom(this.data$.pipe(map((data) => data.user))),
+        switchMap(([text, user]) =>
+          this.kudosService.giveKudos({ userId: user.id, content: { text } })
+        )
+      )
+      .subscribe();
   }
 }
