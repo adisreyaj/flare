@@ -7,7 +7,8 @@ import { FlareService } from '@flare/ui/flare';
 
 @Component({
   selector: 'flare-bookmark',
-  template: ` <flare-feeds-header title="Bookmarks">
+  template: `
+    <flare-feeds-header title="Bookmarks">
       <button
         [zzDropdownTrigger]="flareMoreOptions"
         placement="bottom-start"
@@ -24,13 +25,36 @@ import { FlareService } from '@flare/ui/flare';
         </zz-dropdown>
       </button>
     </flare-feeds-header>
-    <ng-container *ngFor="let flare of bookmarkedFlares$ | async">
-      <flare-card
-        context="BOOKMARK"
-        [flare]="flare"
-        (action)="handleFlareCardActions($event)"
-      ></flare-card>
-    </ng-container>`,
+    <ng-container *ngIf="bookmarkedFlares$ | async as bookmarkedFlares">
+      <ng-container *ngFor="let flare of bookmarkedFlares">
+        <flare-card
+          context="BOOKMARK"
+          [flare]="flare"
+          (action)="handleFlareCardActions($event)"
+        ></flare-card>
+      </ng-container>
+      <ng-container *ngIf="bookmarkedFlares.length === 0">
+        <div class="mt-10 grid place-items-center">
+          <div class="flex flex-col items-center">
+            <img
+              class="h-80"
+              src="assets/images/no-bookmark.png"
+              alt="No Bookmarks"
+            />
+            <div class="text-center">
+              <p class="text-lg font-semibold">
+                Uhoh...You don't have any bookmarks yet.
+              </p>
+              <p class="text-slate-500">
+                Go start bookmarking your favorite flares so you don't loose
+                them...
+              </p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  `,
 })
 export class BookmarkComponent {
   bookmarkedFlares$: Observable<Flare[]>;
