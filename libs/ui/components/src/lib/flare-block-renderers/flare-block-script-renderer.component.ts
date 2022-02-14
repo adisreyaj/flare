@@ -12,12 +12,14 @@ import { EditorConfiguration } from 'codemirror';
     class="relative rounded-md p-1"
   >
     <div
-      class="absolute top-0 left-4 z-10 grid h-full place-items-center text-sm text-white"
+      class="absolute top-0 left-4 z-10 grid place-items-center text-sm text-white"
+      [style.height.px]="36"
     >
       <p>$</p>
     </div>
     <div
-      class="absolute top-0 right-2 z-10 grid h-full place-items-center text-white"
+      class="absolute top-0 right-2 z-10 grid place-items-center text-white"
+      [style.height.px]="36"
     >
       <button
         zzTooltip="Copy command"
@@ -41,7 +43,8 @@ export class FlareBlockScriptRendererComponent {
   codeInputConfig: EditorConfiguration = {
     lineNumbers: false,
     readOnly: true,
-    inputStyle: 'contenteditable',
+    addModeClass: true,
+    spellcheck: false,
   };
 
   private readonly contentSubject = new BehaviorSubject<string>('');
@@ -51,7 +54,7 @@ export class FlareBlockScriptRendererComponent {
   @Input()
   set content(value: string | undefined | null) {
     if (!isNil(value)) {
-      const sanitized = this.sanitizer.sanitize(SecurityContext.HTML, value);
+      const sanitized = this.sanitizer.sanitize(SecurityContext.NONE, value);
       if (sanitized) {
         this.contentSubject.next(sanitized);
       }
