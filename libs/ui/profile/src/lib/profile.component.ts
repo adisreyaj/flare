@@ -87,7 +87,7 @@ import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos
         >
           <flare-profile-social></flare-profile-social>
         </section>
-        <section class="w-full py-6 px-6">
+        <section class="borer-slate-200 w-full border-b py-6 px-6">
           <header class="mb-4 flex items-center justify-between">
             <h4 class="font-semibold">Kudos</h4>
             <ng-container *ngIf="data.isExternalMode">
@@ -98,15 +98,56 @@ import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos
               </div>
             </ng-container>
           </header>
-          <flare-profile-kudos [kudos]="kudos$ | async"></flare-profile-kudos>
+          <ng-container *ngIf="kudos$ | async as kudos">
+            <ng-container *ngIf="kudos.length > 0; else noKudos">
+              <flare-profile-kudos [kudos]="kudos"></flare-profile-kudos>
+            </ng-container>
+            <ng-template #noKudos>
+              <div class="grid place-items-center">
+                <div class="flex flex-col items-center">
+                  <img
+                    class="h-20 w-20"
+                    src="assets/images/kudos.svg"
+                    alt="Kudos"
+                  />
+                  <p class="font-semibold">No kudos received</p>
+                  <p class="text-slate-500">
+                    Do amazing stuff and things will follow...
+                  </p>
+                </div>
+              </div>
+            </ng-template>
+          </ng-container>
         </section>
-        <section class="p-6">
+        <section class="w-full p-6">
           <header class="mb-4">
-            <h4 class="font-semibold">Latest Hashnode Blogs</h4>
+            <h4 class="font-semibold">Latest Blogs</h4>
           </header>
-          <flare-profile-blogs
-            [blogs]="latestHashnodeBlogs$ | async"
-          ></flare-profile-blogs>
+          <ng-container
+            *ngIf="latestHashnodeBlogs$ | async as latestHashnodeBlogs"
+          >
+            <ng-container *ngIf="false; else noKudos">
+              <flare-profile-blogs
+                [blogs]="latestHashnodeBlogs"
+              ></flare-profile-blogs>
+            </ng-container>
+            <ng-template #noKudos>
+              <div class="grid place-items-center">
+                <div class="flex flex-col items-center">
+                  <img
+                    class="h-20 w-20"
+                    src="assets/images/blogs.svg"
+                    alt="Kudos"
+                  />
+                  <p class="font-semibold">No blogs added</p>
+                  <p class="text-slate-500">
+                    Start by adding your hashnode or dev.to blog usernames in
+                    profile.
+                  </p>
+                </div>
+              </div>
+            </ng-template>
+          </ng-container>
         </section>
       </div>
     </ng-container>
