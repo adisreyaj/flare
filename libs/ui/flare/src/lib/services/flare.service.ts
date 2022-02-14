@@ -9,10 +9,10 @@ import { map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 export class FlareService {
   flares$: Observable<Flare[]>;
 
-  private updateSubject = new Subject<void>();
-  private readonly update$ = this.updateSubject.asObservable();
+  private refreshSubject = new Subject<void>();
+  private readonly refresh$ = this.refreshSubject.asObservable();
   constructor(private readonly apollo: Apollo) {
-    this.flares$ = this.update$.pipe(
+    this.flares$ = this.refresh$.pipe(
       startWith(null),
       switchMap(() => this.getAll(true)),
       map((result) => result.data.flares)
@@ -77,7 +77,7 @@ export class FlareService {
           input,
         },
       })
-      .pipe(tap(() => this.updateSubject.next()));
+      .pipe(tap(() => this.refreshSubject.next()));
   }
 
   delete(id: string) {
@@ -94,7 +94,7 @@ export class FlareService {
           id,
         },
       })
-      .pipe(tap(() => this.updateSubject.next()));
+      .pipe(tap(() => this.refreshSubject.next()));
   }
 
   like(id: string) {
@@ -112,7 +112,7 @@ export class FlareService {
           reaction: 'like',
         },
       })
-      .pipe(tap(() => this.updateSubject.next()));
+      .pipe(tap(() => this.refreshSubject.next()));
   }
 
   removeLike(flareId: string, likeId: string) {
@@ -130,7 +130,7 @@ export class FlareService {
           likeId,
         },
       })
-      .pipe(tap(() => this.updateSubject.next()));
+      .pipe(tap(() => this.refreshSubject.next()));
   }
 
   bookmark(flareId: string) {
@@ -147,7 +147,7 @@ export class FlareService {
           flareId,
         },
       })
-      .pipe(tap(() => this.updateSubject.next()));
+      .pipe(tap(() => this.refreshSubject.next()));
   }
 
   removeBookmark(bookmarkId: string) {
@@ -164,6 +164,6 @@ export class FlareService {
           bookmarkId,
         },
       })
-      .pipe(tap(() => this.updateSubject.next()));
+      .pipe(tap(() => this.refreshSubject.next()));
   }
 }

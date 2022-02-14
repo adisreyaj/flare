@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, startWith, Subject, switchMap } from 'rxjs';
+import { map, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { Flare } from '@flare/api-interfaces';
 import { Apollo, gql } from 'apollo-angular';
 
@@ -9,10 +9,10 @@ import { Apollo, gql } from 'apollo-angular';
 export class UiBookmarkService {
   bookmarkedFlares$: Observable<Flare[]>;
 
-  private updateSubject = new Subject<void>();
-  private readonly update$ = this.updateSubject.asObservable();
+  private refreshSubject = new Subject<void>();
+  private readonly refresh$ = this.refreshSubject.asObservable();
   constructor(private readonly apollo: Apollo) {
-    this.bookmarkedFlares$ = this.update$.pipe(
+    this.bookmarkedFlares$ = this.refresh$.pipe(
       startWith(null),
       switchMap(() => this.getAllBookmarkedFlares(true)),
       map((result) => result.data.bookmarkedFlares)
@@ -57,5 +57,20 @@ export class UiBookmarkService {
       `,
       fetchPolicy: refresh ? 'network-only' : 'cache-first',
     });
+  }
+
+  removeBookmark(id: string) {
+    return this.apollo
+      .mutate({
+        mutation: gql`
+          mutation RemoveBookmark($id: ID!) {
+            removeBookmark(id: $id) {
+              success
+            }
+          }
+        `,
+        variables: { id },
+      })
+      .pipe(tap(() => this.refreshSubject.next()));
   }
 }

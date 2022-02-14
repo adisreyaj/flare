@@ -4,12 +4,14 @@
       <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
       <zz-dropdown #flareMoreOptions>
         <div
-          (click)="deleteFlare(flare)"
+          (click)="
+            context === 'FEED' ? deleteFlare(flare) : removeBookmark(flare)
+          "
           class="text-red-600"
           zzDropdownCloseOnClick
           zzDropdownItem
         >
-          Delete
+          {{ context === 'FEED' ? 'Delete' : 'Remove Bookmark' }}
         </div>
       </zz-dropdown>
     </button>
@@ -70,9 +72,14 @@
         <p>{{ flare._count?.comments }}</p>
       </div>
     </button>
-    <button (click)="toggleBookmark(flare)" variant="link" zzButton>
-      <rmx-icon [name]="flare | flareBookmarkIcon" class="icon-xxs"></rmx-icon>
-    </button>
+    <ng-container *ngIf="context === 'FEED'">
+      <button (click)="toggleBookmark(flare)" variant="link" zzButton>
+        <rmx-icon
+          [name]="flare | flareBookmarkIcon"
+          class="icon-xxs"
+        ></rmx-icon>
+      </button>
+    </ng-container>
     <button variant="link" zzButton>
       <rmx-icon class="icon-xxs" name="share-line"></rmx-icon>
     </button>

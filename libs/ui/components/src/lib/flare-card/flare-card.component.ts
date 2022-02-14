@@ -1,10 +1,15 @@
-import { Component, Input, NgModule } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgModule,
+  Output,
+} from '@angular/core';
 import { ButtonModule, DropdownModule, TooltipModule } from 'zigzag';
 import { IconModule } from '@flare/ui/components';
 import { BlockType, Flare } from '@flare/api-interfaces';
 import { CommonModule } from '@angular/common';
 import { FlareBlocksRendererModule } from '../flare-block-renderers/flare-blocks-renderer.module';
-import { FlareService } from '@flare/ui/flare';
 import { FlareLikeIconPipeModule } from './flare-like.pipe';
 import { FlareBookmarkIconPipeModule } from './flare-bookmark.pipe';
 import { RouterModule } from '@angular/router';
@@ -30,25 +35,35 @@ export class FlareCardComponent {
   @Input()
   flare!: Flare;
 
-  constructor(private readonly flareService: FlareService) {}
+  @Input()
+  context: FlareCardContext = 'FEED';
+
+  @Output()
+  action = new EventEmitter<{ type: FlareCardActions; data: Flare }>();
+
+  constructor() {}
   deleteFlare(flare: Flare) {
-    this.flareService.delete(flare.id).subscribe();
+    this.action.emit({ type: 'DELETE', data: flare });
   }
 
   toggleLike(flare: Flare) {
     const isLiked = flare.likes.length > 0;
-    const request$ = isLiked
-      ? this.flareService.removeLike(flare.id, flare.likes[0].id)
-      : this.flareService.like(flare.id);
-    request$.subscribe();
+    this.action.emit({
+      type: isLiked ? 'UNLIKE' : 'LIKE',
+      data: flare,
+    });
   }
 
   toggleBookmark(flare: Flare) {
     const isBookmarked = flare.bookmarks.length > 0;
-    const request$ = isBookmarked
-      ? this.flareService.removeBookmark(flare.bookmarks[0].id)
-      : this.flareService.bookmark(flare.id);
-    request$.subscribe();
+    this.action.emit({
+      type: isBookmarked ? 'REMOVE_BOOKMARK' : 'BOOKMARK',
+      data: flare,
+    });
+  }
+
+  removeBookmark(flare: Flare) {
+    this.action.emit({ type: 'REMOVE_BOOKMARK', data: flare });
   }
 }
 
@@ -68,3 +83,11 @@ export class FlareCardComponent {
   ],
 })
 export class FlareCardModule {}
+
+export type FlareCardContext = 'FEED' | 'BOOKMARK';
+export type FlareCardActions =
+  | 'BOOKMARK'
+  | 'REMOVE_BOOKMARK'
+  | 'LIKE'
+  | 'UNLIKE'
+  | 'DELETE';

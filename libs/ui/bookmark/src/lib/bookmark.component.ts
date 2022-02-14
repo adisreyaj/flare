@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { UiBookmarkService } from './ui-bookmark.service';
 import { Observable } from 'rxjs';
 import { Flare } from '@flare/api-interfaces';
+import { FlareCardActions } from '@flare/ui/components';
+import { FlareService } from '@flare/ui/flare';
 
 @Component({
   selector: 'flare-bookmark',
@@ -23,13 +25,50 @@ import { Flare } from '@flare/api-interfaces';
       </button>
     </flare-feeds-header>
     <ng-container *ngFor="let flare of bookmarkedFlares$ | async">
-      <flare-card [flare]="flare"></flare-card>
+      <flare-card
+        context="BOOKMARK"
+        [flare]="flare"
+        (action)="handleFlareCardActions($event)"
+      ></flare-card>
     </ng-container>`,
 })
 export class BookmarkComponent {
   bookmarkedFlares$: Observable<Flare[]>;
 
-  constructor(private readonly bookmarkService: UiBookmarkService) {
+  constructor(
+    private readonly bookmarkService: UiBookmarkService,
+    private readonly flareService: FlareService
+  ) {
     this.bookmarkedFlares$ = this.bookmarkService.bookmarkedFlares$;
+  }
+
+  handleFlareCardActions($event: { type: FlareCardActions; data: Flare }) {
+    const trigger: Record<FlareCardActions, () => void> = {
+      LIKE: () => this.like($event.data),
+      UNLIKE: () => this.unlike($event.data),
+      BOOKMARK: () => this.addBookmark($event.data),
+      REMOVE_BOOKMARK: () => this.removeBookmark($event.data),
+      DELETE: () => {
+        return;
+      },
+    };
+
+    trigger[$event.type]();
+  }
+
+  removeBookmark(flare: Flare) {
+    this.bookmarkService.removeBookmark(flare.bookmarks[0].id).subscribe();
+  }
+
+  private addBookmark(flare: Flare) {
+    this.flareService.bookmark(flare.id).subscribe();
+  }
+
+  private like(flare: Flare) {
+    this.flareService.like(flare.id).subscribe();
+  }
+
+  private unlike(flare: Flare) {
+    this.flareService.removeLike(flare.id, flare.likes[0].id).subscribe();
   }
 }
