@@ -71,6 +71,7 @@ import { RouterModule } from '@angular/router';
     </div>
     <footer
       *ngIf="user"
+      [routerLink]="['/', user.username]"
       class="flex cursor-pointer gap-2  p-4 hover:bg-slate-100"
     >
       <img
