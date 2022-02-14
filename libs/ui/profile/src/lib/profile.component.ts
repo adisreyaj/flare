@@ -67,8 +67,12 @@ import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos
           </div>
         </section>
         <section class="mt-2" *ngIf="data.isExternalMode">
-          <button variant="primary" zzButton (click)="follow(data.user)">
-            Follow
+          <button
+            [variant]="data.user.isFollowing ? 'neutral' : 'primary'"
+            zzButton
+            (click)="toggleFollow(data.user, data.user.isFollowing)"
+          >
+            {{ data.user.isFollowing ? 'Un Follow' : 'Follow' }}
           </button>
         </section>
         <section class="w-full py-6 px-6 text-center">
@@ -148,6 +152,11 @@ export class ProfileComponent {
       tap((data) => console.log(`Getting Kudos for ${data.user.username}`)),
       switchMap((data) => this.kudosService.getKudos(data.user.username))
     );
+  }
+
+  toggleFollow(user: User, isFollowing: boolean) {
+    if (isFollowing) this.unfollow(user);
+    else this.follow(user);
   }
 
   follow(user: User) {

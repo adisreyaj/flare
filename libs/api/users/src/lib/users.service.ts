@@ -6,7 +6,7 @@ import {
 import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser } from '@flare/api/shared';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { catchError, from, throwError } from 'rxjs';
+import { catchError, forkJoin, from, map, of, throwError } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -22,29 +22,60 @@ export class UsersService {
     });
   }
 
-  findByUsername(username: string) {
-    return this.prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-      include: {
-        bio: true,
-        followers: true,
-        following: true,
-        kudos: {
-          include: {
-            kudosBy: true,
+  findByUsername(username: string, currentUser: CurrentUser) {
+    const isFollowingTheUser$ =
+      username !== currentUser.username
+        ? from(
+            this.prisma.user.findUnique({
+              where: {
+                username,
+              },
+              select: {
+                followers: {
+                  where: {
+                    id: {
+                      equals: currentUser.id,
+                    },
+                  },
+                },
+              },
+            })
+          ).pipe(map((result) => !!result.followers.length))
+        : of(false);
+
+    const userDetails$ = from(
+      this.prisma.user.findUnique({
+        where: {
+          username: username,
+        },
+        include: {
+          bio: true,
+          followers: true,
+          following: true,
+          kudos: {
+            include: {
+              kudosBy: true,
+            },
+          },
+          kudosGiven: true,
+          _count: {
+            select: {
+              following: true,
+              followers: true,
+            },
           },
         },
-        kudosGiven: true,
-        _count: {
-          select: {
-            following: true,
-            followers: true,
-          },
-        },
-      },
-    });
+      })
+    );
+
+    return forkJoin([userDetails$, isFollowingTheUser$]).pipe(
+      map(([user, isFollowing]) => {
+        return {
+          ...user,
+          isFollowing,
+        };
+      })
+    );
   }
 
   findOne(id: string) {

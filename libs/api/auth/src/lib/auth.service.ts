@@ -33,6 +33,7 @@ export class AuthService {
     const payload = {
       email: user.email,
       sub: user.id,
+      username: user.username,
       aud: 'flare-web',
       iss: 'flare',
     };
