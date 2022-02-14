@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { FlareBlockImageInputComponent } from './flare-block-image-input.component';
 import { IconModule } from '../icon/icon.module';
 import { SanitizeUrlPipeModule } from '@flare/ui/shared';
+import { ButtonModule, DropdownModule, TooltipModule } from 'zigzag';
+import { CodeModePipeModule } from '../code-input/code-mode.pipe';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,16 @@ import { SanitizeUrlPipeModule } from '@flare/ui/shared';
     FlareBlockScriptInputComponent,
     FlareBlockImageInputComponent,
   ],
-  imports: [CodeInputModule, CommonModule, SanitizeUrlPipeModule, IconModule],
+  imports: [
+    CodeInputModule,
+    CommonModule,
+    SanitizeUrlPipeModule,
+    IconModule,
+    DropdownModule,
+    ButtonModule,
+    CodeModePipeModule,
+    TooltipModule,
+  ],
   exports: [
     FlareBlockTextInputComponent,
     FlareBlockCodeInputComponent,

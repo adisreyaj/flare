@@ -14,3 +14,4 @@ export interface BlockData<BlockContent = unknown> {
 }
 
 export type ImageBlockData = BlockData<{ file?: File; url: string }[]>;
+export type CodeBlockData = BlockData<{ value: string; mode: string }>;

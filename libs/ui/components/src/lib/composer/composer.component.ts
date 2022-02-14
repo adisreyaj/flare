@@ -74,7 +74,9 @@ export class ComposerComponent {
     this.blocksFormArray.push(
       new FormControl({
         type: block,
-        content: '',
+        content: {
+          value: '',
+        },
       })
     );
   }

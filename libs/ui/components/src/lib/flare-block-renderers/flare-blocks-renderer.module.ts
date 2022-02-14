@@ -8,12 +8,15 @@ import { TooltipModule } from 'zigzag';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { FlareBlockImageRendererComponent } from './flare-block-image-renderer.component';
 import { MediaUrlPipeModule } from '../../../../shared/src/pipes/media-url.pipe';
+import { FlareBlockCodeRendererComponent } from './flare-block-code-renderer.component';
+import { CodeModePipeModule } from '../code-input/code-mode.pipe';
 
 @NgModule({
   declarations: [
     FlareBlockTextRendererComponent,
     FlareBlockScriptRendererComponent,
     FlareBlockImageRendererComponent,
+    FlareBlockCodeRendererComponent,
   ],
   imports: [
     CommonModule,
@@ -22,11 +25,13 @@ import { MediaUrlPipeModule } from '../../../../shared/src/pipes/media-url.pipe'
     TooltipModule,
     ClipboardModule,
     MediaUrlPipeModule,
+    CodeModePipeModule,
   ],
   exports: [
     FlareBlockTextRendererComponent,
     FlareBlockScriptRendererComponent,
     FlareBlockImageRendererComponent,
+    FlareBlockCodeRendererComponent,
   ],
 })
 export class FlareBlocksRendererModule {}

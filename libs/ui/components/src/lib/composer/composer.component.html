@@ -27,7 +27,9 @@
           ></flare-block-text-input>
         </ng-container>
         <ng-container *ngSwitchCase="blockTypes.code">
-          <flare-block-code-input></flare-block-code-input>
+          <flare-block-code-input
+            [formControl]="$any(blocksFormArray.controls[i])"
+          ></flare-block-code-input>
         </ng-container>
         <ng-container *ngSwitchCase="blockTypes.poll">
           <flare-block-poll-input></flare-block-poll-input> </ng-container
