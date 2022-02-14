@@ -5,7 +5,9 @@ import {
   EventEmitter,
   Input,
   NgModule,
+  OnChanges,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import * as codemirror from 'codemirror';
@@ -38,7 +40,7 @@ import { defaultsDeep, isNil } from 'lodash-es';
     `,
   ],
 })
-export class CodeInputComponent implements AfterViewInit {
+export class CodeInputComponent implements AfterViewInit, OnChanges {
   @ViewChild('editor', { static: true })
   readonly editorRef: ElementRef | null = null;
   editor: codemirror.EditorFromTextArea | null = null;
@@ -48,6 +50,15 @@ export class CodeInputComponent implements AfterViewInit {
 
   @Input()
   config: EditorConfiguration = {};
+  @Output()
+  private readonly valueChange = new EventEmitter<string>();
+  private valuePrivate = '';
+  private readonly defaultConfig = {
+    theme: 'material-palenight',
+    tabSize: 2,
+    lineNumbers: true,
+    scrollbarStyle: 'null',
+  };
 
   @Input()
   set value(value: string | null | undefined) {
@@ -59,19 +70,18 @@ export class CodeInputComponent implements AfterViewInit {
     }
   }
 
-  @Output()
-  private readonly valueChange = new EventEmitter<string>();
-  private valuePrivate = '';
-
-  private readonly defaultConfig = {
-    theme: 'material-palenight',
-    tabSize: 2,
-    lineNumbers: true,
-    scrollbarStyle: 'null',
-  };
+  get editorMode() {
+    return this.editor?.getMode().name;
+  }
 
   ngAfterViewInit() {
     this.initializeEditor();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['mode']) {
+      this.editor?.setOption('mode', changes['mode'].currentValue);
+    }
   }
 
   private initializeEditor() {
@@ -95,3 +105,14 @@ export class CodeInputComponent implements AfterViewInit {
   exports: [CodeInputComponent],
 })
 export class CodeInputModule {}
+
+export const AVAILABLE_MODES = [
+  'javascript',
+  'text/typescript',
+  'python',
+  'htmlmixed',
+  'css',
+  'sass',
+  'markdown',
+  'shell',
+];

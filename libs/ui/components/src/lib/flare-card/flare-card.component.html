@@ -50,6 +50,11 @@
               [content]="block?.content"
             ></flare-block-script-renderer>
           </ng-container>
+          <ng-container *ngSwitchCase="blockTypes.code">
+            <flare-block-code-renderer
+              [content]="block.content"
+            ></flare-block-code-renderer>
+          </ng-container>
           <ng-container *ngSwitchCase="blockTypes.images">
             <flare-block-image-renderer
               [content]="block?.content"
