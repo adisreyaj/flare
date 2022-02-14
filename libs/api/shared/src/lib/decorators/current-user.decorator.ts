@@ -11,4 +11,5 @@ export const CurrentUser = createParamDecorator(
 export interface CurrentUser {
   id: string;
   email: string;
+  username: string;
 }

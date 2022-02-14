@@ -29,6 +29,7 @@ type User {
   following: [User]
   kudos: [Kudos]
   kudosGiven: [Kudos]
+  isFollowing: Boolean!
 }
 
 type UserBio {

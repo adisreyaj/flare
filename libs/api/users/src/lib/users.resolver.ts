@@ -21,8 +21,11 @@ export class UsersResolver {
   }
 
   @Query('userByUsername')
-  findByUsername(@Args('username') username: string) {
-    return this.usersService.findByUsername(username);
+  findByUsername(
+    @Args('username') username: string,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.usersService.findByUsername(username, user);
   }
 
   @Query('users')

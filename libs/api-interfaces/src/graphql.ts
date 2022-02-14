@@ -233,6 +233,7 @@ export interface User {
     following?: Nullable<Nullable<User>[]>;
     kudos?: Nullable<Nullable<Kudos>[]>;
     kudosGiven?: Nullable<Nullable<Kudos>[]>;
+    isFollowing: boolean;
 }
 
 export interface UserBio {
