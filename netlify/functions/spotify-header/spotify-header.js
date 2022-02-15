@@ -22,14 +22,14 @@ exports.handler = async (event, context) => {
     waitUntil: 'networkidle2',
   });
 
-  const screenshot = await page.screenshot({ type: 'webp', quality: 100 });
+  const screenshot = await page.screenshot({ type: 'jpeg', quality: 100 });
 
   await browser.close();
 
   return {
     statusCode: 200,
     headers: {
-      'Content-Type': 'image/webp',
+      'Content-Type': 'image/jpeg',
       'Cache-Control': `public, immutable, no-transform, s-maxage=${maxage}, max-age=${maxage}`,
     },
     body: screenshot.toString('base64'),
