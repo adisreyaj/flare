@@ -126,7 +126,7 @@ import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos
           <ng-container
             *ngIf="latestHashnodeBlogs$ | async as latestHashnodeBlogs"
           >
-            <ng-container *ngIf="false; else noKudos">
+            <ng-container *ngIf="latestHashnodeBlogs.length > 0; else noKudos">
               <flare-profile-blogs
                 [blogs]="latestHashnodeBlogs"
               ></flare-profile-blogs>
