@@ -10,7 +10,10 @@ module.exports = {
         primary: 'var(--primary)',
         'primary-transparent-10': 'var(--primary-transparent-10)',
       },
+      aspectRatio: {
+        header: '24 / 9',
+      },
     },
   },
-  plugins: [require('@tailwindcss/line-clamp'),],
+  plugins: [require('@tailwindcss/line-clamp')],
 };

@@ -22,12 +22,12 @@ import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos
   selector: 'flare-profile',
   template: `
     <ng-container *ngIf="data$ | async as data">
-      <header style="height: 280px">
-        <div class="h-full">
+      <header class="aspect-header" style="max-height: 300px">
+        <div class="h-full w-full">
           <img
-            src="https://source.unsplash.com/1000x500"
+            src="https://flare.adi.so/cool-stuffs/spotify-header/123"
             alt=""
-            class="h-full w-full object-fill"
+            class="h-full w-full"
           />
         </div>
       </header>
