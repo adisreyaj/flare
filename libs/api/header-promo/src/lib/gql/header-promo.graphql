@@ -12,7 +12,7 @@ type Mutation {
 type HeaderPromo {
   id: ID!
   title: String!
-  description: String
+  description: String!
   image: JSON!
   createdAt: String!
   user: User!
@@ -23,6 +23,7 @@ type HeaderPromo {
 
 input HeaderPromoInput {
   title: String!
+  userId: ID!
   description: String
   price: JSON!
 }

@@ -19,6 +19,7 @@ import { ModalService } from 'zigzag';
 import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos-modal.component';
 import { ProfileHeaderPromoSubmitModalComponent } from './modals/profile-header-promo-submit/profile-header-promo-submit';
 import { HeaderPromoService } from './services/header-promo.service';
+import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-promo-received/profile-header-promo-received.component';
 
 @Component({
   selector: 'flare-profile',
@@ -36,8 +37,20 @@ import { HeaderPromoService } from './services/header-promo.service';
       <div class="relative flex flex-col items-center pb-6">
         <ng-container *ngIf="!data.isExternalMode">
           <button class="absolute top-4 right-3" zzButton size="sm">
-            Edit Profile</button
-          ><button
+            Edit Profile
+          </button>
+
+          <button
+            class="absolute top-4 left-3"
+            zzButton
+            size="sm"
+            (click)="viewPromoProposals()"
+          >
+            View Promo Proposals
+          </button>
+        </ng-container>
+        <ng-container *ngIf="data.isExternalMode">
+          <button
             class="absolute top-4 left-3"
             zzButton
             size="sm"
@@ -245,10 +258,20 @@ export class ProfileComponent {
     modalRef.afterClosed$
       .pipe(
         filter((result) => !!result),
-        switchMap((result) =>
-          this.headerPromoService.createHeaderPromo(result.data, result.jobId)
+        withLatestFrom(this.data$.pipe(map((data) => data.user))),
+        switchMap(([result, user]) =>
+          this.headerPromoService.createHeaderPromo(
+            { ...result.data, userId: user.id },
+            result.jobId
+          )
         )
       )
       .subscribe();
+  }
+
+  viewPromoProposals() {
+    this.modal.open(ProfileHeaderPromoReceivedComponent, {
+      size: 'lg',
+    });
   }
 }

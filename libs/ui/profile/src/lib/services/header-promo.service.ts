@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { HeaderPromoInput } from '@flare/api-interfaces';
+import { HeaderPromo, HeaderPromoInput } from '@flare/api-interfaces';
 import { gql } from '@apollo/client/core';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +30,34 @@ export class HeaderPromoService {
         jobId,
       },
     });
+  }
+
+  getPromosReceived() {
+    return this.apollo
+      .query<{ allHeaderPromos: HeaderPromo[] }>({
+        query: gql`
+          query GetAllPromosReceived {
+            allHeaderPromos {
+              id
+              title
+              description
+              image
+              createdAt
+              price
+              state
+              sponsor {
+                firstName
+                lastName
+                email
+                username
+              }
+              user {
+                username
+              }
+            }
+          }
+        `,
+      })
+      .pipe(map((result) => result.data.allHeaderPromos));
   }
 }

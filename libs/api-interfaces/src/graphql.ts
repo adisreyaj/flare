@@ -57,6 +57,7 @@ export interface RemoveLikeInput {
 
 export interface HeaderPromoInput {
     title: string;
+    userId: string;
     description?: Nullable<string>;
     price: JSON;
 }
@@ -223,7 +224,7 @@ export interface HeaderPromo {
     __typename?: 'HeaderPromo';
     id: string;
     title: string;
-    description?: Nullable<string>;
+    description: string;
     image: JSON;
     createdAt: string;
     user: User;

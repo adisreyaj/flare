@@ -67,7 +67,6 @@ export class ApiHeaderPromoService {
           this.prisma.headerPromo.create({
             data: {
               ...input,
-              userId: user.id,
               sponsorId: user.id,
               state: PromoState.PENDING,
               image,
@@ -100,6 +99,7 @@ export class ApiHeaderPromoService {
     });
   }
 
+  // TODO: Make generic
   protected handleFileUploadsIfJobExists(): OperatorFunction<
     { files: FileWithMeta[] },
     FileWithMeta[]
