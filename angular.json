@@ -4,6 +4,7 @@
     "api": "apps/api",
     "api-auth": "libs/api/auth",
     "api-flare": "libs/api/flare",
+    "api-header-promo": "libs/api/header-promo",
     "api-interfaces": "libs/api-interfaces",
     "api-media": "libs/api/media",
     "api-prisma": "libs/api/prisma",

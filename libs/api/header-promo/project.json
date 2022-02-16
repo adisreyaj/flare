@@ -1,0 +1,23 @@
+{
+  "root": "libs/api/header-promo",
+  "sourceRoot": "libs/api/header-promo/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api/header-promo/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/api/header-promo"],
+      "options": {
+        "jestConfig": "libs/api/header-promo/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

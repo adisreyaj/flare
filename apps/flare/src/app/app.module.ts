@@ -41,7 +41,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     {
       provide: FORM_INPUT_CONFIG,
       useValue: {
-        rounded: 'full',
+        rounded: 'md',
       },
     },
     {

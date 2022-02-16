@@ -7,6 +7,13 @@
 
 /* tslint:disable */
 /* eslint-disable */
+export enum PromoState {
+    PENDING = "PENDING",
+    ACTIVE = "ACTIVE",
+    INACTIVE = "INACTIVE",
+    REJECTED = "REJECTED"
+}
+
 export enum SponsoringType {
     ONE_TIME = "ONE_TIME",
     MONTHLY = "MONTHLY",
@@ -46,6 +53,18 @@ export interface RemoveCommentInput {
 export interface RemoveLikeInput {
     flareId: string;
     likeId: string;
+}
+
+export interface HeaderPromoInput {
+    title: string;
+    description?: Nullable<string>;
+    price: JSON;
+}
+
+export interface HeaderPromoUpdateInput {
+    title?: Nullable<string>;
+    description?: Nullable<string>;
+    price?: Nullable<JSON>;
 }
 
 export interface SponsorInput {
@@ -113,6 +132,8 @@ export interface IQuery {
     flares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
     flare(id: string): Nullable<Flare> | Promise<Nullable<Flare>>;
     bookmarkedFlares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
+    allHeaderPromos(): Nullable<Nullable<HeaderPromo>[]> | Promise<Nullable<Nullable<HeaderPromo>[]>>;
+    headerPromoById(id: string): Nullable<HeaderPromo> | Promise<Nullable<HeaderPromo>>;
     sponsors(): Nullable<Nullable<Sponsor>[]> | Promise<Nullable<Nullable<Sponsor>[]>>;
     sponsor(id: string): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
     mySponsors(): Nullable<Nullable<Sponsor>[]> | Promise<Nullable<Nullable<Sponsor>[]>>;
@@ -134,6 +155,9 @@ export interface IMutation {
     removeLike(input: RemoveLikeInput): Nullable<Flare> | Promise<Nullable<Flare>>;
     bookmark(flareId: string): Nullable<Bookmark> | Promise<Nullable<Bookmark>>;
     removeBookmark(id: string): Nullable<Success> | Promise<Nullable<Success>>;
+    createHeaderPromo(input: HeaderPromoInput, jobId: string): Nullable<HeaderPromo> | Promise<Nullable<HeaderPromo>>;
+    updateHeaderPromo(id: string, input: HeaderPromoUpdateInput, jobId?: Nullable<string>): Nullable<HeaderPromo> | Promise<Nullable<HeaderPromo>>;
+    deleteHeaderPromo(id: string): Nullable<HeaderPromo> | Promise<Nullable<HeaderPromo>>;
     sponsor(input?: Nullable<SponsorInput>): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
     cancelSponsorship(id: string): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
     tip(input?: Nullable<TipInput>): Nullable<Tip> | Promise<Nullable<Tip>>;
@@ -193,6 +217,19 @@ export interface Bookmark {
     flare: Flare;
     author: User;
     createdAt: string;
+}
+
+export interface HeaderPromo {
+    __typename?: 'HeaderPromo';
+    id: string;
+    title: string;
+    description?: Nullable<string>;
+    image: JSON;
+    createdAt: string;
+    user: User;
+    sponsor: User;
+    price: JSON;
+    state?: Nullable<PromoState>;
 }
 
 export interface Sponsor {

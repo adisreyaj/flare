@@ -8,28 +8,31 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(cuid())
-  firstName  String
-  lastName   String
-  image      String?
-  email      String     @unique
-  username   String     @unique
-  password   String?
-  followers  User[]     @relation("UserFollows", references: [id])
-  following  User[]     @relation("UserFollows", references: [id])
-  bio        UserBio?   @relation(fields: [userBioId], references: [id])
-  userBioId  String?
-  comments   Comment[]
-  flares     Flare[]    @relation("FlareAuthor")
-  likes      Like[]
-  bookings   Booking[]
-  tips       Tip[]      @relation("TippingUser")
-  tipsGiven  Tip[]      @relation("TippedUser")
-  sponsors   Sponsor[]  @relation("SponsoringUser")
-  sponsoring Sponsor[]  @relation("SponsoredByUser")
-  bookmarks  Bookmark[]
-  kudos      Kudos[]    @relation("KudosUser")
-  kudosGiven Kudos[]    @relation("KudosByUser")
+  id                   String        @id @default(cuid())
+  firstName            String
+  lastName             String
+  image                String?
+  email                String        @unique
+  username             String        @unique
+  password             String?
+  followers            User[]        @relation("UserFollows", references: [id])
+  following            User[]        @relation("UserFollows", references: [id])
+  bio                  UserBio?      @relation(fields: [userBioId], references: [id])
+  userBioId            String?
+  comments             Comment[]
+  flares               Flare[]       @relation("FlareAuthor")
+  likes                Like[]
+  bookings             Booking[]
+  tips                 Tip[]         @relation("TippingUser")
+  tipsGiven            Tip[]         @relation("TippedUser")
+  sponsors             Sponsor[]     @relation("SponsoringUser")
+  sponsoring           Sponsor[]     @relation("SponsoredByUser")
+  bookmarks            Bookmark[]
+  kudos                Kudos[]       @relation("KudosUser")
+  kudosGiven           Kudos[]       @relation("KudosByUser")
+  preferences          Preferences?
+  headerPromosReceived HeaderPromo[] @relation("PromoReceivedByUser")
+  headerPromosSent     HeaderPromo[] @relation("PromoSentByUser")
 }
 
 model UserBio {
@@ -42,6 +45,15 @@ model UserBio {
   hashnode    String?
   devto       String?
   user        User[]
+}
+
+model Preferences {
+  id                   String  @id @default(cuid())
+  user                 User    @relation(fields: [userId], references: [id])
+  userId               String  @unique
+  displayKudos         Boolean
+  displayHashnodeBlogs Boolean
+  displayDevToBlogs    Boolean
 }
 
 model Flare {
@@ -172,6 +184,20 @@ model Kudos {
   userId    String
 }
 
+model HeaderPromo {
+  id          String     @id @default(cuid())
+  user        User       @relation(fields: [userId], references: [id], name: "PromoReceivedByUser")
+  userId      String
+  sponsor     User       @relation(fields: [sponsorId], references: [id], name: "PromoSentByUser")
+  sponsorId   String
+  image       Json
+  title       String
+  description String?
+  price       Json
+  state       PromoState
+  createdAt   DateTime   @default(now())
+}
+
 enum BookingStatus {
   PENDING
   CONFIRMED
@@ -182,4 +208,11 @@ enum SponsoringType {
   ONE_TIME
   MONTHLY
   ANNUALLY
+}
+
+enum PromoState {
+  PENDING
+  ACTIVE
+  INACTIVE
+  REJECTED
 }

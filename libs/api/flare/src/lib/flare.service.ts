@@ -78,10 +78,13 @@ export class FlareService {
     const query$ = isNil(flare.jobId)
       ? createFlare$()
       : from(this.mediaService.getJobData(flare.jobId)).pipe(
-          handleFileUploadsIfJobExists(),
+          this.handleFileUploadsIfJobExists(),
           switchMap((files) => createFlare$(files))
         );
     return query$.pipe(
+      tap(() => {
+        this.mediaService.runJobImmediately(flare.jobId);
+      }),
       catchError((err) => {
         this.logger.error(err);
         if (err instanceof HttpException) {
@@ -222,33 +225,33 @@ export class FlareService {
       authorId: user.id,
     };
   }
-}
 
-function handleFileUploadsIfJobExists(): OperatorFunction<
-  { files: FileWithMeta[] },
-  FileWithMeta[]
-> {
-  return function (source) {
-    return source.pipe(
-      switchMap((data) => {
-        if (isNil(data)) {
-          this.logger.error('Job Data not found');
-          return throwError(
-            () => new InternalServerErrorException('Media upload error')
-          );
-        } else {
-          return from(this.mediaService.uploadToCloud(data.files));
-        }
-      }),
-      switchMap((data: FileWithMeta[]) => {
-        if (isNil(data)) {
-          return throwError(
-            () => new InternalServerErrorException('Media upload error')
-          );
-        } else {
-          return of(data);
-        }
-      })
-    );
-  };
+  private handleFileUploadsIfJobExists(): OperatorFunction<
+    { files: FileWithMeta[] },
+    FileWithMeta[]
+  > {
+    return (source) => {
+      return source.pipe(
+        switchMap((data) => {
+          if (isNil(data)) {
+            this.logger.error('Job Data not found');
+            return throwError(
+              () => new InternalServerErrorException('Media upload error')
+            );
+          } else {
+            return from(this.mediaService.uploadToCloud(data.files));
+          }
+        }),
+        switchMap((data: FileWithMeta[]) => {
+          if (isNil(data)) {
+            return throwError(
+              () => new InternalServerErrorException('Media upload error')
+            );
+          } else {
+            return of(data);
+          }
+        })
+      );
+    };
+  }
 }

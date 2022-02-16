@@ -1,0 +1,42 @@
+type Query {
+  allHeaderPromos: [HeaderPromo]
+  headerPromoById(id: ID!): HeaderPromo
+}
+
+type Mutation {
+  createHeaderPromo(input: HeaderPromoInput!, jobId: String!): HeaderPromo
+  updateHeaderPromo(id: ID!, input: HeaderPromoUpdateInput!, jobId: String): HeaderPromo
+  deleteHeaderPromo(id: ID!): HeaderPromo
+}
+
+type HeaderPromo {
+  id: ID!
+  title: String!
+  description: String
+  image: JSON!
+  createdAt: String!
+  user: User!
+  sponsor: User!
+  price: JSON!
+  state: PromoState
+}
+
+input HeaderPromoInput {
+  title: String!
+  description: String
+  price: JSON!
+}
+
+
+input HeaderPromoUpdateInput {
+  title: String
+  description: String
+  price: JSON
+}
+
+enum PromoState {
+  PENDING
+  ACTIVE
+  INACTIVE
+  REJECTED
+}

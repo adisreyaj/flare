@@ -24,6 +24,9 @@ export class ApiMediaService {
    * @param jobId - job id
    */
   runJobImmediately(jobId: string) {
+    if (!jobId) {
+      return;
+    }
     return this.mediaQueue.runJobImmediately(jobId);
   }
 
