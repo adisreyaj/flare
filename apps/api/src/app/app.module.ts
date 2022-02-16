@@ -13,6 +13,7 @@ import { AuthGuard, AuthModule } from '@flare/api/auth';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
+import { ApiHeaderPromoModule } from '@flare/api/header-promo';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { LoggerModule } from 'nestjs-pino';
     ApiMediaModule,
     SponsorsModule,
     TipsModule,
+    ApiHeaderPromoModule,
   ],
   controllers: [],
   providers: [
