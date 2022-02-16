@@ -111,6 +111,7 @@
     "@typescript-eslint/eslint-plugin": "~5.10.0",
     "@typescript-eslint/parser": "~5.10.0",
     "chrome-aws-lambda": "^10.1.0",
+    "cookie": "^0.4.2",
     "cypress": "^9.1.0",
     "eslint": "~8.7.0",
     "eslint-config-prettier": "8.1.0",
