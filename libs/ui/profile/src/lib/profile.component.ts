@@ -9,7 +9,7 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs';
-import { Blog, Kudos, User } from '@flare/api-interfaces';
+import { Blog, HeaderPromoInput, Kudos, User } from '@flare/api-interfaces';
 import { DevToService } from './services/devto.service';
 import { HashnodeService } from './services/hashnode.service';
 import { KudosService } from './services/kudos.service';
@@ -17,18 +17,17 @@ import { ActivatedRoute } from '@angular/router';
 import { UsersService } from './services/users.service';
 import { ModalService } from 'zigzag';
 import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos-modal.component';
+import { ProfileHeaderPromoSubmitModalComponent } from './modals/profile-header-promo-submit/profile-header-promo-submit';
+import { HeaderPromoService } from './services/header-promo.service';
 
 @Component({
   selector: 'flare-profile',
   template: `
     <ng-container *ngIf="data$ | async as data">
-      <header class="aspect-header" style="max-height: 300px">
+      <header class="relative aspect-header" style="max-height: 300px">
         <div class="h-full w-full">
           <img
-            [src]="
-              'https://flare.adi.so/cool-stuffs/spotify-header/@' +
-              data.user.username
-            "
+            src="https://source.unsplash.com/800x300"
             alt=""
             class="h-full w-full"
           />
@@ -37,7 +36,14 @@ import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos
       <div class="relative flex flex-col items-center pb-6">
         <ng-container *ngIf="!data.isExternalMode">
           <button class="absolute top-4 right-3" zzButton size="sm">
-            Edit Profile
+            Edit Profile</button
+          ><button
+            class="absolute top-4 left-3"
+            zzButton
+            size="sm"
+            (click)="submitPromoProposal()"
+          >
+            Submit Promo
           </button>
         </ng-container>
         <div class="-mt-14 rounded-full bg-white p-2">
@@ -173,7 +179,8 @@ export class ProfileComponent {
     private readonly kudosService: KudosService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly usersService: UsersService,
-    private readonly modal: ModalService
+    private readonly modal: ModalService,
+    private readonly headerPromoService: HeaderPromoService
   ) {
     this.latestHashnodeBlogs$ =
       this.hashnodeService.getLatestBlogs('adisreyaj');
@@ -222,6 +229,24 @@ export class ProfileComponent {
         withLatestFrom(this.data$.pipe(map((data) => data.user))),
         switchMap(([text, user]) =>
           this.kudosService.giveKudos({ userId: user.id, content: { text } })
+        )
+      )
+      .subscribe();
+  }
+
+  submitPromoProposal() {
+    const modalRef = this.modal.open<
+      void,
+      { data: HeaderPromoInput; jobId: string }
+    >(ProfileHeaderPromoSubmitModalComponent, {
+      size: 'md',
+    });
+
+    modalRef.afterClosed$
+      .pipe(
+        filter((result) => !!result),
+        switchMap((result) =>
+          this.headerPromoService.createHeaderPromo(result.data, result.jobId)
         )
       )
       .subscribe();

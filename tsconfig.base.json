@@ -19,6 +19,7 @@
       "@flare/api-interfaces": ["libs/api-interfaces/src/index.ts"],
       "@flare/api/auth": ["libs/api/auth/src/index.ts"],
       "@flare/api/flare": ["libs/api/flare/src/index.ts"],
+      "@flare/api/header-promo": ["libs/api/header-promo/src/index.ts"],
       "@flare/api/media": ["libs/api/media/src/index.ts"],
       "@flare/api/prisma": ["libs/api/prisma/src/index.ts"],
       "@flare/api/shared": ["libs/api/shared/src/index.ts"],
