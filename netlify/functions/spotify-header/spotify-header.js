@@ -30,12 +30,10 @@ const getAccessToken = async (refreshToken) => {
       refresh_token: refreshToken,
     }).toString(),
   });
-  console.log('Access Token Response:', statusCode);
   return body.json();
 };
 
 const getNowPlayingSongFromSpotify = async (accessToken) => {
-  console.log('Got access token', accessToken);
   return request(NOW_PLAYING_ENDPOINT, {
     method: 'GET',
     headers: {
@@ -83,7 +81,6 @@ const getScreenshot = async ({ title, artist, album, image }) => {
 
 const getSongDataFromSpotify = async (accessToken) => {
   const { statusCode, body } = await getNowPlayingSongFromSpotify(accessToken);
-  console.log('Got response from Spotify', statusCode);
   const result = await body.json();
   const { items } = result;
   const {
@@ -97,10 +94,15 @@ const getSongDataFromSpotify = async (accessToken) => {
   return { title, artist, album: albumName, image };
 };
 
+const errorResponse = {
+  statusCode: 500,
+  body: JSON.stringify({
+    error: 'Something went wrong',
+  }),
+};
+
 exports.handler = async (event) => {
-  console.log(`Running on ${isDev ? 'dev' : 'prod'}`);
   const username = event.path.split('/@')[1];
-  console.log('Getting Header for Image', username);
   let songInfo = null;
   let cookieData = null;
   const cookies = cookie.parse(event.headers['cookie']);
@@ -116,12 +118,7 @@ exports.handler = async (event) => {
       cookieData = cookie;
     }
   } catch (e) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: 'Something went wrong',
-      }),
-    };
+    return errorResponse;
   }
   try {
     const screenshot = await getScreenshot(songInfo);
@@ -136,11 +133,6 @@ exports.handler = async (event) => {
       isBase64Encoded: true,
     };
   } catch (e) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: 'Something went wrong',
-      }),
-    };
+    return errorResponse;
   }
 };

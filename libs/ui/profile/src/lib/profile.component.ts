@@ -25,7 +25,10 @@ import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos
       <header class="aspect-header" style="max-height: 300px">
         <div class="h-full w-full">
           <img
-            src="https://flare.adi.so/cool-stuffs/spotify-header/123"
+            [src]="
+              'https://flare.adi.so/cool-stuffs/spotify-header/@' +
+              data.user.username
+            "
             alt=""
             class="h-full w-full"
           />
