@@ -42,4 +42,9 @@ export class HeaderPromoResolver {
   deleteHeaderPromo(@Args('id') id: string, @CurrentUser() user: CurrentUser) {
     return this.headerPromoService.delete(id, user);
   }
+
+  @Mutation('applyHeaderPromo')
+  applyHeaderPromo(@Args('id') id: string, @CurrentUser() user: CurrentUser) {
+    return this.headerPromoService.applyHeaderPromo(id, user);
+  }
 }

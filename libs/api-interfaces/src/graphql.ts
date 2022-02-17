@@ -20,6 +20,11 @@ export enum SponsoringType {
     ANNUALLY = "ANNUALLY"
 }
 
+export enum HeaderType {
+    DEFAULT = "DEFAULT",
+    PROMO = "PROMO"
+}
+
 export interface CurrencyInput {
     symbol: string;
     code: string;
@@ -128,6 +133,11 @@ export interface Currency {
     code: string;
 }
 
+export interface Success {
+    __typename?: 'Success';
+    success: boolean;
+}
+
 export interface IQuery {
     __typename?: 'IQuery';
     flares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
@@ -159,6 +169,7 @@ export interface IMutation {
     createHeaderPromo(input: HeaderPromoInput, jobId: string): Nullable<HeaderPromo> | Promise<Nullable<HeaderPromo>>;
     updateHeaderPromo(id: string, input: HeaderPromoUpdateInput, jobId?: Nullable<string>): Nullable<HeaderPromo> | Promise<Nullable<HeaderPromo>>;
     deleteHeaderPromo(id: string): Nullable<HeaderPromo> | Promise<Nullable<HeaderPromo>>;
+    applyHeaderPromo(id: string): Nullable<Success> | Promise<Nullable<Success>>;
     sponsor(input?: Nullable<SponsorInput>): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
     cancelSponsorship(id: string): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
     tip(input?: Nullable<TipInput>): Nullable<Tip> | Promise<Nullable<Tip>>;
@@ -169,11 +180,6 @@ export interface IMutation {
     unfollow(userId: string): Nullable<User> | Promise<Nullable<User>>;
     giveKudos(input?: Nullable<GiveKudosInput>): Nullable<User> | Promise<Nullable<User>>;
     removeKudos(id: string): Nullable<User> | Promise<Nullable<User>>;
-}
-
-export interface Success {
-    __typename?: 'Success';
-    success: boolean;
 }
 
 export interface Flare {
@@ -272,6 +278,7 @@ export interface User {
     kudos?: Nullable<Nullable<Kudos>[]>;
     kudosGiven?: Nullable<Nullable<Kudos>[]>;
     isFollowing: boolean;
+    preferences: UserPreferences;
 }
 
 export interface UserBio {
@@ -284,6 +291,32 @@ export interface UserBio {
     facebook?: Nullable<string>;
     hashnode?: Nullable<string>;
     devto?: Nullable<string>;
+}
+
+export interface UserPreferences {
+    __typename?: 'UserPreferences';
+    id: string;
+    user: User;
+    kudos: PreferenceKudos;
+    blogs: PreferenceBlogs;
+    header: PreferenceHeader;
+}
+
+export interface PreferenceKudos {
+    __typename?: 'PreferenceKudos';
+    enabled: boolean;
+}
+
+export interface PreferenceBlogs {
+    __typename?: 'PreferenceBlogs';
+    enabled: boolean;
+}
+
+export interface PreferenceHeader {
+    __typename?: 'PreferenceHeader';
+    enabled: boolean;
+    type: HeaderType;
+    image?: Nullable<JSON>;
 }
 
 export interface Kudos {

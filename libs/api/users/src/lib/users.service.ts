@@ -87,6 +87,7 @@ export class UsersService {
         bio: true,
         followers: true,
         following: true,
+        preferences: true,
         kudos: {
           include: {
             kudosBy: true,
