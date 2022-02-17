@@ -22,6 +22,8 @@ export class AuthService {
               firstName
               lastName
               _count
+              isOnboarded
+              onboardingState
               bio {
                 id
                 description
