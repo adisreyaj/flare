@@ -7,6 +7,7 @@ import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser } from '@flare/api/shared';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { catchError, forkJoin, from, map, of, throwError } from 'rxjs';
+import { isNil } from 'lodash';
 
 @Injectable()
 export class UsersService {
@@ -113,6 +114,26 @@ export class UsersService {
         data: {
           ...user,
           username: user.email,
+          preferences: {
+            create: {
+              blogs: {
+                enabled: false,
+              },
+              kudos: {
+                enabled: false,
+              },
+              header: {
+                type: 'DEFAULT',
+                image: {
+                  name: '/assets/images/header.jpg',
+                },
+              },
+            },
+          },
+          onboardingState: {
+            state: 'SIGNED_UP',
+          },
+          isOnboarded: false,
           bio: {
             create: user.bio ?? {
               description: '',
@@ -134,22 +155,41 @@ export class UsersService {
     );
   }
 
-  update(updateUserInput: UpdateUserInput) {
-    const { id, bio, ...user } = updateUserInput;
+  update(
+    updateUserInput: UpdateUserInput,
+    currentUser: CurrentUser,
+    onBoardingState: string | null = null
+  ) {
+    const { bio, preferences, ...user } = updateUserInput;
+    console.log();
     return from(
       this.prisma.user.update({
         where: {
-          id,
+          id: currentUser.id,
         },
         data: {
           ...user,
-          ...(bio && {
-            bio: {
-              update: {
-                ...bio,
-              },
-            },
+          ...(!isNil(onBoardingState) && {
+            onboardingState: { state: onBoardingState },
           }),
+          ...(bio
+            ? {
+                bio: {
+                  update: {
+                    ...bio,
+                  },
+                },
+              }
+            : {}),
+          ...(preferences
+            ? {
+                preferences: {
+                  update: {
+                    ...preferences,
+                  },
+                },
+              }
+            : {}),
         },
         include: {
           bio: true,

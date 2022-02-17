@@ -67,6 +67,17 @@ export class AuthService {
       lastName: req.user.lastName,
       image: req.user.image,
       onboardingState: { state: 'SIGNED_UP' },
+      bio: {
+        create: {
+          twitter: '',
+          description: '',
+          github: '',
+          facebook: '',
+          devto: '',
+          hashnode: '',
+          linkedin: '',
+        },
+      },
       preferences: {
         create: {
           kudos: {

@@ -93,6 +93,24 @@ export interface TipInput {
     flare: string;
 }
 
+export interface CreateUserInput {
+    firstName: string;
+    image?: Nullable<string>;
+    lastName: string;
+    email: string;
+    password: string;
+    bio?: Nullable<UserBioInput>;
+}
+
+export interface UpdateUserInput {
+    image?: Nullable<string>;
+    firstName?: Nullable<string>;
+    lastName?: Nullable<string>;
+    password?: Nullable<string>;
+    bio?: Nullable<UserBioInput>;
+    preferences?: Nullable<UserPreferencesInput>;
+}
+
 export interface UserBioInput {
     id?: Nullable<string>;
     description?: Nullable<string>;
@@ -104,22 +122,24 @@ export interface UserBioInput {
     devto?: Nullable<string>;
 }
 
-export interface CreateUserInput {
-    firstName: string;
-    image?: Nullable<string>;
-    lastName: string;
-    email: string;
-    password: string;
-    bio?: Nullable<UserBioInput>;
+export interface UserPreferencesInput {
+    kudos?: Nullable<JSON>;
+    blogs?: Nullable<JSON>;
+    header?: Nullable<JSON>;
 }
 
-export interface UpdateUserInput {
-    id: string;
-    image?: Nullable<string>;
-    firstName?: Nullable<string>;
-    lastName?: Nullable<string>;
-    password?: Nullable<string>;
-    bio?: Nullable<UserBioInput>;
+export interface PreferenceKudosInput {
+    enabled: boolean;
+}
+
+export interface PreferenceBlogsInput {
+    enabled: boolean;
+}
+
+export interface PreferenceHeaderInput {
+    enabled: boolean;
+    type: HeaderType;
+    image?: Nullable<JSON>;
 }
 
 export interface GiveKudosInput {
@@ -175,6 +195,7 @@ export interface IMutation {
     tip(input?: Nullable<TipInput>): Nullable<Tip> | Promise<Nullable<Tip>>;
     createUser(input?: Nullable<CreateUserInput>): Nullable<User> | Promise<Nullable<User>>;
     updateUser(input?: Nullable<UpdateUserInput>): Nullable<User> | Promise<Nullable<User>>;
+    completeProfile(input?: Nullable<UpdateUserInput>): Nullable<User> | Promise<Nullable<User>>;
     deleteUser(id: string): Nullable<User> | Promise<Nullable<User>>;
     follow(userId: string): Nullable<User> | Promise<Nullable<User>>;
     unfollow(userId: string): Nullable<User> | Promise<Nullable<User>>;
@@ -279,6 +300,8 @@ export interface User {
     kudosGiven?: Nullable<Nullable<Kudos>[]>;
     isFollowing: boolean;
     preferences: UserPreferences;
+    isOnboarded: boolean;
+    onboardingState?: Nullable<JSON>;
 }
 
 export interface UserBio {

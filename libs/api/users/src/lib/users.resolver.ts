@@ -39,8 +39,19 @@ export class UsersResolver {
   }
 
   @Mutation('updateUser')
-  update(@Args('input') updateUserInput: UpdateUserInput) {
-    return this.usersService.update(updateUserInput);
+  update(
+    @Args('input') updateUserInput: UpdateUserInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.usersService.update(updateUserInput, user);
+  }
+
+  @Mutation('completeProfile')
+  completeProfile(
+    @Args('input') updateUserInput: UpdateUserInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.usersService.update(updateUserInput, user, 'SETUP_PROFILE');
   }
 
   @Mutation('deleteUser')
