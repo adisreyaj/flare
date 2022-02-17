@@ -121,7 +121,7 @@ import { MediaUploadResponse } from '@flare/api-interfaces';
         >
           Send
         </button>
-        <button zzButton type="button">Close</button>
+        <button zzButton type="button" (click)="modalRef.close()">Close</button>
       </footer>
     </form>
   </div>`,
@@ -158,7 +158,7 @@ export class ProfileHeaderPromoSubmitModalComponent {
   };
 
   constructor(
-    private readonly modalRef: ModalRef,
+    public readonly modalRef: ModalRef,
     private readonly fb: FormBuilder,
     private readonly mediaService: MediaService
   ) {}

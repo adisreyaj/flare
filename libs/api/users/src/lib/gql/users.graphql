@@ -30,6 +30,7 @@ type User {
   kudos: [Kudos]
   kudosGiven: [Kudos]
   isFollowing: Boolean!
+  preferences: UserPreferences!
 }
 
 type UserBio {
@@ -41,6 +42,28 @@ type UserBio {
   facebook: String
   hashnode: String
   devto: String
+}
+
+type UserPreferences{
+  id: String!
+  user: User!
+  kudos: PreferenceKudos!
+  blogs: PreferenceBlogs!
+  header: PreferenceHeader!
+}
+
+type PreferenceKudos{
+  enabled: Boolean!
+}
+
+type PreferenceBlogs{
+  enabled: Boolean!
+}
+
+type PreferenceHeader{
+  enabled: Boolean!
+  type: HeaderType!
+  image: JSON
 }
 
 type Kudos {
@@ -83,4 +106,9 @@ input UpdateUserInput {
 input GiveKudosInput{
 userId: ID!
 content: JSON!
+}
+
+enum HeaderType {
+DEFAULT,
+PROMO
 }

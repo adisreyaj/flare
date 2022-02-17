@@ -7,3 +7,7 @@ input CurrencyInput {
   symbol: String!
   code: String!
 }
+
+type Success {
+  success: Boolean!
+}

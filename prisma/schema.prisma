@@ -21,6 +21,8 @@ model User {
   userBioId            String?
   comments             Comment[]
   flares               Flare[]       @relation("FlareAuthor")
+  isOnboarded          Boolean       @default(false)
+  onboardingState      Json
   likes                Like[]
   bookings             Booking[]
   tips                 Tip[]         @relation("TippingUser")
@@ -51,9 +53,9 @@ model Preferences {
   id                   String  @id @default(cuid())
   user                 User    @relation(fields: [userId], references: [id])
   userId               String  @unique
-  displayKudos         Boolean
-  displayHashnodeBlogs Boolean
-  displayDevToBlogs    Boolean
+  kudos         Json
+  blogs Json
+  header               Json
 }
 
 model Flare {

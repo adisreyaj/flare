@@ -66,6 +66,22 @@ export class AuthService {
       firstName: req.user.firstName,
       lastName: req.user.lastName,
       image: req.user.image,
+      onboardingState: { state: 'SIGNED_UP' },
+      preferences: {
+        create: {
+          kudos: {
+            enabled: false,
+          },
+          header: {
+            enabled: true,
+            type: 'DEFAULT',
+            image: '/assets/images/default-header.jpg',
+          },
+          blogs: {
+            enabled: false,
+          },
+        },
+      },
     };
     try {
       const userCreated = await this.prisma.user.create({

@@ -7,6 +7,7 @@ type Mutation {
   createHeaderPromo(input: HeaderPromoInput!, jobId: String!): HeaderPromo
   updateHeaderPromo(id: ID!, input: HeaderPromoUpdateInput!, jobId: String): HeaderPromo
   deleteHeaderPromo(id: ID!): HeaderPromo
+  applyHeaderPromo(id: ID!): Success
 }
 
 type HeaderPromo {
