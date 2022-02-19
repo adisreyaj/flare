@@ -7,6 +7,8 @@ import { User } from '@flare/api-interfaces';
   providedIn: 'root',
 })
 export class AuthService {
+  public readonly isLoggedIn$ = this.me().pipe(map((user) => !!user));
+
   constructor(private apollo: Apollo) {}
 
   me() {
@@ -39,5 +41,9 @@ export class AuthService {
         `,
       })
       .pipe(map((result) => result.data.me));
+  }
+
+  init() {
+    return this.me();
   }
 }

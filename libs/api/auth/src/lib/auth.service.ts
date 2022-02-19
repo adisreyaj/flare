@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma, User } from '@prisma/client';
@@ -23,7 +27,7 @@ export class AuthService {
     });
     const isMatching = await bcrypt.compare(password, user.password);
     if (isMatching) {
-      return { toke: await this.generateAccessToken(user) };
+      return { token: await this.generateAccessToken(user) };
     } else {
       throw new UnauthorizedException();
     }
@@ -47,25 +51,47 @@ export class AuthService {
       return;
     }
 
-    const user = await this.prisma.user.findUnique({
+    let user = await this.prisma.user.findUnique({
       where: { email: req.user.email },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+      },
     });
-    if (user) {
-      const accessToken = await this.generateAccessToken(user);
-      res.redirect(
-        `${this.frontendCallBackUrl}?code=SUCCESS&token=${accessToken}`
-      );
-      return;
-    } else await this.signup(req, res);
+
+    if (!user) {
+      user = await this.signup(req.user);
+    }
+
+    if (!user) {
+      throw new InternalServerErrorException('Failed to authenticate');
+    }
+
+    const accessToken = await this.generateAccessToken(user);
+    res.cookie('token', accessToken, {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      httpOnly: true,
+      secure: true,
+      signed: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'strict',
+    });
+    res.redirect(
+      `${this.frontendCallBackUrl}?code=SUCCESS&token=${accessToken}`
+    );
+    return;
   }
 
-  private async signup(req: Request, res: Response) {
+  private async signup(userData: Partial<User>) {
     const user: Prisma.UserCreateInput = {
-      email: req.user.email,
-      username: req.user.email,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      image: req.user.image,
+      email: userData.email,
+      username: userData.email,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      image: userData.image,
       onboardingState: { state: 'SIGNED_UP' },
       bio: {
         create: {
@@ -95,18 +121,19 @@ export class AuthService {
       },
     };
     try {
-      const userCreated = await this.prisma.user.create({
+      return await this.prisma.user.create({
         data: user,
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+        },
       });
-      const accessToken = await this.generateAccessToken(userCreated);
-      res.redirect(
-        `${this.frontendCallBackUrl}?code=SUCCESS&token=${accessToken}`
-      );
     } catch (error) {
       console.error(error);
-      res.redirect(
-        `${this.frontendCallBackUrl}?code=ERROR&message=${error.message}`
-      );
+      return null;
     }
   }
 }

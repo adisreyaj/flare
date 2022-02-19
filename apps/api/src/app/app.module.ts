@@ -20,6 +20,11 @@ import { ApiHeaderPromoModule } from '@flare/api/header-promo';
     GraphQLModule.forRoot({
       typePaths: [join(process.cwd(), 'libs/**/*.graphql'), './**/*.graphql'],
       resolvers: { JSON: GraphQLJSON },
+      cors: {
+        origin: true,
+        credentials: true,
+      },
+      context: ({ req, res }) => ({ req, res }),
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
