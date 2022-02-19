@@ -41,6 +41,11 @@ import { AlreadyLoggedInGuard, AuthGuard } from '@flare/ui/auth';
               import('@flare/ui/bookmark').then((m) => m.UiBookmarkModule),
           },
           {
+            path: 'discover',
+            loadChildren: () =>
+              import('@flare/ui/discover').then((m) => m.DiscoverModule),
+          },
+          {
             path: ':username',
             loadChildren: () =>
               import('@flare/ui/profile').then((m) => m.UiProfileModule),

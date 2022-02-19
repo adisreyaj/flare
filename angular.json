@@ -17,6 +17,7 @@
     "ui-auth": "libs/ui/auth",
     "ui-bookmark": "libs/ui/bookmark",
     "ui-components": "libs/ui/components",
+    "ui-discover": "libs/ui/discover",
     "ui-flare": "libs/ui/flare",
     "ui-gql": "libs/ui/gql",
     "ui-onboarding": "libs/ui/onboarding",

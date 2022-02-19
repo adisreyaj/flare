@@ -1,6 +1,7 @@
 scalar JSON
 type Query {
   flares: [Flare]
+  popularFlares: [Flare]
   flare(id: ID!): Flare
   bookmarkedFlares: [Flare]
 }
