@@ -261,6 +261,9 @@ export class UsersService {
   }
 
   follow(userId: string, user: CurrentUser) {
+    if (user.id === userId) {
+      return throwError(() => new BadRequestException());
+    }
     return from(
       this.prisma.user.update({
         where: {
@@ -278,6 +281,9 @@ export class UsersService {
   }
 
   unfollow(userId: string, user: CurrentUser) {
+    if (user.id === userId) {
+      return throwError(() => new BadRequestException());
+    }
     return from(
       this.prisma.user.update({
         where: {
