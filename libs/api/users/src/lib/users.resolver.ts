@@ -22,6 +22,11 @@ export class UsersResolver {
     return this.usersService.findOne(user.id);
   }
 
+  @Query('getTopUsers')
+  getTopUsers(@CurrentUser() user: CurrentUser) {
+    return this.usersService.getTopUsers(user);
+  }
+
   @Query('userByUsername')
   findByUsername(
     @Args('username') username: string,
@@ -54,6 +59,11 @@ export class UsersResolver {
     @CurrentUser() user: CurrentUser
   ) {
     return this.usersService.update(updateUserInput, user, 'SETUP_PROFILE');
+  }
+
+  @Mutation('completeOnboarding')
+  completeOnboarding(@CurrentUser() user: CurrentUser) {
+    return this.usersService.completeOnboarding(user);
   }
 
   @Mutation('deleteUser')

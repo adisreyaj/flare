@@ -4,6 +4,7 @@ import { ShellComponent } from './shell.component';
 import { OnboardingGuard } from '@flare/ui/onboarding';
 import { AuthGuard } from '@flare/ui/auth';
 import { AlreadyLoggedInGuard } from '../../../../libs/ui/auth/src/lib/auth-guard/already-logged-in.guard';
+import { AlreadyOnboardedGuard } from '../../../../libs/ui/onboarding/src/lib/guards/already-onboarded.guard';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import { AlreadyLoggedInGuard } from '../../../../libs/ui/auth/src/lib/auth-guar
       },
       {
         path: 'onboarding',
-        canLoad: [AuthGuard],
+        canLoad: [AuthGuard, AlreadyOnboardedGuard],
         loadChildren: () =>
           import('@flare/ui/onboarding').then((m) => m.UiOnboardingModule),
       },

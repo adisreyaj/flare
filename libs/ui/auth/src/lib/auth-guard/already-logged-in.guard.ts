@@ -7,7 +7,7 @@ import {
 } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AuthService } from '@flare/ui/auth';
-import { from, of, switchMap } from 'rxjs';
+import { catchError, from, of, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +33,9 @@ export class AlreadyLoggedInGuard implements CanActivate, CanLoad {
         if (isLoggedIn) {
           return from(this.router.navigate(['/']));
         }
+        return of(true);
+      }),
+      catchError((err) => {
         return of(true);
       })
     );
