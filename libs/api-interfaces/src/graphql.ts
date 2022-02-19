@@ -175,6 +175,7 @@ export interface IQuery {
     userByUsername(username: string): Nullable<User> | Promise<Nullable<User>>;
     me(): Nullable<User> | Promise<Nullable<User>>;
     getTopUsers(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
+    isUsernameAvailable(username: string): Nullable<UserNameAvailability> | Promise<Nullable<UserNameAvailability>>;
 }
 
 export interface IMutation {
@@ -351,6 +352,11 @@ export interface Kudos {
     kudosBy: User;
     content: JSON;
     createdAt: string;
+}
+
+export interface UserNameAvailability {
+    __typename?: 'UserNameAvailability';
+    available: boolean;
 }
 
 export type JSON = any;

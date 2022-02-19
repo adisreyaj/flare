@@ -2,6 +2,7 @@ import { Component, NgModule } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonModule, FormInputModule } from 'zigzag';
 import {
+  AsyncValidatorFn,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -12,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '@flare/ui/auth';
 import { UpdateUserInput } from '@flare/api-interfaces';
 import { UiOnboardingService } from './services/ui-onboarding.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'flare-ui-onboarding-profile',
@@ -37,6 +39,21 @@ import { UiOnboardingService } from './services/ui-onboarding.service';
             <p class="text-sm text-slate-500">
               Complete your profile to start exploring flare!
             </p>
+          </div>
+          <div class="flex flex-col">
+            <label
+              class="mb-1 text-sm font-medium text-slate-500"
+              for="username"
+              >Username</label
+            >
+            <input
+              type="text"
+              placeholder="Choose a unique username"
+              variant="fill"
+              zzInput
+              id="username"
+              formControlName="username"
+            />
           </div>
           <div class="mt-10 mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="flex flex-col">
@@ -223,21 +240,27 @@ export class UiOnboardingProfileComponent {
     private readonly onboardingService: UiOnboardingService,
     private readonly router: Router
   ) {
-    this.profileForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', Validators.required],
-      description: [''],
-      bio: this.fb.group({
-        id: ['', Validators.required],
-        github: ['', this.socialLinkValidator('github.com')],
-        twitter: ['', this.socialLinkValidator('twitter.com')],
-        linkedin: ['', this.socialLinkValidator('linkedin.com')],
-        facebook: ['', this.socialLinkValidator('facebook.com')],
-        hashnode: ['', this.socialLinkValidator('hashnode.com')],
-        devto: ['', this.socialLinkValidator('dev.to')],
-      }),
-    });
+    this.profileForm = this.fb.group(
+      {
+        username: ['', Validators.required, this.usernameValidator],
+        firstName: ['', Validators.required],
+        lastName: ['', Validators.required],
+        email: ['', Validators.required],
+        description: [''],
+        bio: this.fb.group({
+          id: ['', Validators.required],
+          github: ['', this.socialLinkValidator('github.com')],
+          twitter: ['', this.socialLinkValidator('twitter.com')],
+          linkedin: ['', this.socialLinkValidator('linkedin.com')],
+          facebook: ['', this.socialLinkValidator('facebook.com')],
+          hashnode: ['', this.socialLinkValidator('hashnode.com')],
+          devto: ['', this.socialLinkValidator('dev.to')],
+        }),
+      },
+      {
+        updateOn: 'blur',
+      }
+    );
     this.profileForm.get('email')?.disable();
     this.authService.me().subscribe((user) => {
       if (user.onboardingState.state === 'SETUP_PROFILE') {
@@ -289,6 +312,14 @@ export class UiOnboardingProfileComponent {
 
     return data;
   }
+
+  private usernameValidator: AsyncValidatorFn = (control) => {
+    return this.onboardingService.checkUsernameAvailability(control.value).pipe(
+      map((isAvailable) => {
+        return isAvailable ? null : { usernameTaken: true };
+      })
+    );
+  };
 }
 
 @NgModule({
