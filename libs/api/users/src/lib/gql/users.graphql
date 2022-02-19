@@ -4,6 +4,7 @@ type Query {
   userByUsername(username: String!): User
   me: User
   getTopUsers: [User]
+  isUsernameAvailable(username: String!): UserNameAvailability
 }
 
 type Mutation {
@@ -78,6 +79,11 @@ type Kudos {
   kudosBy: User!
   content: JSON!
   createdAt: String!
+}
+
+
+type UserNameAvailability {
+  available: Boolean!
 }
 
 

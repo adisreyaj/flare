@@ -35,6 +35,11 @@ export class UsersResolver {
     return this.usersService.findByUsername(username, user);
   }
 
+  @Query('userByUsername')
+  isUsernameAvailable(@Args('username') username: string) {
+    return this.usersService.isUsernameAvailable(username);
+  }
+
   @Query('users')
   findAll() {
     return this.usersService.findAll();

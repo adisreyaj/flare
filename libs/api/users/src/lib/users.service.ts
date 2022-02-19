@@ -119,6 +119,16 @@ export class UsersService {
     );
   }
 
+  isUsernameAvailable(username: string) {
+    return from(
+      this.prisma.user.count({
+        where: {
+          username,
+        },
+      })
+    ).pipe(map((count) => count === 0));
+  }
+
   findOne(id: string) {
     return this.prisma.user.findUnique({
       where: {
