@@ -34,11 +34,11 @@ import { FlareService } from '@flare/ui/flare';
         ></flare-card>
       </ng-container>
       <ng-container *ngIf="bookmarkedFlares.length === 0">
-        <div class="mt-10 grid place-items-center">
+        <div class="grid place-items-center" style="height: calc(100% - 60px)">
           <div class="flex flex-col items-center">
             <img
-              class="h-80"
-              src="assets/images/no-bookmark.png"
+              class="h-24 w-24"
+              src="assets/images/mailbox.svg"
               alt="No Bookmarks"
             />
             <div class="text-center">

@@ -46,6 +46,7 @@ type UserBio {
   linkedin: String
   facebook: String
   hashnode: String
+  instagram: String
   devto: String
 }
 
@@ -107,6 +108,7 @@ input UserBioInput {
   linkedin: String
   facebook: String
   hashnode: String
+  instagram: String
   devto: String
 }
 

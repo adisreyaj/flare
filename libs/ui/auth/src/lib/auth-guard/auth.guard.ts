@@ -54,7 +54,9 @@ export class AuthGuard implements CanActivateChild, CanLoad, CanActivate {
         }
       }),
       catchError((err) => {
-        this.router.navigate(['/login']);
+        if (err?.error) {
+          this.router.navigate(['/login']);
+        }
         return throwError(() => err);
       })
     );

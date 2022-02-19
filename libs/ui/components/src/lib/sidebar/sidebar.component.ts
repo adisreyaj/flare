@@ -9,6 +9,7 @@ import { ButtonModule } from 'zigzag';
 import { IconModule } from '../icon/icon.module';
 import { User } from '@flare/api-interfaces';
 import { RouterModule } from '@angular/router';
+import { ProfileImageDefaultDirectiveModal } from '../../../../shared/src/directives/profile-image-default.directive';
 
 @Component({
   selector: 'flare-sidebar',
@@ -76,6 +77,7 @@ import { RouterModule } from '@angular/router';
     >
       <img
         [src]="user.image"
+        [flareDefaultImage]="user.username"
         [alt]="user.firstName"
         class="h-10 w-10 rounded-full"
       />
@@ -123,7 +125,13 @@ export class SidebarComponent {
 }
 
 @NgModule({
-  imports: [CommonModule, ButtonModule, IconModule, RouterModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    IconModule,
+    RouterModule,
+    ProfileImageDefaultDirectiveModal,
+  ],
   declarations: [SidebarComponent],
   exports: [SidebarComponent],
 })

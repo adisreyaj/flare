@@ -5,6 +5,7 @@ import {
   filter,
   map,
   Observable,
+  of,
   switchMap,
   tap,
   withLatestFrom,
@@ -62,6 +63,7 @@ import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-pro
         <div class="-mt-14 rounded-full bg-white p-2">
           <img
             [src]="data.user.image"
+            [flareDefaultImage]="data.user.username"
             [alt]="data.user.firstName"
             class="h-24 w-24 rounded-full"
           />
@@ -97,17 +99,17 @@ import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-pro
             {{ data.user.isFollowing ? 'Un Follow' : 'Follow' }}
           </button>
         </section>
-        <section class="w-full py-6 px-6 text-center">
-          <p class="text-slate-600">
-            A Full stack developer working with Web technologies. Loves to build
-            highly scalable and maintainable web applications and back-ends.
-            Loves everything JavaScript
-          </p>
-        </section>
+        <ng-container *ngIf="data.user.bio?.description">
+          <section class="w-full py-6 px-6 text-center">
+            <p class="text-slate-600">
+              {{ data.user.bio?.description }}
+            </p>
+          </section>
+        </ng-container>
         <section
           class="flex w-full justify-center border-b border-slate-200 py-6"
         >
-          <flare-profile-social></flare-profile-social>
+          <flare-profile-social [bio]="data.user.bio"></flare-profile-social>
         </section>
         <section class="borer-slate-200 w-full border-b py-6 px-6">
           <header class="mb-4 flex items-center justify-between">
@@ -141,13 +143,14 @@ import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-pro
             </ng-template>
           </ng-container>
         </section>
-        <section class="w-full p-6">
+        <section
+          class="w-full p-6"
+          *ngIf="latestHashnodeBlogs$ | async as latestHashnodeBlogs"
+        >
           <header class="mb-4">
             <h4 class="font-semibold">Latest Blogs</h4>
           </header>
-          <ng-container
-            *ngIf="latestHashnodeBlogs$ | async as latestHashnodeBlogs"
-          >
+          <ng-container>
             <ng-container *ngIf="latestHashnodeBlogs.length > 0; else noKudos">
               <flare-profile-blogs
                 [blogs]="latestHashnodeBlogs"
@@ -176,8 +179,7 @@ import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-pro
   `,
 })
 export class ProfileComponent {
-  latestHashnodeBlogs$: Observable<Blog[]>;
-  latestDevToBlogs$: Observable<Blog[]>;
+  latestHashnodeBlogs$: Observable<Blog[] | null>;
   kudos$: Observable<Kudos[]>;
 
   data$: Observable<{
@@ -195,9 +197,6 @@ export class ProfileComponent {
     private readonly modal: ModalService,
     private readonly headerPromoService: HeaderPromoService
   ) {
-    this.latestHashnodeBlogs$ =
-      this.hashnodeService.getLatestBlogs('adisreyaj');
-    this.latestDevToBlogs$ = this.devToService.getLatestBlogs('adisreyaj');
     const userName$: Observable<string> = this.activatedRoute.params
       .pipe()
       .pipe(map((params) => params['username']));
@@ -215,6 +214,19 @@ export class ProfileComponent {
     this.kudos$ = this.data$.pipe(
       tap((data) => console.log(`Getting Kudos for ${data.user.username}`)),
       switchMap((data) => this.kudosService.getKudos(data.user.username))
+    );
+
+    this.latestHashnodeBlogs$ = this.data$.pipe(
+      filter((data) => !!data),
+      switchMap((data) => {
+        if (data?.user?.bio?.hashnode) {
+          const username = data.user.bio.hashnode.split('/@')[1];
+          if (username) {
+            return this.hashnodeService.getLatestBlogs(username);
+          }
+        }
+        return of(null);
+      })
     );
   }
 

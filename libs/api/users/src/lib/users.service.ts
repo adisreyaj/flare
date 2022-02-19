@@ -81,7 +81,7 @@ export class UsersService {
                 },
               },
             })
-          ).pipe(map((result) => !!result.followers.length))
+          ).pipe(map((result) => result?.followers?.length > 0 ?? false))
         : of(false);
 
     const userDetails$ = from(

@@ -119,6 +119,7 @@ export interface UserBioInput {
     linkedin?: Nullable<string>;
     facebook?: Nullable<string>;
     hashnode?: Nullable<string>;
+    instagram?: Nullable<string>;
     devto?: Nullable<string>;
 }
 
@@ -315,6 +316,7 @@ export interface UserBio {
     linkedin?: Nullable<string>;
     facebook?: Nullable<string>;
     hashnode?: Nullable<string>;
+    instagram?: Nullable<string>;
     devto?: Nullable<string>;
 }
 
