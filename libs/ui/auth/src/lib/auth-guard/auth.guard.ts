@@ -11,6 +11,10 @@ import {
 import { catchError, tap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
+/**
+ * Guard that checks if the user is logged in or not.
+ * If not redirect them to login page.
+ */
 @Injectable({
   providedIn: 'root',
 })

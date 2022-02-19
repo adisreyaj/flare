@@ -1,10 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ShellComponent } from './shell.component';
-import { OnboardingGuard } from '@flare/ui/onboarding';
-import { AuthGuard } from '@flare/ui/auth';
-import { AlreadyLoggedInGuard } from '../../../../libs/ui/auth/src/lib/auth-guard/already-logged-in.guard';
-import { AlreadyOnboardedGuard } from '../../../../libs/ui/onboarding/src/lib/guards/already-onboarded.guard';
+import { AlreadyOnboardedGuard, OnboardingGuard } from '@flare/ui/onboarding';
+import { AlreadyLoggedInGuard, AuthGuard } from '@flare/ui/auth';
 
 @NgModule({
   imports: [
