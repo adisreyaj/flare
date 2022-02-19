@@ -8,7 +8,7 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
-import { tap } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
@@ -48,6 +48,10 @@ export class AuthGuard implements CanActivateChild, CanLoad, CanActivate {
           }
           this.router.navigate(['/login'], options);
         }
+      }),
+      catchError((err) => {
+        this.router.navigate(['/login']);
+        return throwError(() => err);
       })
     );
   }

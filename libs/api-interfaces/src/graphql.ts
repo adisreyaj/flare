@@ -174,6 +174,7 @@ export interface IQuery {
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
     userByUsername(username: string): Nullable<User> | Promise<Nullable<User>>;
     me(): Nullable<User> | Promise<Nullable<User>>;
+    getTopUsers(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
 }
 
 export interface IMutation {
@@ -196,6 +197,7 @@ export interface IMutation {
     createUser(input?: Nullable<CreateUserInput>): Nullable<User> | Promise<Nullable<User>>;
     updateUser(input?: Nullable<UpdateUserInput>): Nullable<User> | Promise<Nullable<User>>;
     completeProfile(input?: Nullable<UpdateUserInput>): Nullable<User> | Promise<Nullable<User>>;
+    completeOnboarding(): Nullable<Success> | Promise<Nullable<Success>>;
     deleteUser(id: string): Nullable<User> | Promise<Nullable<User>>;
     follow(userId: string): Nullable<User> | Promise<Nullable<User>>;
     unfollow(userId: string): Nullable<User> | Promise<Nullable<User>>;

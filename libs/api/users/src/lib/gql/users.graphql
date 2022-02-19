@@ -3,12 +3,14 @@ type Query {
   user(id: ID!): User
   userByUsername(username: String!): User
   me: User
+  getTopUsers: [User]
 }
 
 type Mutation {
   createUser(input: CreateUserInput): User
   updateUser(input: UpdateUserInput): User
   completeProfile(input: UpdateUserInput): User
+  completeOnboarding: Success
   deleteUser(id: ID!): User
   follow(userId: ID!): User
   unfollow(userId: ID!): User

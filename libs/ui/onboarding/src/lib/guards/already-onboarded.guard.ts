@@ -9,16 +9,12 @@ import {
 import { map, Observable } from 'rxjs';
 import { AuthService } from '@flare/ui/auth';
 
-const NEXT_STATE_ROUTE: Record<string, string[]> = {
-  SIGNED_UP: ['/onboarding/profile'],
-  SETUP_PROFILE: ['/onboarding/explore'],
-  ONBOARDING_COMPLETE: ['/'],
-};
-
 @Injectable({
   providedIn: 'root',
 })
-export class OnboardingGuard implements CanLoad, CanActivate, CanActivateChild {
+export class AlreadyOnboardedGuard
+  implements CanLoad, CanActivate, CanActivateChild
+{
   onBoardingDetails$: Observable<{
     isOnboarded: boolean;
   }>;
@@ -28,10 +24,8 @@ export class OnboardingGuard implements CanLoad, CanActivate, CanActivateChild {
   ) {
     this.onBoardingDetails$ = this.authService.me().pipe(
       map((user) => {
-        if (!user.isOnboarded) {
-          this.router.navigate(
-            NEXT_STATE_ROUTE[user.onboardingState.state] ?? ['/']
-          );
+        if (user.isOnboarded) {
+          this.router.navigate(['/']);
         }
         return {
           isOnboarded: user.isOnboarded,
@@ -44,7 +38,7 @@ export class OnboardingGuard implements CanLoad, CanActivate, CanActivateChild {
   canActivateChild(): Observable<boolean> {
     return this.onBoardingDetails$.pipe(
       map((details) => {
-        return details.isOnboarded;
+        return !details.isOnboarded;
       })
     );
   }
@@ -52,7 +46,7 @@ export class OnboardingGuard implements CanLoad, CanActivate, CanActivateChild {
   canActivate(): Observable<boolean> {
     return this.onBoardingDetails$.pipe(
       map((details) => {
-        return details.isOnboarded;
+        return !details.isOnboarded;
       })
     );
   }
@@ -60,7 +54,7 @@ export class OnboardingGuard implements CanLoad, CanActivate, CanActivateChild {
   canLoad(): Observable<boolean> {
     return this.onBoardingDetails$.pipe(
       map((details) => {
-        return details.isOnboarded;
+        return !details.isOnboarded;
       })
     );
   }
