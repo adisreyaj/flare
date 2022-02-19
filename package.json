@@ -1,7 +1,7 @@
 {
   "name": "flare",
   "version": "0.0.0",
-  "license": "MIT",
+  "license": "Apache 2.0 License",
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
@@ -13,7 +13,15 @@
     "prisma:migrate": "prisma migrate dev",
     "prepare": "husky install"
   },
-  "private": true,
+  "author": {
+    "email": "adi.sreyaj@gmail.com",
+    "name": "Adithya Sreyaj"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adisreyaj/flare"
+  },
+  "private": false,
   "dependencies": {
     "@angular/animations": "~13.2.0",
     "@angular/cdk": "^13.2.1",
