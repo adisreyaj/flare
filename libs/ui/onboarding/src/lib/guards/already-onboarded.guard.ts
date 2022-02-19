@@ -9,6 +9,12 @@ import {
 import { map, Observable } from 'rxjs';
 import { AuthService } from '@flare/ui/auth';
 
+/**
+ * Guard which checks if the user is already onboarded.
+ * If the user is already onboarded, the user is redirected to the home page.
+ *
+ * Only to be used for the onboarding route
+ */
 @Injectable({
   providedIn: 'root',
 })

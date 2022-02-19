@@ -9,6 +9,10 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '@flare/ui/auth';
 import { catchError, from, of, switchMap } from 'rxjs';
 
+/**
+ * Guard similar to `AuthGuard` but meant to be used on the login page.
+ * It redirects user to home if already logged in.
+ */
 @Injectable({
   providedIn: 'root',
 })

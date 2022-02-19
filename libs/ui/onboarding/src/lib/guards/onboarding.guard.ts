@@ -15,6 +15,12 @@ const NEXT_STATE_ROUTE: Record<string, string[]> = {
   ONBOARDING_COMPLETE: ['/'],
 };
 
+/**
+ * Guard which checks if the users has completed onboarding or not
+ * If not completed will be redirected ot the onboarding page.
+ *
+ * To be used with all pages except the onboarding page itself
+ */
 @Injectable({
   providedIn: 'root',
 })
