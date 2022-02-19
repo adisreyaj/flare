@@ -93,17 +93,6 @@ export interface TipInput {
     flare: string;
 }
 
-export interface UserBioInput {
-    id?: Nullable<string>;
-    description?: Nullable<string>;
-    github?: Nullable<string>;
-    twitter?: Nullable<string>;
-    linkedin?: Nullable<string>;
-    facebook?: Nullable<string>;
-    hashnode?: Nullable<string>;
-    devto?: Nullable<string>;
-}
-
 export interface CreateUserInput {
     firstName: string;
     image?: Nullable<string>;
@@ -114,12 +103,44 @@ export interface CreateUserInput {
 }
 
 export interface UpdateUserInput {
-    id: string;
     image?: Nullable<string>;
     firstName?: Nullable<string>;
     lastName?: Nullable<string>;
     password?: Nullable<string>;
     bio?: Nullable<UserBioInput>;
+    preferences?: Nullable<UserPreferencesInput>;
+}
+
+export interface UserBioInput {
+    id?: Nullable<string>;
+    description?: Nullable<string>;
+    github?: Nullable<string>;
+    twitter?: Nullable<string>;
+    linkedin?: Nullable<string>;
+    facebook?: Nullable<string>;
+    hashnode?: Nullable<string>;
+    instagram?: Nullable<string>;
+    devto?: Nullable<string>;
+}
+
+export interface UserPreferencesInput {
+    kudos?: Nullable<JSON>;
+    blogs?: Nullable<JSON>;
+    header?: Nullable<JSON>;
+}
+
+export interface PreferenceKudosInput {
+    enabled: boolean;
+}
+
+export interface PreferenceBlogsInput {
+    enabled: boolean;
+}
+
+export interface PreferenceHeaderInput {
+    enabled: boolean;
+    type: HeaderType;
+    image?: Nullable<JSON>;
 }
 
 export interface GiveKudosInput {
@@ -154,6 +175,8 @@ export interface IQuery {
     user(id: string): Nullable<User> | Promise<Nullable<User>>;
     userByUsername(username: string): Nullable<User> | Promise<Nullable<User>>;
     me(): Nullable<User> | Promise<Nullable<User>>;
+    getTopUsers(): Nullable<Nullable<User>[]> | Promise<Nullable<Nullable<User>[]>>;
+    isUsernameAvailable(username: string): Nullable<UserNameAvailability> | Promise<Nullable<UserNameAvailability>>;
 }
 
 export interface IMutation {
@@ -175,6 +198,8 @@ export interface IMutation {
     tip(input?: Nullable<TipInput>): Nullable<Tip> | Promise<Nullable<Tip>>;
     createUser(input?: Nullable<CreateUserInput>): Nullable<User> | Promise<Nullable<User>>;
     updateUser(input?: Nullable<UpdateUserInput>): Nullable<User> | Promise<Nullable<User>>;
+    completeProfile(input?: Nullable<UpdateUserInput>): Nullable<User> | Promise<Nullable<User>>;
+    completeOnboarding(): Nullable<Success> | Promise<Nullable<Success>>;
     deleteUser(id: string): Nullable<User> | Promise<Nullable<User>>;
     follow(userId: string): Nullable<User> | Promise<Nullable<User>>;
     unfollow(userId: string): Nullable<User> | Promise<Nullable<User>>;
@@ -279,6 +304,8 @@ export interface User {
     kudosGiven?: Nullable<Nullable<Kudos>[]>;
     isFollowing: boolean;
     preferences: UserPreferences;
+    isOnboarded: boolean;
+    onboardingState?: Nullable<JSON>;
 }
 
 export interface UserBio {
@@ -290,6 +317,7 @@ export interface UserBio {
     linkedin?: Nullable<string>;
     facebook?: Nullable<string>;
     hashnode?: Nullable<string>;
+    instagram?: Nullable<string>;
     devto?: Nullable<string>;
 }
 
@@ -326,6 +354,11 @@ export interface Kudos {
     kudosBy: User;
     content: JSON;
     createdAt: string;
+}
+
+export interface UserNameAvailability {
+    __typename?: 'UserNameAvailability';
+    available: boolean;
 }
 
 export type JSON = any;

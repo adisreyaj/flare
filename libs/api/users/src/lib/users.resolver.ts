@@ -5,7 +5,8 @@ import {
 } from '@flare/api-interfaces';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { CurrentUser } from '@flare/api/shared';
+import { CurrentUser, Token } from '@flare/api/shared';
+import { Logger } from '@nestjs/common';
 
 @Resolver('User')
 export class UsersResolver {
@@ -16,8 +17,14 @@ export class UsersResolver {
     return this.usersService.findOne(id);
   }
   @Query('me')
-  findMe(@CurrentUser() user: CurrentUser) {
+  findMe(@CurrentUser() user: CurrentUser, @Token() token: string) {
+    Logger.verbose(`Token: ${token}`);
     return this.usersService.findOne(user.id);
+  }
+
+  @Query('getTopUsers')
+  getTopUsers(@CurrentUser() user: CurrentUser) {
+    return this.usersService.getTopUsers(user);
   }
 
   @Query('userByUsername')
@@ -26,6 +33,11 @@ export class UsersResolver {
     @CurrentUser() user: CurrentUser
   ) {
     return this.usersService.findByUsername(username, user);
+  }
+
+  @Query('userByUsername')
+  isUsernameAvailable(@Args('username') username: string) {
+    return this.usersService.isUsernameAvailable(username);
   }
 
   @Query('users')
@@ -39,8 +51,24 @@ export class UsersResolver {
   }
 
   @Mutation('updateUser')
-  update(@Args('input') updateUserInput: UpdateUserInput) {
-    return this.usersService.update(updateUserInput);
+  update(
+    @Args('input') updateUserInput: UpdateUserInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.usersService.update(updateUserInput, user);
+  }
+
+  @Mutation('completeProfile')
+  completeProfile(
+    @Args('input') updateUserInput: UpdateUserInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.usersService.update(updateUserInput, user, 'SETUP_PROFILE');
+  }
+
+  @Mutation('completeOnboarding')
+  completeOnboarding(@CurrentUser() user: CurrentUser) {
+    return this.usersService.completeOnboarding(user);
   }
 
   @Mutation('deleteUser')

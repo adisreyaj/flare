@@ -6,6 +6,7 @@ import { ProfileBlogsModule } from './profile-blogs.component';
 import { ButtonModule } from 'zigzag';
 import { ProfileSocialModule } from './profile-social.component';
 import { ProfileKudosModule } from './profile-kudos.component';
+import { ProfileImageDefaultDirectiveModal } from '../../../shared/src/directives/profile-image-default.directive';
 
 @NgModule({
   declarations: [ProfileComponent],
@@ -21,6 +22,7 @@ import { ProfileKudosModule } from './profile-kudos.component';
     ButtonModule,
     ProfileSocialModule,
     ProfileKudosModule,
+    ProfileImageDefaultDirectiveModal,
   ],
 })
 export class UiProfileModule {}

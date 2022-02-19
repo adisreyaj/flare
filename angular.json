@@ -19,6 +19,7 @@
     "ui-components": "libs/ui/components",
     "ui-flare": "libs/ui/flare",
     "ui-gql": "libs/ui/gql",
+    "ui-onboarding": "libs/ui/onboarding",
     "ui-profile": "libs/ui/profile",
     "ui-shared": "libs/ui/shared"
   }

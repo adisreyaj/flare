@@ -5,11 +5,26 @@ import {
 } from '@flare/api-interfaces';
 import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser } from '@flare/api/shared';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { catchError, forkJoin, from, map, of, throwError } from 'rxjs';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import {
+  catchError,
+  forkJoin,
+  from,
+  map,
+  of,
+  switchMap,
+  throwError,
+} from 'rxjs';
+import { isNil } from 'lodash';
 
 @Injectable()
 export class UsersService {
+  logger = new Logger(UsersService.name);
   constructor(private prisma: PrismaService) {}
 
   findAll() {
@@ -19,6 +34,32 @@ export class UsersService {
         followers: true,
         following: true,
       },
+    });
+  }
+
+  getTopUsers(currentUser: CurrentUser) {
+    return this.prisma.user.findMany({
+      where: {
+        id: {
+          not: currentUser.id,
+        },
+      },
+      orderBy: {
+        followers: {
+          _count: 'desc',
+        },
+      },
+      include: {
+        followers: {
+          select: {
+            id: true,
+          },
+          where: {
+            id: currentUser.id,
+          },
+        },
+      },
+      take: 10,
     });
   }
 
@@ -40,7 +81,7 @@ export class UsersService {
                 },
               },
             })
-          ).pipe(map((result) => !!result.followers.length))
+          ).pipe(map((result) => result?.followers?.length > 0 ?? false))
         : of(false);
 
     const userDetails$ = from(
@@ -78,6 +119,16 @@ export class UsersService {
     );
   }
 
+  isUsernameAvailable(username: string) {
+    return from(
+      this.prisma.user.count({
+        where: {
+          username,
+        },
+      })
+    ).pipe(map((count) => count === 0));
+  }
+
   findOne(id: string) {
     return this.prisma.user.findUnique({
       where: {
@@ -113,6 +164,26 @@ export class UsersService {
         data: {
           ...user,
           username: user.email,
+          preferences: {
+            create: {
+              blogs: {
+                enabled: false,
+              },
+              kudos: {
+                enabled: false,
+              },
+              header: {
+                type: 'DEFAULT',
+                image: {
+                  name: '/assets/images/header.jpg',
+                },
+              },
+            },
+          },
+          onboardingState: {
+            state: 'SIGNED_UP',
+          },
+          isOnboarded: false,
           bio: {
             create: user.bio ?? {
               description: '',
@@ -134,22 +205,41 @@ export class UsersService {
     );
   }
 
-  update(updateUserInput: UpdateUserInput) {
-    const { id, bio, ...user } = updateUserInput;
+  update(
+    updateUserInput: UpdateUserInput,
+    currentUser: CurrentUser,
+    onBoardingState: string | null = null
+  ) {
+    const { bio, preferences, ...user } = updateUserInput;
+    console.log();
     return from(
       this.prisma.user.update({
         where: {
-          id,
+          id: currentUser.id,
         },
         data: {
           ...user,
-          ...(bio && {
-            bio: {
-              update: {
-                ...bio,
-              },
-            },
+          ...(!isNil(onBoardingState) && {
+            onboardingState: { state: onBoardingState },
           }),
+          ...(bio
+            ? {
+                bio: {
+                  update: {
+                    ...bio,
+                  },
+                },
+              }
+            : {}),
+          ...(preferences
+            ? {
+                preferences: {
+                  update: {
+                    ...preferences,
+                  },
+                },
+              }
+            : {}),
         },
         include: {
           bio: true,
@@ -181,6 +271,9 @@ export class UsersService {
   }
 
   follow(userId: string, user: CurrentUser) {
+    if (user.id === userId) {
+      return throwError(() => new BadRequestException());
+    }
     return from(
       this.prisma.user.update({
         where: {
@@ -198,6 +291,9 @@ export class UsersService {
   }
 
   unfollow(userId: string, user: CurrentUser) {
+    if (user.id === userId) {
+      return throwError(() => new BadRequestException());
+    }
     return from(
       this.prisma.user.update({
         where: {
@@ -231,5 +327,44 @@ export class UsersService {
         kudosById: user.id,
       },
     });
+  }
+
+  completeOnboarding(user: CurrentUser) {
+    this.logger.log('completeOnboarding', user);
+    return from(
+      this.prisma.user.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          id: true,
+          isOnboarded: true,
+          onboardingState: true,
+          _count: {
+            select: {
+              following: true,
+            },
+          },
+        },
+      })
+    ).pipe(
+      switchMap((user) => {
+        if (user.isOnboarded) {
+          return throwError(() => new BadRequestException('Already onboarded'));
+        }
+        return this.prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            isOnboarded: true,
+            onboardingState: {
+              state: 'ONBOARDING_COMPLETE',
+            },
+          },
+        });
+      }),
+      map(() => ({ success: true }))
+    );
   }
 }

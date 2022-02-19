@@ -13,6 +13,7 @@ import { FlareBlocksRendererModule } from '../flare-block-renderers/flare-blocks
 import { FlareLikeIconPipeModule } from './flare-like.pipe';
 import { FlareBookmarkIconPipeModule } from './flare-bookmark.pipe';
 import { RouterModule } from '@angular/router';
+import { ProfileImageDefaultDirectiveModal } from '../../../../shared/src/directives/profile-image-default.directive';
 
 @Component({
   selector: 'flare-card',
@@ -80,6 +81,7 @@ export class FlareCardComponent {
     FlareLikeIconPipeModule,
     FlareBookmarkIconPipeModule,
     RouterModule,
+    ProfileImageDefaultDirectiveModal,
   ],
 })
 export class FlareCardModule {}

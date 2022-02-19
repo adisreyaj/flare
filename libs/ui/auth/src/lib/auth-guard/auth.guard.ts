@@ -1,43 +1,64 @@
 import { Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
+  CanActivate,
   CanActivateChild,
+  CanLoad,
+  Route,
   Router,
   RouterStateSnapshot,
-  UrlTree,
 } from '@angular/router';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { Observable } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
-const helper = new JwtHelperService();
-
+/**
+ * Guard that checks if the user is logged in or not.
+ * If not redirect them to login page.
+ */
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivateChild {
-  constructor(private router: Router) {}
+export class AuthGuard implements CanActivateChild, CanLoad, CanActivate {
+  constructor(
+    private readonly router: Router,
+    private readonly authService: AuthService
+  ) {}
+
+  canLoad(_: Route) {
+    return this.checkAccess();
+  }
+
+  canActivate(_: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    return this.checkAccess(state);
+  }
+
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ):
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
-    const token = localStorage.getItem('token') || null;
-    if (token) {
-      const isExpired = helper.isTokenExpired(token);
-      if (!isExpired) {
-        return true;
-      }
-    }
-    let options = {};
-    if (state.url !== '/') {
-      options = {
-        queryParams: { returnUrl: state.url },
-      };
-    }
-    this.router.navigate(['/login'], options);
-    return false;
+  ) {
+    return this.checkAccess(state);
+  }
+
+  checkAccess(state?: RouterStateSnapshot) {
+    return this.authService.isLoggedIn$.pipe(
+      tap((isLoggedIn) => {
+        console.log(`IS LOGGED IN: ${isLoggedIn}`);
+        if (!isLoggedIn) {
+          let options = {};
+          if (state && state.url !== '/') {
+            options = {
+              queryParams: { returnUrl: state.url },
+            };
+          }
+          this.router.navigate(['/login'], options);
+        }
+      }),
+      catchError((err) => {
+        if (err?.error) {
+          this.router.navigate(['/login']);
+        }
+        return throwError(() => err);
+      })
+    );
   }
 }

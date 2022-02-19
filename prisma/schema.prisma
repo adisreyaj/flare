@@ -45,17 +45,18 @@ model UserBio {
   linkedin    String?
   facebook    String?
   hashnode    String?
+  instagram   String?
   devto       String?
   user        User[]
 }
 
 model Preferences {
-  id                   String  @id @default(cuid())
-  user                 User    @relation(fields: [userId], references: [id])
-  userId               String  @unique
-  kudos         Json
-  blogs Json
-  header               Json
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+  kudos  Json
+  blogs  Json
+  header Json
 }
 
 model Flare {

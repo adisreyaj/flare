@@ -66,9 +66,14 @@ export class FlareService {
         })
       ).pipe(
         tap(() => {
-          this.mediaService.runJobImmediately(flare.jobId).then(() => {
-            this.logger.log(`Job ${flare.jobId} promoted to start immediately`);
-          });
+          // Run if there are media files to upload
+          if (flare.jobId) {
+            this.mediaService.runJobImmediately(flare.jobId).then(() => {
+              this.logger.log(
+                `Job ${flare.jobId} promoted to start immediately`
+              );
+            });
+          }
         })
       );
     /**

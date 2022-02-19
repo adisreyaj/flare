@@ -3,11 +3,15 @@ type Query {
   user(id: ID!): User
   userByUsername(username: String!): User
   me: User
+  getTopUsers: [User]
+  isUsernameAvailable(username: String!): UserNameAvailability
 }
 
 type Mutation {
   createUser(input: CreateUserInput): User
   updateUser(input: UpdateUserInput): User
+  completeProfile(input: UpdateUserInput): User
+  completeOnboarding: Success
   deleteUser(id: ID!): User
   follow(userId: ID!): User
   unfollow(userId: ID!): User
@@ -31,6 +35,8 @@ type User {
   kudosGiven: [Kudos]
   isFollowing: Boolean!
   preferences: UserPreferences!
+  isOnboarded : Boolean!
+  onboardingState: JSON
 }
 
 type UserBio {
@@ -41,6 +47,7 @@ type UserBio {
   linkedin: String
   facebook: String
   hashnode: String
+  instagram: String
   devto: String
 }
 
@@ -74,16 +81,11 @@ type Kudos {
   createdAt: String!
 }
 
-input UserBioInput {
-  id: String
-  description: String
-  github: String
-  twitter: String
-  linkedin: String
-  facebook: String
-  hashnode: String
-  devto: String
+
+type UserNameAvailability {
+  available: Boolean!
 }
+
 
 input CreateUserInput {
   firstName: String!
@@ -94,21 +96,54 @@ input CreateUserInput {
   bio: UserBioInput
 }
 
+
 input UpdateUserInput {
-  id: String!
   image: String
   firstName: String
   lastName: String
   password: String
   bio: UserBioInput
+  preferences: UserPreferencesInput
+}
+
+input UserBioInput {
+  id: String
+  description: String
+  github: String
+  twitter: String
+  linkedin: String
+  facebook: String
+  hashnode: String
+  instagram: String
+  devto: String
+}
+
+input UserPreferencesInput {
+  kudos: JSON
+  blogs: JSON
+  header: JSON
+}
+
+input PreferenceKudosInput {
+  enabled: Boolean!
+}
+
+input PreferenceBlogsInput {
+  enabled: Boolean!
+}
+
+input PreferenceHeaderInput {
+  enabled: Boolean!
+  type: HeaderType!
+  image: JSON
 }
 
 input GiveKudosInput{
-userId: ID!
-content: JSON!
+  userId: ID!
+  content: JSON!
 }
 
 enum HeaderType {
-DEFAULT,
-PROMO
+  DEFAULT,
+  PROMO
 }
