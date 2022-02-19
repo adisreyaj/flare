@@ -2,15 +2,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BUTTON_CONFIG, FORM_INPUT_CONFIG } from 'zigzag';
-import {
-  AUTH_CONFIG,
-  AuthInterceptor,
-  AuthService,
-  CURRENT_USER,
-} from '@flare/ui/auth';
+import { AUTH_CONFIG, AuthService, CURRENT_USER } from '@flare/ui/auth';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { ApolloLink, InMemoryCache } from '@apollo/client/core';
@@ -57,7 +52,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         mediaURL: environment.mediaURL,
       },
     },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    // { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     {
       provide: APOLLO_OPTIONS,
       useFactory: createApollo,
@@ -90,7 +85,9 @@ export function createApollo(httpLink: HttpLink) {
     }
   });
 
-  const link = ApolloLink.from([auth, httpLink.create({ uri: gqlAPI })]);
+  const link = ApolloLink.from([
+    httpLink.create({ uri: gqlAPI, withCredentials: true }),
+  ]);
   const cache = new InMemoryCache();
 
   return {

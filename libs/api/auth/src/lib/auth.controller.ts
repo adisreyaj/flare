@@ -25,23 +25,26 @@ export class AuthController {
   @Public()
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
+  googleAuthRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response
+  ) {
     return this.authService.handleSocialLogin(req, res);
   }
-  //
-  // @Public()
-  // @Get('twitter')
-  // @UseGuards(AuthGuard('twitter'))
-  // async twitterAuth() {
-  //   console.info('Logging in via Google');
-  // }
-  //
-  // @Public()
-  // @Get('twitter/callback')
-  // @UseGuards(AuthGuard('twitter'))
-  // twitterAuthRedirect(@Req() req: Request, @Res() res: Response) {
-  //   return this.authService.handleSocialLogin(req, res);
-  // }
+  /*
+  @Public()
+  @Get('twitter')
+  @UseGuards(AuthGuard('twitter'))
+  async twitterAuth() {
+    console.info('Logging in via Google');
+  }
+
+  @Public()
+  @Get('twitter/callback')
+  @UseGuards(AuthGuard('twitter'))
+  twitterAuthRedirect(@Req() req: Request, @Res() res: Response) {
+    return this.authService.handleSocialLogin(req, res);
+  }*/
 
   @Public()
   @Get('github')
@@ -53,7 +56,10 @@ export class AuthController {
   @Public()
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
-  githubAuthRedirect(@Req() req: Request, @Res() res: Response) {
+  githubAuthRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response
+  ) {
     return this.authService.handleSocialLogin(req, res);
   }
 }

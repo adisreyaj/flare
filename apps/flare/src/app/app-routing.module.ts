@@ -2,12 +2,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ShellComponent } from './shell.component';
 import { OnboardingGuard } from '@flare/ui/onboarding';
+import { AuthGuard } from '@flare/ui/auth';
+import { AlreadyLoggedInGuard } from '../../../../libs/ui/auth/src/lib/auth-guard/already-logged-in.guard';
 
 @NgModule({
   imports: [
     RouterModule.forRoot([
       {
         path: 'login',
+        canLoad: [AlreadyLoggedInGuard],
         loadChildren: () =>
           import('@flare/ui/auth').then((m) => m.LoginComponentModule),
       },
@@ -18,13 +21,14 @@ import { OnboardingGuard } from '@flare/ui/onboarding';
       },
       {
         path: 'onboarding',
+        canLoad: [AuthGuard],
         loadChildren: () =>
           import('@flare/ui/onboarding').then((m) => m.UiOnboardingModule),
       },
       {
         path: '',
         component: ShellComponent,
-        canActivate: [OnboardingGuard],
+        canActivate: [AuthGuard, OnboardingGuard],
         children: [
           {
             path: '',

@@ -2,6 +2,8 @@ import { Logger } from 'nestjs-pino';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { Logger as NestLogger } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -10,8 +12,11 @@ async function bootstrap() {
   }
   const globalPrefix = 'api';
   app.enableCors({
+    credentials: true,
     origin: ['http://localhost:4200'],
   });
+  app.use(cookieParser(process.env.COOKIE_SECRET));
+  app.use(helmet());
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 3333;
   await app.listen(port);
