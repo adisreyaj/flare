@@ -162,6 +162,7 @@ export interface Success {
 export interface IQuery {
     __typename?: 'IQuery';
     flares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
+    popularFlares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
     flare(id: string): Nullable<Flare> | Promise<Nullable<Flare>>;
     bookmarkedFlares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
     allHeaderPromos(): Nullable<Nullable<HeaderPromo>[]> | Promise<Nullable<Nullable<HeaderPromo>[]>>;

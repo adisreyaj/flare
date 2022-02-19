@@ -24,7 +24,12 @@ export class FlaresResolver {
 
   @Query('flares')
   findAll(@CurrentUser() user: CurrentUser) {
-    return this.flareService.findAll(user);
+    return this.flareService.findAllFlaresFromFollowingUsers(user);
+  }
+
+  @Query('popularFlares')
+  findPopularFlares(@CurrentUser() user: CurrentUser) {
+    return this.flareService.findPopularFlares(user);
   }
 
   @Query('bookmarkedFlares')

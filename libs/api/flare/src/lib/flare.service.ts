@@ -38,14 +38,64 @@ export class FlareService {
     private readonly mediaService: ApiMediaService
   ) {}
 
-  findAll(user: CurrentUser) {
-    return this.prisma.flare.findMany({
-      where: {
-        deleted: false,
-      },
-      include: getFlareFieldsToInclude(user.id),
-      orderBy: { createdAt: 'desc' },
-    });
+  findPopularFlares(user: CurrentUser) {
+    return from(
+      this.prisma.flare.findMany({
+        where: {
+          deleted: false,
+          authorId: {
+            not: user.id,
+          },
+        },
+        include: getFlareFieldsToInclude(user.id),
+        orderBy: {
+          likes: {
+            _count: 'desc',
+          },
+        },
+      })
+    );
+  }
+
+  findAllFlaresFromFollowingUsers(user: CurrentUser) {
+    const currenUsersFollowing$ = from(
+      this.prisma.user.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          following: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      })
+    );
+
+    const getFlaresByAuthorIds$ = (userIds: string[]) =>
+      from(
+        this.prisma.flare.findMany({
+          where: {
+            deleted: false,
+            authorId: {
+              in: userIds,
+            },
+          },
+          include: getFlareFieldsToInclude(user.id),
+          orderBy: { createdAt: 'desc' },
+        })
+      );
+
+    return currenUsersFollowing$.pipe(
+      switchMap(({ following }) => {
+        if (isNil(following)) {
+          return of([]);
+        }
+
+        return getFlaresByAuthorIds$(following.map(({ id }) => id));
+      })
+    );
   }
 
   findOne(id: string, user: CurrentUser) {

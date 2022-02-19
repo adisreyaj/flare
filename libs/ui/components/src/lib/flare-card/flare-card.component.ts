@@ -86,7 +86,7 @@ export class FlareCardComponent {
 })
 export class FlareCardModule {}
 
-export type FlareCardContext = 'FEED' | 'BOOKMARK';
+export type FlareCardContext = 'FEED' | 'BOOKMARK' | 'EXPLORE';
 export type FlareCardActions =
   | 'BOOKMARK'
   | 'REMOVE_BOOKMARK'

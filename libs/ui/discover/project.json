@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/ui/discover",
+  "sourceRoot": "libs/ui/discover/src",
+  "prefix": "flare",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ui/discover"],
+      "options": {
+        "jestConfig": "libs/ui/discover/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/discover/src/**/*.ts",
+          "libs/ui/discover/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
