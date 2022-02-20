@@ -28,8 +28,8 @@ import { NotificationCardModule } from './notification-card.component';
             <div class="text-center">
               <p class="text-lg font-semibold">No Notifications!</p>
               <p class="text-slate-500">
-                Don't get too anxious, we'll send it right away <br />when we
-                have the first one ready for you...
+                Looks like you don't have any notifications at the moment<br />
+                Come back later to if you got one!
               </p>
             </div>
           </div>
