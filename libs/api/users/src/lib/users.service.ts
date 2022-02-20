@@ -64,6 +64,7 @@ export class UsersService {
   }
 
   findByUsername(username: string, currentUser: CurrentUser) {
+    this.logger.verbose({ username, currentUser }, 'findByUsername()');
     const isFollowingTheUser$ =
       username !== currentUser.username
         ? from(
@@ -126,7 +127,7 @@ export class UsersService {
           username,
         },
       })
-    ).pipe(map((count) => count === 0));
+    ).pipe(map((count) => ({ available: count === 0 })));
   }
 
   findOne(id: string) {
