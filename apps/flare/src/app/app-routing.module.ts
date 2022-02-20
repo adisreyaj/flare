@@ -45,6 +45,14 @@ import { AlreadyLoggedInGuard, AuthGuard } from '@flare/ui/auth';
             loadChildren: () =>
               import('@flare/ui/discover').then((m) => m.DiscoverModule),
           },
+
+          {
+            path: 'notifications',
+            loadChildren: () =>
+              import('@flare/ui/notifications').then(
+                (m) => m.UiNotificationsModule
+              ),
+          },
           {
             path: ':username',
             loadChildren: () =>

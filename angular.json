@@ -7,6 +7,7 @@
     "api-header-promo": "libs/api/header-promo",
     "api-interfaces": "libs/api-interfaces",
     "api-media": "libs/api/media",
+    "api-notifications": "libs/api/notifications",
     "api-prisma": "libs/api/prisma",
     "api-shared": "libs/api/shared",
     "api-sponsors": "libs/api/sponsors",
@@ -20,6 +21,7 @@
     "ui-discover": "libs/ui/discover",
     "ui-flare": "libs/ui/flare",
     "ui-gql": "libs/ui/gql",
+    "ui-notifications": "libs/ui/notifications",
     "ui-onboarding": "libs/ui/onboarding",
     "ui-profile": "libs/ui/profile",
     "ui-shared": "libs/ui/shared"

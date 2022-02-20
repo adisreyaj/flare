@@ -1,19 +1,22 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   NgModule,
   Output,
 } from '@angular/core';
 import { ButtonModule, DropdownModule, TooltipModule } from 'zigzag';
 import { IconModule } from '@flare/ui/components';
-import { BlockType, Flare } from '@flare/api-interfaces';
+import { BlockType, Flare, User } from '@flare/api-interfaces';
 import { CommonModule } from '@angular/common';
 import { FlareBlocksRendererModule } from '../flare-block-renderers/flare-blocks-renderer.module';
 import { FlareLikeIconPipeModule } from './flare-like.pipe';
 import { FlareBookmarkIconPipeModule } from './flare-bookmark.pipe';
 import { RouterModule } from '@angular/router';
 import { ProfileImageDefaultDirectiveModal } from '../../../../shared/src/directives/profile-image-default.directive';
+import { CURRENT_USER } from '@flare/ui/auth';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'flare-card',
@@ -42,7 +45,7 @@ export class FlareCardComponent {
   @Output()
   action = new EventEmitter<{ type: FlareCardActions; data: Flare }>();
 
-  constructor() {}
+  constructor(@Inject(CURRENT_USER) public readonly user$: Observable<User>) {}
   deleteFlare(flare: Flare) {
     this.action.emit({ type: 'DELETE', data: flare });
   }

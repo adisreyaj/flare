@@ -1,0 +1,33 @@
+
+type Query {
+  notifications: [Notification!]!
+}
+
+type Notification {
+  id: ID!
+  to: User!
+  type: NotificationType!
+  followee: User
+  comment: Comment
+  flare: Flare
+  content: JSON
+  createdAt: String!
+  read: Boolean!
+}
+
+
+input NotificationInput {
+  to: ID!
+  type: NotificationType!
+  followee: ID
+  comment: ID
+  flare: ID
+  read: Boolean
+  content: JSON
+}
+
+enum NotificationType {
+  FOLLOW
+  REACTION
+  COMMENT
+}
