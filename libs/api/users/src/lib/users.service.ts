@@ -1,6 +1,7 @@
 import {
   CreateUserInput,
   GiveKudosInput,
+  NotificationType,
   UpdateUserInput,
 } from '@flare/api-interfaces';
 import { PrismaService } from '@flare/api/prisma';
@@ -21,11 +22,15 @@ import {
   throwError,
 } from 'rxjs';
 import { isNil } from 'lodash';
+import { ApiNotificationsService } from '../../../notifications/src/lib/api-notifications.service';
 
 @Injectable()
 export class UsersService {
   logger = new Logger(UsersService.name);
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsService: ApiNotificationsService
+  ) {}
 
   findAll() {
     return this.prisma.user.findMany({
@@ -275,20 +280,28 @@ export class UsersService {
     if (user.id === userId) {
       return throwError(() => new BadRequestException());
     }
-    return from(
-      this.prisma.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          following: {
-            connect: {
-              id: userId,
-            },
+    const creatNotificationPromise = this.notificationsService.create({
+      type: NotificationType.FOLLOW,
+      to: userId,
+      followee: user.id,
+      read: false,
+    });
+    const updateUserPromise = this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        following: {
+          connect: {
+            id: userId,
           },
         },
-      })
-    );
+      },
+    });
+
+    return from(
+      this.prisma.$transaction([creatNotificationPromise, updateUserPromise])
+    ).pipe(map(([, user]) => user));
   }
 
   unfollow(userId: string, user: CurrentUser) {

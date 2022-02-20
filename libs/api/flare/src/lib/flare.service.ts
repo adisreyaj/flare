@@ -43,9 +43,6 @@ export class FlareService {
       this.prisma.flare.findMany({
         where: {
           deleted: false,
-          authorId: {
-            not: user.id,
-          },
         },
         include: getFlareFieldsToInclude(user.id),
         orderBy: {
@@ -93,7 +90,9 @@ export class FlareService {
           return of([]);
         }
 
-        return getFlaresByAuthorIds$(following.map(({ id }) => id));
+        return getFlaresByAuthorIds$(
+          following.map(({ id }) => id).concat(user.id)
+        );
       })
     );
   }

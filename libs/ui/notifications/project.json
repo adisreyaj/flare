@@ -1,0 +1,26 @@
+{
+  "projectType": "library",
+  "root": "libs/ui/notifications",
+  "sourceRoot": "libs/ui/notifications/src",
+  "prefix": "flare",
+  "targets": {
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/ui/notifications"],
+      "options": {
+        "jestConfig": "libs/ui/notifications/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/notifications/src/**/*.ts",
+          "libs/ui/notifications/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

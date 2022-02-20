@@ -14,6 +14,12 @@ export enum PromoState {
     REJECTED = "REJECTED"
 }
 
+export enum NotificationType {
+    FOLLOW = "FOLLOW",
+    REACTION = "REACTION",
+    COMMENT = "COMMENT"
+}
+
 export enum SponsoringType {
     ONE_TIME = "ONE_TIME",
     MONTHLY = "MONTHLY",
@@ -71,6 +77,16 @@ export interface HeaderPromoUpdateInput {
     title?: Nullable<string>;
     description?: Nullable<string>;
     price?: Nullable<JSON>;
+}
+
+export interface NotificationInput {
+    to: string;
+    type: NotificationType;
+    followee?: Nullable<string>;
+    comment?: Nullable<string>;
+    flare?: Nullable<string>;
+    read?: Nullable<boolean>;
+    content?: Nullable<JSON>;
 }
 
 export interface SponsorInput {
@@ -167,6 +183,7 @@ export interface IQuery {
     bookmarkedFlares(): Nullable<Nullable<Flare>[]> | Promise<Nullable<Nullable<Flare>[]>>;
     allHeaderPromos(): Nullable<Nullable<HeaderPromo>[]> | Promise<Nullable<Nullable<HeaderPromo>[]>>;
     headerPromoById(id: string): Nullable<HeaderPromo> | Promise<Nullable<HeaderPromo>>;
+    notifications(): Notification[] | Promise<Notification[]>;
     sponsors(): Nullable<Nullable<Sponsor>[]> | Promise<Nullable<Nullable<Sponsor>[]>>;
     sponsor(id: string): Nullable<Sponsor> | Promise<Nullable<Sponsor>>;
     mySponsors(): Nullable<Nullable<Sponsor>[]> | Promise<Nullable<Nullable<Sponsor>[]>>;
@@ -263,6 +280,19 @@ export interface HeaderPromo {
     sponsor: User;
     price: JSON;
     state?: Nullable<PromoState>;
+}
+
+export interface Notification {
+    __typename?: 'Notification';
+    id: string;
+    to: User;
+    type: NotificationType;
+    followee?: Nullable<User>;
+    comment?: Nullable<Comment>;
+    flare?: Nullable<Flare>;
+    content?: Nullable<JSON>;
+    createdAt: string;
+    read: boolean;
 }
 
 export interface Sponsor {

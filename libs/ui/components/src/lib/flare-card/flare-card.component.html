@@ -1,21 +1,26 @@
-<article class="relative border-b border-slate-200 p-4">
-  <div class="absolute top-2 right-2 z-10">
-    <button [zzDropdownTrigger]="flareMoreOptions" variant="link" zzButton>
-      <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
-      <zz-dropdown #flareMoreOptions>
-        <div
-          (click)="
-            context === 'FEED' ? deleteFlare(flare) : removeBookmark(flare)
-          "
-          class="text-red-600"
-          zzDropdownCloseOnClick
-          zzDropdownItem
-        >
-          {{ context === 'FEED' ? 'Delete' : 'Remove Bookmark' }}
-        </div>
-      </zz-dropdown>
-    </button>
-  </div>
+<article
+  *ngIf="user$ | async as loggedInUser"
+  class="relative border-b border-slate-200 p-4"
+>
+  <ng-container *ngIf="loggedInUser.id === flare.author.id">
+    <div class="absolute top-2 right-2 z-10">
+      <button [zzDropdownTrigger]="flareMoreOptions" variant="link" zzButton>
+        <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
+        <zz-dropdown #flareMoreOptions>
+          <div
+            (click)="
+              context === 'FEED' ? deleteFlare(flare) : removeBookmark(flare)
+            "
+            class="text-red-600"
+            zzDropdownCloseOnClick
+            zzDropdownItem
+          >
+            {{ context === 'FEED' ? 'Delete' : 'Remove Bookmark' }}
+          </div>
+        </zz-dropdown>
+      </button>
+    </div>
+  </ng-container>
   <header class="relative flex items-center justify-start">
     <div class="flex items-center gap-2">
       <img

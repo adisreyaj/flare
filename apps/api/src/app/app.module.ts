@@ -14,6 +14,7 @@ import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { ApiHeaderPromoModule } from '@flare/api/header-promo';
+import { ApiNotificationsModule } from '@flare/api/notifications';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ApiHeaderPromoModule } from '@flare/api/header-promo';
     ApiMediaModule,
     SponsorsModule,
     TipsModule,
+    ApiNotificationsModule,
     ApiHeaderPromoModule,
   ],
   controllers: [],
