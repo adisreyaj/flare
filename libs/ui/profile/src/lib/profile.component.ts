@@ -7,7 +7,6 @@ import {
   Observable,
   of,
   switchMap,
-  tap,
   withLatestFrom,
 } from 'rxjs';
 import { Blog, HeaderPromoInput, Kudos, User } from '@flare/api-interfaces';
@@ -197,9 +196,10 @@ export class ProfileComponent {
     private readonly modal: ModalService,
     private readonly headerPromoService: HeaderPromoService
   ) {
-    const userName$: Observable<string> = this.activatedRoute.params
-      .pipe()
-      .pipe(map((params) => params['username']));
+    const userName$: Observable<string> = this.activatedRoute.params.pipe(
+      map((params) => params['username']),
+      filterOutAppRoutes()
+    );
 
     this.data$ = combineLatest([this.loggedInUser$, userName$]).pipe(
       switchMap(([loggedInUser, username]) => {
@@ -212,7 +212,6 @@ export class ProfileComponent {
       })
     );
     this.kudos$ = this.data$.pipe(
-      tap((data) => console.log(`Getting Kudos for ${data.user.username}`)),
       switchMap((data) => this.kudosService.getKudos(data.user.username))
     );
 
@@ -287,3 +286,13 @@ export class ProfileComponent {
     });
   }
 }
+
+export const filterOutAppRoutes = () => (source: Observable<string>) =>
+  source.pipe(
+    filter(
+      (routeParam) =>
+        !['notifications', 'explore', 'bookmarks', 'profile'].includes(
+          routeParam
+        )
+    )
+  );
