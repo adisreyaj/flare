@@ -17,7 +17,8 @@ export enum PromoState {
 export enum NotificationType {
     FOLLOW = "FOLLOW",
     REACTION = "REACTION",
-    COMMENT = "COMMENT"
+    COMMENT = "COMMENT",
+    FLARE = "FLARE"
 }
 
 export enum SponsoringType {
@@ -121,6 +122,7 @@ export interface CreateUserInput {
 export interface UpdateUserInput {
     image?: Nullable<string>;
     firstName?: Nullable<string>;
+    username?: Nullable<string>;
     lastName?: Nullable<string>;
     password?: Nullable<string>;
     bio?: Nullable<UserBioInput>;

@@ -3,6 +3,7 @@ import {
   AddLikeInput,
   BlockType,
   CreateFlareInput,
+  NotificationType,
   RemoveCommentInput,
   RemoveLikeInput,
 } from '@flare/api-interfaces';
@@ -10,7 +11,6 @@ import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser } from '@flare/api/shared';
 import {
   ForbiddenException,
-  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -18,11 +18,14 @@ import {
 import {
   catchError,
   from,
+  map,
+  mapTo,
   of,
   OperatorFunction,
   switchMap,
   tap,
   throwError,
+  withLatestFrom,
 } from 'rxjs';
 import { ApiMediaService } from '@flare/api/media';
 import { isNil } from 'lodash';
@@ -125,6 +128,22 @@ export class FlareService {
           }
         })
       );
+
+    const userFollowers$ = from(
+      this.prisma.user.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          followers: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      })
+    ).pipe(map(({ followers }) => followers.map(({ id }) => id)));
+
     /**
      * If there are images in the flare, we need to upload them to the media service
      * and then create the flare.
@@ -133,19 +152,26 @@ export class FlareService {
       ? createFlare$()
       : from(this.mediaService.getJobData(flare.jobId)).pipe(
           this.handleFileUploadsIfJobExists(),
-          switchMap((files) => createFlare$(files))
+          switchMap((files) => createFlare$(files)),
+          tap(() => {
+            this.mediaService.runJobImmediately(flare.jobId);
+          })
         );
+
     return query$.pipe(
-      tap(() => {
-        this.mediaService.runJobImmediately(flare.jobId);
-      }),
-      catchError((err) => {
-        this.logger.error(err);
-        if (err instanceof HttpException) {
-          return throwError(() => err);
-        }
-        return throwError(() => new InternalServerErrorException());
-      })
+      withLatestFrom(userFollowers$),
+      switchMap(([flare, followers]) =>
+        from(
+          this.prisma.notification.createMany({
+            data: followers.map((id) => ({
+              type: NotificationType.FLARE,
+              toId: id,
+              flareId: flare.id,
+              followeeId: user.id,
+            })),
+          })
+        ).pipe(mapTo(flare))
+      )
     );
   }
 

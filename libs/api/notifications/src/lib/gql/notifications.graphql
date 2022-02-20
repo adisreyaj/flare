@@ -30,4 +30,5 @@ enum NotificationType {
   FOLLOW
   REACTION
   COMMENT
+  FLARE
 }

@@ -271,7 +271,11 @@ export class UiOnboardingProfileComponent {
       if (user.onboardingState.state === 'SETUP_PROFILE') {
         this.router.navigate(['/onboarding/explore']);
       }
-      this.profileForm.patchValue(user);
+      this.profileForm.patchValue({
+        ...user,
+        description: user?.bio?.description ?? '',
+        username: user.username,
+      });
     });
   }
 
@@ -313,6 +317,7 @@ export class UiOnboardingProfileComponent {
       },
       firstName: this.profileForm.get('firstName')?.value,
       lastName: this.profileForm.get('lastName')?.value,
+      username: this.profileForm.get('username')?.value,
     };
 
     return data;
@@ -360,7 +365,7 @@ export class UiOnboardingProfileComponent {
           required: 'Last name is required',
         },
         description: {
-          required: 'Impressum is required',
+          required: 'Description is required',
           minlength: 'Minimum 3 characters',
           maxlength: 'Max allowed length is 256 characters',
         },

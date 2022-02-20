@@ -11,7 +11,7 @@ export class AuthService {
 
   constructor(private apollo: Apollo) {}
 
-  me() {
+  me(refresh = false) {
     return this.apollo
       .query<{ me: User }>({
         query: gql`
@@ -39,6 +39,7 @@ export class AuthService {
             }
           }
         `,
+        fetchPolicy: refresh ? 'network-only' : 'cache-first',
       })
       .pipe(map((result) => result.data.me));
   }
