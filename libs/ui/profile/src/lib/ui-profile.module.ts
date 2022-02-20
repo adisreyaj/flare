@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ProfileComponent } from './profile.component';
 import { ProfileBlogsModule } from './profile-blogs.component';
-import { ButtonModule } from 'zigzag';
+import { ButtonModule, ModalModule } from 'zigzag';
 import { ProfileSocialModule } from './profile-social.component';
 import { ProfileKudosModule } from './profile-kudos.component';
 import { ProfileImageDefaultDirectiveModal } from '../../../shared/src/directives/profile-image-default.directive';
+import { IconModule } from '@flare/ui/components';
+import { MediaUrlPipeModule } from '@flare/ui/shared';
 
 @NgModule({
   declarations: [ProfileComponent],
@@ -23,6 +25,9 @@ import { ProfileImageDefaultDirectiveModal } from '../../../shared/src/directive
     ProfileSocialModule,
     ProfileKudosModule,
     ProfileImageDefaultDirectiveModal,
+    IconModule,
+    ModalModule,
+    MediaUrlPipeModule,
   ],
 })
 export class UiProfileModule {}

@@ -26,6 +26,11 @@ export class AuthService {
               _count
               isOnboarded
               onboardingState
+              preferences {
+                header {
+                  image
+                }
+              }
               bio {
                 id
                 description

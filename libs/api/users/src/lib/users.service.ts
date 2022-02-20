@@ -2,10 +2,11 @@ import {
   CreateUserInput,
   GiveKudosInput,
   NotificationType,
+  UpdateHeaderImageInput,
   UpdateUserInput,
 } from '@flare/api-interfaces';
 import { PrismaService } from '@flare/api/prisma';
-import { CurrentUser } from '@flare/api/shared';
+import { CurrentUser, mapToSuccess } from '@flare/api/shared';
 import {
   BadRequestException,
   Injectable,
@@ -18,17 +19,22 @@ import {
   from,
   map,
   of,
+  OperatorFunction,
   switchMap,
+  tap,
   throwError,
 } from 'rxjs';
-import { isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { ApiNotificationsService } from '../../../notifications/src/lib/api-notifications.service';
+import { ApiMediaService } from '@flare/api/media';
+import { FileWithMeta } from '../../../media/src/lib/api-media.interface';
 
 @Injectable()
 export class UsersService {
   logger = new Logger(UsersService.name);
   constructor(
     private readonly prisma: PrismaService,
+    private readonly mediaService: ApiMediaService,
     private readonly notificationsService: ApiNotificationsService
   ) {}
 
@@ -69,7 +75,6 @@ export class UsersService {
   }
 
   findByUsername(username: string, currentUser: CurrentUser) {
-    this.logger.verbose({ username, currentUser }, 'findByUsername()');
     const isFollowingTheUser$ =
       username !== currentUser.username
         ? from(
@@ -99,6 +104,7 @@ export class UsersService {
           bio: true,
           followers: true,
           following: true,
+          preferences: true,
           kudos: {
             include: {
               kudosBy: true,
@@ -380,5 +386,71 @@ export class UsersService {
       }),
       map(() => ({ success: true }))
     );
+  }
+
+  updateHeaderImage(input: UpdateHeaderImageInput, user: CurrentUser) {
+    if (isNil(input.jobId)) {
+      return throwError(() => new BadRequestException('Media not found'));
+    }
+
+    const updateHeader$ = (files: FileWithMeta[] = []) =>
+      from(
+        this.prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            preferences: {
+              update: {
+                id: input.preferenceId,
+                header: {
+                  image: {
+                    name: files[0].filename,
+                    type: files[0].mimetype,
+                    size: files[0].size,
+                  },
+                },
+              },
+            },
+          },
+        })
+      );
+    return from(this.mediaService.getJobData(input.jobId)).pipe(
+      this.handleFileUploadsIfJobExists(),
+      switchMap((files) => updateHeader$(files)),
+      mapToSuccess(),
+      tap(() => {
+        this.mediaService.runJobImmediately(input.jobId);
+      })
+    );
+  }
+
+  private handleFileUploadsIfJobExists(): OperatorFunction<
+    { files: FileWithMeta[] },
+    FileWithMeta[]
+  > {
+    return (source) => {
+      return source.pipe(
+        switchMap((data) => {
+          if (isEmpty(data)) {
+            this.logger.error('Job Data not found');
+            return throwError(
+              () => new InternalServerErrorException('Media upload error')
+            );
+          } else {
+            return from(this.mediaService.uploadToCloud(data.files));
+          }
+        }),
+        switchMap((data: FileWithMeta[]) => {
+          if (isNil(data)) {
+            return throwError(
+              () => new InternalServerErrorException('Media upload error')
+            );
+          } else {
+            return of(data);
+          }
+        })
+      );
+    };
   }
 }

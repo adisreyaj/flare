@@ -166,6 +166,11 @@ export interface GiveKudosInput {
     content: JSON;
 }
 
+export interface UpdateHeaderImageInput {
+    jobId: string;
+    preferenceId: string;
+}
+
 export interface Currency {
     __typename?: 'Currency';
     symbol: string;
@@ -225,6 +230,7 @@ export interface IMutation {
     unfollow(userId: string): Nullable<User> | Promise<Nullable<User>>;
     giveKudos(input?: Nullable<GiveKudosInput>): Nullable<User> | Promise<Nullable<User>>;
     removeKudos(id: string): Nullable<User> | Promise<Nullable<User>>;
+    updateHeaderImage(input: UpdateHeaderImageInput): Nullable<Success> | Promise<Nullable<Success>>;
 }
 
 export interface Flare {

@@ -2,15 +2,17 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { gql } from '@apollo/client/core';
 import {
+  catchError,
   map,
   mapTo,
   Observable,
+  of,
   startWith,
   Subject,
   switchMap,
   tap,
 } from 'rxjs';
-import { User } from '@flare/api-interfaces';
+import { SuccessResponse, User } from '@flare/api-interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +27,35 @@ export class UsersService {
       mapTo(true),
       switchMap((refresh) => this.getUserObservable(refresh, username))
     );
+  }
+
+  refresh() {
+    this.refreshSubject.next();
+  }
+
+  updateHeaderImage(jobId: string, preferenceId: string): Observable<boolean> {
+    return this.apollo
+      .mutate<{ updateHeaderImage: SuccessResponse }>({
+        mutation: gql`
+          mutation UpdateHeaderImage($jobId: String!, $preferenceId: ID!) {
+            updateHeaderImage(
+              input: { jobId: $jobId, preferenceId: $preferenceId }
+            ) {
+              success
+            }
+          }
+        `,
+        variables: {
+          jobId,
+          preferenceId,
+        },
+      })
+      .pipe(
+        map((res) => res?.data?.updateHeaderImage?.success ?? false),
+        catchError(() => {
+          return of(false);
+        })
+      );
   }
 
   follow(userId: string): Observable<void> {
@@ -89,6 +120,12 @@ export class UsersService {
               lastName
               _count
               isFollowing
+              preferences {
+                id
+                header {
+                  image
+                }
+              }
               bio {
                 id
                 description

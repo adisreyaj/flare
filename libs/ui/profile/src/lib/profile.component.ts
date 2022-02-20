@@ -9,7 +9,13 @@ import {
   switchMap,
   withLatestFrom,
 } from 'rxjs';
-import { Blog, HeaderPromoInput, Kudos, User } from '@flare/api-interfaces';
+import {
+  Blog,
+  HeaderPromoInput,
+  Kudos,
+  User,
+  UserPreferences,
+} from '@flare/api-interfaces';
 import { DevToService } from './services/devto.service';
 import { HashnodeService } from './services/hashnode.service';
 import { KudosService } from './services/kudos.service';
@@ -20,6 +26,7 @@ import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos
 import { ProfileHeaderPromoSubmitModalComponent } from './modals/profile-header-promo-submit/profile-header-promo-submit';
 import { HeaderPromoService } from './services/header-promo.service';
 import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-promo-received/profile-header-promo-received.component';
+import { ProfileHeaderImageUploadComponent } from './modals/profile-header-image-upload/profile-header-image-upload.component';
 
 @Component({
   selector: 'flare-profile',
@@ -28,10 +35,25 @@ import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-pro
       <header class="relative aspect-header" style="max-height: 300px">
         <div class="h-full w-full">
           <img
-            src="https://source.unsplash.com/800x300"
+            [src]="
+              data?.user?.preferences?.header?.image?.name ||
+                'default-header.jpeg' | mediaUrl
+            "
             alt=""
             class="h-full w-full"
           />
+        </div>
+        <div class="absolute top-2 right-2" *ngIf="!data.isExternalMode">
+          <button
+            zzButton
+            size="sm"
+            (click)="updateHeaderImage(data.user.preferences)"
+          >
+            <div class="flex items-center gap-2">
+              <rmx-icon class="icon-sm" name="image-add-line"></rmx-icon>
+              <p>Change</p>
+            </div>
+          </button>
         </div>
       </header>
       <div class="relative flex flex-col items-center pb-6">
@@ -283,6 +305,21 @@ export class ProfileComponent {
   viewPromoProposals() {
     this.modal.open(ProfileHeaderPromoReceivedComponent, {
       size: 'lg',
+    });
+  }
+
+  updateHeaderImage(preferences: UserPreferences) {
+    const modalRef = this.modal.open<{ preferenceId: string }, boolean>(
+      ProfileHeaderImageUploadComponent,
+      {
+        size: 'lg',
+        data: {
+          preferenceId: preferences.id,
+        },
+      }
+    );
+    modalRef.afterClosed$.subscribe((success) => {
+      success && this.usersService.refresh();
     });
   }
 }

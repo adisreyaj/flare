@@ -112,7 +112,7 @@ export class AuthService {
           header: {
             enabled: true,
             type: 'DEFAULT',
-            image: '/assets/images/default-header.jpg',
+            image: { name: 'default-header.jpeg' },
           },
           blogs: {
             enabled: false,

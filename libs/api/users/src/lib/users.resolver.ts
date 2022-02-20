@@ -1,6 +1,7 @@
 import {
   CreateUserInput,
   GiveKudosInput,
+  UpdateHeaderImageInput,
   UpdateUserInput,
 } from '@flare/api-interfaces';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
@@ -95,5 +96,13 @@ export class UsersResolver {
   @Mutation('removeKudos')
   removeKudos(@Args('id') id: string, @CurrentUser() user: CurrentUser) {
     return this.usersService.removeKudos(id, user);
+  }
+
+  @Mutation('updateHeaderImage')
+  updateHeaderImage(
+    @Args('input') input: UpdateHeaderImageInput,
+    @CurrentUser() user: CurrentUser
+  ) {
+    return this.usersService.updateHeaderImage(input, user);
   }
 }
