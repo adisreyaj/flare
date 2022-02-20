@@ -32,7 +32,7 @@ export class OnboardingGuard implements CanLoad, CanActivate, CanActivateChild {
     private readonly authService: AuthService,
     private readonly router: Router
   ) {
-    this.onBoardingDetails$ = this.authService.me().pipe(
+    this.onBoardingDetails$ = this.authService.me(true).pipe(
       map((user) => {
         if (!user.isOnboarded) {
           this.router.navigate(

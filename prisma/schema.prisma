@@ -13,7 +13,7 @@ model User {
   lastName             String
   image                String?
   email                String         @unique
-  username             String         @unique
+  username             String?         @unique
   password             String?
   followers            User[]         @relation("UserFollows", references: [id])
   following            User[]         @relation("UserFollows", references: [id])
@@ -244,4 +244,5 @@ enum NotificationType {
   FOLLOW
   REACTION
   COMMENT
+  FLARE
 }
