@@ -9,7 +9,7 @@ import { map } from 'rxjs';
 export class UiNotificationsService {
   constructor(private readonly apollo: Apollo) {}
 
-  getLatestNotifications() {
+  getLatestNotifications(refresh: boolean = false) {
     return this.apollo
       .query<{ notifications: Notification[] }>({
         query: gql`
@@ -45,6 +45,7 @@ export class UiNotificationsService {
             }
           }
         `,
+        fetchPolicy: refresh ? 'network-only' : 'cache-first',
       })
       .pipe(map(({ data }) => data.notifications));
   }

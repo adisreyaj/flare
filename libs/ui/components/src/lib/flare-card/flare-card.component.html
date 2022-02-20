@@ -22,21 +22,21 @@
     </div>
   </ng-container>
   <header class="relative flex items-center justify-start">
-    <div class="flex items-center gap-2">
+    <div
+      [routerLink]="['/', flare.author.username]"
+      class="group flex cursor-pointer items-center gap-2"
+    >
       <img
         [alt]="flare.author.firstName"
         [flareDefaultImage]="flare.author.username"
         [src]="flare.author.image"
         class="h-10 w-10 rounded-full"
       />
-      <div class="gap-2">
+      <div class="gap-2 group-hover:text-primary">
         <p class="text-sm font-medium">
           {{ flare.author.firstName }} {{ flare.author.lastName }}
         </p>
-        <p
-          [routerLink]="['/', flare.author.username]"
-          class="cursor-pointer text-xs font-medium hover:text-primary"
-        >
+        <p class="cursor-pointer text-xs font-medium">
           @{{ flare.author.username }}
         </p>
       </div>

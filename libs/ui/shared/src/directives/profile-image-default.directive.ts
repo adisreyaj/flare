@@ -5,6 +5,7 @@ import {
   Input,
   NgModule,
 } from '@angular/core';
+import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
 
 @Directive({
   selector: '[flareDefaultImage]',
@@ -15,11 +16,11 @@ export class ProfileImageDefaultDirective {
   src!: string | undefined | null;
 
   @Input('flareDefaultImage')
-  username!: string;
+  username!: Nullable<string>;
 
   @HostListener('error')
   onError() {
-    this.src = `https://avatar.tobi.sh/${this.username}`;
+    this.src = `https://avatar.tobi.sh/${this.username ?? ''}`;
   }
 }
 

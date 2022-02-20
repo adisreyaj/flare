@@ -6,29 +6,16 @@ import { FlareFeedsHeaderModule, IconModule } from '@flare/ui/components';
 import { Observable } from 'rxjs';
 import { Notification } from '@flare/api-interfaces';
 import { UiNotificationsService } from './services/notifications.service';
+import { NotificationCardModule } from './notification-card.component';
 
 @Component({
   selector: 'flare-notifications',
-  template: ` <flare-feeds-header title="Notifications">
-      <button
-        [zzDropdownTrigger]="flareMoreOptions"
-        placement="bottom-start"
-        variant="link"
-        zzButton
-      >
-        <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
-        <zz-dropdown #flareMoreOptions>
-          <button class="w-full rounded-md" size="sm" variant="link" zzButton>
-            <div class="flex items-center gap-2">
-              <p class="text-red-500">Remove All Bookmarks</p>
-            </div>
-          </button>
-        </zz-dropdown>
-      </button>
-    </flare-feeds-header>
+  template: ` <flare-feeds-header title="Notifications"> </flare-feeds-header>
     <ng-container *ngIf="notifications$ | async as notifications">
       <ng-container *ngFor="let notification of notifications">
-        <p>{{ notification.type }}</p>
+        <flare-notification-card
+          [notification]="notification"
+        ></flare-notification-card>
       </ng-container>
       <ng-container *ngIf="notifications.length === 0">
         <div class="grid place-items-center" style="height: calc(100% - 60px)">
@@ -54,7 +41,8 @@ export class NotificationsComponent {
   notifications$: Observable<Notification[]>;
 
   constructor(private readonly notificationsService: UiNotificationsService) {
-    this.notifications$ = this.notificationsService.getLatestNotifications();
+    this.notifications$ =
+      this.notificationsService.getLatestNotifications(true);
   }
 }
 
@@ -67,6 +55,7 @@ export class NotificationsComponent {
     ButtonModule,
     FlareFeedsHeaderModule,
     IconModule,
+    NotificationCardModule,
   ],
   exports: [NotificationsComponent],
 })
