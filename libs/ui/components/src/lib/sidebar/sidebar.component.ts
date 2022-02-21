@@ -9,20 +9,24 @@ import { ButtonModule } from 'zigzag';
 import { IconModule } from '../icon/icon.module';
 import { User } from '@flare/api-interfaces';
 import { RouterModule } from '@angular/router';
-import { ProfileImageDefaultDirectiveModal } from '../../../../shared/src/directives/profile-image-default.directive';
+import { ProfileImageDefaultDirectiveModal } from '@flare/ui/shared';
 
 @Component({
   selector: 'flare-sidebar',
   template: `
-    <div class="px-2 pt-10 md:px-6">
+    <div
+      class="sm:bottom-unset sm:w-unset fixed bottom-0 z-50 w-full border-t border-slate-200 bg-white px-2 shadow-2xl sm:relative sm:pt-10 md:px-6"
+    >
       <header
-        class="mb-6 flex items-center justify-center gap-2 lg:justify-start lg:px-6"
+        class="mb-6 hidden items-center justify-center gap-2 sm:flex lg:justify-start lg:px-6"
       >
         <img src="assets/images/flare.svg" alt="Flare" class="h-8 w-8" />
         <p class="hidden text-xl font-bold lg:block">Flare</p>
       </header>
-      <nav>
-        <ul class="flex flex-col gap-4 text-lg font-medium text-slate-700">
+      <nav class="px-4 py-2 sm:px-0 sm:py-0">
+        <ul
+          class="flex justify-between gap-4 text-lg font-medium text-slate-700 sm:flex-col"
+        >
           <li
             routerLink="/"
             routerLinkActive="active"
@@ -57,7 +61,7 @@ import { ProfileImageDefaultDirectiveModal } from '../../../../shared/src/direct
           </li>
         </ul>
       </nav>
-      <div class="mt-10 px-2 md:px-0">
+      <div class="mt-10 hidden px-2 sm:block md:px-0">
         <button
           class="w-full justify-center text-lg"
           zzButton
@@ -130,6 +134,7 @@ export class SidebarComponent {
     ButtonModule,
     IconModule,
     RouterModule,
+    ProfileImageDefaultDirectiveModal,
     ProfileImageDefaultDirectiveModal,
   ],
   declarations: [SidebarComponent],

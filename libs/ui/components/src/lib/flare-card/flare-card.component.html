@@ -1,6 +1,6 @@
 <article
   *ngIf="user$ | async as loggedInUser"
-  class="relative border-b border-slate-200 p-4"
+  class="relative border-b border-slate-200 bg-white p-4"
 >
   <ng-container
     *ngIf="loggedInUser.id === flare.author.id && context !== 'FLARE_DETAIL'"
