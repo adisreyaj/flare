@@ -126,6 +126,7 @@
     "@typescript-eslint/parser": "~5.10.0",
     "@upstash/redis": "^0.2.1",
     "cookie": "^0.4.2",
+    "copyfiles": "^2.4.1",
     "cypress": "^9.1.0",
     "eslint": "~8.7.0",
     "eslint-config-prettier": "8.1.0",
