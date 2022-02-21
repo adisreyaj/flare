@@ -42,7 +42,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     {
       provide: AUTH_CONFIG,
       useValue: {
-        socialLoginURL: 'http://localhost:3333/api/auth',
+        socialLoginURL: `${environment.apiURL}/api/auth`,
       },
     },
     {
