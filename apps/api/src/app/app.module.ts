@@ -31,8 +31,9 @@ import { ApiNotificationsModule } from '@flare/api/notifications';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         redis: {
-          host: configService.get('QUEUE_HOST'),
-          port: +configService.get('QUEUE_PORT'),
+          host: configService.get('REDIS_HOST'),
+          port: +configService.get('REDIS_PORT'),
+          password: configService.get('REDIS_PASSWORD'),
         },
       }),
       inject: [ConfigService],
