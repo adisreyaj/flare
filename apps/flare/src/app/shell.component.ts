@@ -18,7 +18,7 @@ import { User } from '@flare/api-interfaces';
     //language=SCSS
     `
       :host {
-        @apply block h-screen;
+        @apply block h-screen overflow-y-scroll;
       }
       .content {
         @apply mx-auto grid h-screen max-w-screen-xl;

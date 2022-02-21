@@ -93,8 +93,7 @@
         <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
         <zz-dropdown #flareMoreOptions>
           <button
-            (click)="addBlock(blockTypes.githubRepo)"
-            class="w-full rounded-md"
+            class="mb-2 w-full rounded-md"
             size="sm"
             variant="link"
             zzButton
@@ -105,8 +104,7 @@
             </div>
           </button>
           <button
-            (click)="addBlock(blockTypes.techStack)"
-            class="w-full rounded-md"
+            class="mb-2 w-full rounded-md"
             size="sm"
             variant="link"
             zzButton
@@ -116,13 +114,7 @@
               <p>Add Tech Stack</p>
             </div>
           </button>
-          <button
-            (click)="addBlock(blockTypes.poll)"
-            class="w-full rounded-md"
-            size="sm"
-            variant="link"
-            zzButton
-          >
+          <button class="w-full rounded-md" size="sm" variant="link" zzButton>
             <div class="flex items-center gap-2">
               <rmx-icon class="icon-sm" name="chat-poll-line"></rmx-icon>
               <p>Add Poll</p>
