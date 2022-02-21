@@ -11,7 +11,10 @@
     "generate:gql": "ts-node scripts/generate-typings.ts",
     "generate:gql:angular": "graphql-codegen --config angular-gql-codegen.yaml",
     "prisma:migrate": "prisma migrate dev",
-    "prepare": "husky install"
+    "prisma:migrate:prod": "prisma migrate deploy",
+    "primsa:generate": "prisma generate",
+    "prepare": "husky install",
+    "prod": "npm i && npm run prisma:migrate:prod && npm run primsa:generate"
   },
   "author": {
     "email": "adi.sreyaj@gmail.com",
