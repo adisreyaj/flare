@@ -43,3 +43,6 @@ Thumbs.db
 prisma/migrations
 .env
 uploads/
+
+# Local Netlify folder
+.netlify
