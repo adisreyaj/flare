@@ -30,6 +30,11 @@ export class ApiMediaService {
     return this.mediaQueue.runJobImmediately(jobId);
   }
 
+  async deleteMedia(fileNames: string[]) {
+    this.logger.verbose(`Deleting media: ${fileNames}`);
+    return Promise.all(fileNames.map((fileName) => this.s3.delete(fileName)));
+  }
+
   async uploadToCloud(files: FileWithMeta[]) {
     const filesRead = await Promise.all(
       (files ?? []).map((file) => fs.readFile(file.path))

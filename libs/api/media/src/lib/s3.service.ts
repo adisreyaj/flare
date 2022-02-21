@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { FileWithMeta } from './api-media.interface';
 
@@ -26,6 +30,15 @@ export class S3Service {
         Key: file.filename,
         Body: file.buffer,
         ContentType: file.mimetype,
+      })
+    );
+  }
+
+  async delete(file: string) {
+    return this.s3.send(
+      new DeleteObjectCommand({
+        Bucket: this.config.get('S3_BUCKET'),
+        Key: file,
       })
     );
   }

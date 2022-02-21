@@ -8,7 +8,7 @@ type Query {
 
 type Mutation {
   createFlare(input: CreateFlareInput!): Flare
-  deleteFlare(id: ID!): Flare
+  deleteFlare(id: ID!): Success
   addComment(input: AddCommentInput!): Flare
   addLike(input: AddLikeInput!): Flare
   removeComment(input: RemoveCommentInput!): Flare

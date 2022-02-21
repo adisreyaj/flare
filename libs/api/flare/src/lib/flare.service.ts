@@ -8,7 +8,7 @@ import {
   RemoveLikeInput,
 } from '@flare/api-interfaces';
 import { PrismaService } from '@flare/api/prisma';
-import { CurrentUser } from '@flare/api/shared';
+import { CurrentUser, mapToSuccess } from '@flare/api/shared';
 import {
   ForbiddenException,
   Injectable,
@@ -179,7 +179,9 @@ export class FlareService {
     return from(
       this.prisma.flare.findUnique({
         where: { id },
-        select: { authorId: true },
+        select: {
+          authorId: true,
+        },
       })
     ).pipe(
       switchMap((flare) => {
@@ -192,16 +194,40 @@ export class FlareService {
               data: {
                 deleted: true,
               },
+              select: {
+                blocks: {
+                  where: {
+                    type: BlockType.images,
+                  },
+                  select: {
+                    content: true,
+                  },
+                },
+              },
             })
           );
         } else {
           return throwError(() => new ForbiddenException());
         }
       }),
+      switchMap((flare) => {
+        return from(
+          this.mediaService.deleteMedia(
+            (flare.blocks ?? []).reduce((acc, curr) => {
+              const content = curr.content as { name: string }[];
+              if (content?.length > 0) {
+                return [...acc, ...(content ?? []).map((file) => file.name)];
+              }
+              return acc;
+            }, [])
+          )
+        );
+      }),
       catchError((err) => {
         console.log(err);
         return throwError(() => new InternalServerErrorException());
-      })
+      }),
+      mapToSuccess()
     );
   }
 
