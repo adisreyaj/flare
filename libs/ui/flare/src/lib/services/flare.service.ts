@@ -166,4 +166,49 @@ export class FlareService {
       })
       .pipe(tap(() => this.refreshSubject.next()));
   }
+
+  getFlareById(id: string, refresh = false) {
+    return this.apollo
+      .query<{ flare: Flare }>({
+        query: gql`
+          query GetFlareById($id: ID!) {
+            flare(id: $id) {
+              id
+              blocks {
+                id
+                type
+                content
+              }
+              bookmarks {
+                id
+              }
+              author {
+                id
+                firstName
+                lastName
+                image
+                username
+              }
+              deleted
+              likes {
+                id
+                reaction
+              }
+              comments {
+                id
+                text
+                createdAt
+              }
+              createdAt
+              _count
+            }
+          }
+        `,
+        variables: {
+          id,
+        },
+        fetchPolicy: refresh ? 'network-only' : 'cache-first',
+      })
+      .pipe(map(({ data }) => data.flare));
+  }
 }

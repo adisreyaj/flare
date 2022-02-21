@@ -2,7 +2,9 @@
   *ngIf="user$ | async as loggedInUser"
   class="relative border-b border-slate-200 p-4"
 >
-  <ng-container *ngIf="loggedInUser.id === flare.author.id">
+  <ng-container
+    *ngIf="loggedInUser.id === flare.author.id && context !== 'FLARE_DETAIL'"
+  >
     <div class="absolute top-2 right-2 z-10">
       <button [zzDropdownTrigger]="flareMoreOptions" variant="link" zzButton>
         <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
@@ -42,7 +44,11 @@
       </div>
     </div>
   </header>
-  <div class="mt-4">
+  <div
+    (click)="routeToFlareDetail(flare.id)"
+    [class.cursor-pointer]="context !== 'FLARE_DETAIL'"
+    class="py-4"
+  >
     <ul class="flex flex-col gap-2">
       <ng-container *ngFor="let block of flare.blocks">
         <ng-container [ngSwitch]="block?.type">
@@ -70,7 +76,7 @@
       </ng-container>
     </ul>
   </div>
-  <footer class="mt-4 flex gap-4">
+  <footer class="flex gap-4">
     <button (click)="toggleLike(flare)" size="sm" variant="link" zzButton>
       <div class="flex items-center gap-2">
         <rmx-icon [name]="flare | flareLikeIcon" class="icon-xxs"></rmx-icon>
