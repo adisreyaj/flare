@@ -41,10 +41,4 @@ export class FlareBlockCodeRendererComponent {
     addModeClass: true,
     spellcheck: false,
   };
-
-  constructor() {
-    setTimeout(() => {
-      console.log(this.content);
-    }, 0);
-  }
 }

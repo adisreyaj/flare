@@ -52,9 +52,12 @@ export class FlareBlockScriptRendererComponent {
 
   constructor(private readonly sanitizer: DomSanitizer) {}
   @Input()
-  set content(value: string | undefined | null) {
-    if (!isNil(value)) {
-      const sanitized = this.sanitizer.sanitize(SecurityContext.NONE, value);
+  set content(content: { value: string } | undefined | null) {
+    if (!isNil(content)) {
+      const sanitized = this.sanitizer.sanitize(
+        SecurityContext.NONE,
+        content?.value ?? ''
+      );
       if (sanitized) {
         this.contentSubject.next(sanitized);
       }

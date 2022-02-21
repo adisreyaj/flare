@@ -21,7 +21,7 @@ import { BlockData, BlockType } from '@flare/api-interfaces';
     <div class="pl-6">
       <flare-code-input
         mode="shell"
-        [value]="control.value"
+        [value]="control.value.content?.value ?? ''"
         [config]="codeInputConfig"
         (valueChange)="handleValueChange($event)"
       ></flare-code-input>
@@ -47,16 +47,16 @@ export class FlareBlockScriptInputComponent implements ControlValueAccessor {
     lineNumbers: false,
   };
 
-  control = new FormControl(['']);
+  control = new FormControl([{ type: BlockType.script, content: '' }]);
   onChanged!: (value: BlockData) => void;
   onTouched!: () => void;
 
   handleValueChange(value: string) {
-    this.onChanged({ type: BlockType.script, content: value });
+    this.onChanged({ type: BlockType.script, content: { value } });
   }
 
   writeValue(value: BlockData): void {
-    this.control.setValue(value.content);
+    this.control.setValue(value);
   }
 
   registerOnChange(fn: any): void {
