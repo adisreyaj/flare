@@ -22,9 +22,10 @@ jobs:
           npm install
           npm run build api --configuration=production
       - name: Consolidate GQL Files
-      - name: Zip artifacts
         run: |
           copyfiles **/*.graphql dist/app/api/graphql
+      - name: Zip artifacts
+        run: |
           tar -czvf build.tar.gz dist/apps/api prisma/
       - name: Send artifacts to remote
         env:
