@@ -20,7 +20,7 @@ jobs:
       - name: Build API
         run: |
           npm install
-          npm run build api --configuration=production
+          npm run build api
           npx copyfiles -f  apps/**/*.graphql libs/**/*.graphql dist/apps/api/graphql
 
       - name: Zip artifacts

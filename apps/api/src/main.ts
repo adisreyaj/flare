@@ -13,7 +13,7 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:4200'],
+    origin: ['http://localhost:4200', 'https://flare.adi.so'],
   });
   app.use(cookieParser(process.env.COOKIE_SECRET));
   app.use(helmet());
