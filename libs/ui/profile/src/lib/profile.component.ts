@@ -32,15 +32,16 @@ import { ProfileHeaderImageUploadComponent } from './modals/profile-header-image
   selector: 'flare-profile',
   template: `
     <ng-container *ngIf="data$ | async as data">
-      <header class="relative aspect-header" style="max-height: 300px">
-        <div class="h-full w-full">
+      <header class="relative">
+        <div class="aspect-header h-full w-full">
           <img
             [src]="
               data?.user?.preferences?.header?.image?.name ||
                 'default-header.jpeg' | mediaUrl
             "
             alt=""
-            class="h-full w-full"
+            class="h-full w-full object-fill"
+            style="max-height: 300px"
           />
         </div>
         <div class="absolute top-2 right-2" *ngIf="!data.isExternalMode">
