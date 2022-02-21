@@ -86,7 +86,7 @@ export class FlareService {
         mutation: gql`
           mutation DeleteFlare($id: ID!) {
             deleteFlare(id: $id) {
-              id
+              success
             }
           }
         `,

@@ -19,6 +19,7 @@ import { EditorConfiguration } from 'codemirror';
     >
       <button
         zzTooltip="Copy command"
+        (click)="$event.stopPropagation()"
         [cdkCopyToClipboard]="content.value"
         class="grid place-items-center rounded-full text-sm hover:text-primary"
       >

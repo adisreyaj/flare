@@ -21,7 +21,7 @@ import { BlockData, BlockType } from '@flare/api-interfaces';
     <div class="pl-6">
       <flare-code-input
         mode="shell"
-        [value]="control.value.content?.value ?? ''"
+        [value]="control.value.content?.value"
         [config]="codeInputConfig"
         (valueChange)="handleValueChange($event)"
       ></flare-code-input>
