@@ -26,7 +26,7 @@ export class AlreadyLoggedInGuard implements CanActivate, CanLoad {
     return this.checkAccess();
   }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate(route: ActivatedRouteSnapshot, _: RouterStateSnapshot) {
     console.log(route.url);
     return this.checkAccess();
   }
@@ -39,7 +39,7 @@ export class AlreadyLoggedInGuard implements CanActivate, CanLoad {
         }
         return of(true);
       }),
-      catchError((err) => {
+      catchError(() => {
         return of(true);
       })
     );

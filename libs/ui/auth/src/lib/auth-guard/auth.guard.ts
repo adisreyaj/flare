@@ -10,6 +10,7 @@ import {
 } from '@angular/router';
 import { catchError, tap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { ApolloError } from '@apollo/client/core';
 
 /**
  * Guard that checks if the user is logged in or not.
@@ -54,7 +55,7 @@ export class AuthGuard implements CanActivateChild, CanLoad, CanActivate {
         }
       }),
       catchError((err) => {
-        if (err?.error) {
+        if (err instanceof ApolloError && err.message === 'Unauthorized') {
           this.router.navigate(['/login']);
         }
         return throwError(() => err);
