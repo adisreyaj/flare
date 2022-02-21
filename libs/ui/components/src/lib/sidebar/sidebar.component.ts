@@ -15,7 +15,7 @@ import { ProfileImageDefaultDirectiveModal } from '@flare/ui/shared';
   selector: 'flare-sidebar',
   template: `
     <div
-      class="sm:bottom-unset sm:w-unset fixed bottom-0 z-50 w-full border-t border-slate-200 bg-white px-2 shadow-2xl sm:relative sm:pt-10 md:px-6"
+      class="sm:bottom-unset sm:w-unset fixed bottom-0 z-50 w-full border-t border-slate-200 bg-white px-2 shadow-2xl sm:relative sm:border-none sm:pt-10 sm:shadow-none md:px-6"
     >
       <header
         class="mb-6 hidden items-center justify-center gap-2 sm:flex lg:justify-start lg:px-6"
@@ -77,7 +77,7 @@ import { ProfileImageDefaultDirectiveModal } from '@flare/ui/shared';
     <footer
       *ngIf="user"
       [routerLink]="['/', user.username]"
-      class="flex cursor-pointer gap-2  p-4 hover:bg-slate-100"
+      class=" hidden cursor-pointer gap-2 p-4  hover:bg-slate-100 sm:flex"
     >
       <img
         [src]="user.image"
