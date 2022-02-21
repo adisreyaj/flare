@@ -18,14 +18,22 @@ import { ApiNotificationsModule } from '@flare/api/notifications';
 
 @Module({
   imports: [
-    GraphQLModule.forRoot({
-      typePaths: [join(process.cwd(), 'libs/**/*.graphql'), './**/*.graphql'],
-      resolvers: { JSON: GraphQLJSON },
-      cors: {
-        origin: true,
-        credentials: true,
+    GraphQLModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => {
+        const isProd = configService.get('NODE_ENV') === 'production';
+        return {
+          typePaths: isProd
+            ? ['./**/*.graphql']
+            : [join(process.cwd(), 'libs/**/*.graphql'), './**/*.graphql'],
+          resolvers: { JSON: GraphQLJSON },
+          cors: {
+            origin: true,
+            credentials: true,
+          },
+          context: ({ req, res }) => ({ req, res }),
+        };
       },
-      context: ({ req, res }) => ({ req, res }),
+      inject: [ConfigService],
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
