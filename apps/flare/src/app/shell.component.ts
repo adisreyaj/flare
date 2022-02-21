@@ -18,16 +18,15 @@ import { User } from '@flare/api-interfaces';
     //language=SCSS
     `
       :host {
-        @apply block;
-        overflow-y: scroll;
+        @apply block h-screen;
       }
       .content {
         @apply mx-auto grid h-screen max-w-screen-xl;
-        grid-template-columns: 80px 1fr 0;
+        grid-template-columns: 80px 1fr;
         grid-template-rows: 1fr;
 
         @media screen and (min-width: 768px) {
-          grid-template-columns: 250px 1fr 250px;
+          grid-template-columns: 250px 1fr;
         }
       }
     `,
