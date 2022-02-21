@@ -23,7 +23,7 @@ jobs:
           npm run build api --configuration=production
       - name: Zip artifacts
         run: |
-          tar -czvf build.tar.gz dist/apps/api prisma/ package*
+          tar -czvf build.tar.gz dist/apps/api prisma/ package* **/*.graphql
       - name: Send artifacts to remote
         env:
           REMOTE_SERVER_USER: ${{ secrets.REMOTE_SERVER_USER }}
