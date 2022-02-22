@@ -7,6 +7,7 @@ import {
   RemoveCommentInput,
   RemoveLikeInput,
 } from '@flare/api-interfaces';
+import { ApiMediaService } from '@flare/api/media';
 import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser, mapToSuccess } from '@flare/api/shared';
 import {
@@ -15,6 +16,7 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+import { isNil } from 'lodash';
 import {
   catchError,
   from,
@@ -27,10 +29,8 @@ import {
   throwError,
   withLatestFrom,
 } from 'rxjs';
-import { ApiMediaService } from '@flare/api/media';
-import { isNil } from 'lodash';
-import { getFlareFieldsToInclude } from './flare.helper';
 import { FileWithMeta } from '../../../media/src/lib/api-media.interface';
+import { getFlareFieldsToInclude } from './flare.helper';
 
 @Injectable()
 export class FlareService {
@@ -58,7 +58,7 @@ export class FlareService {
   }
 
   findAllFlaresFromFollowingUsers(user: CurrentUser) {
-    const currenUsersFollowing$ = from(
+    const currentUsersFollowing$ = from(
       this.prisma.user.findUnique({
         where: {
           id: user.id,
@@ -87,7 +87,7 @@ export class FlareService {
         })
       );
 
-    return currenUsersFollowing$.pipe(
+    return currentUsersFollowing$.pipe(
       switchMap(({ following }) => {
         if (isNil(following)) {
           return of([]);
@@ -116,17 +116,6 @@ export class FlareService {
           data: this.getCreateFlareData(flare, data, user),
           include: getFlareFieldsToInclude(user.id),
         })
-      ).pipe(
-        tap(() => {
-          // Run if there are media files to upload
-          if (flare.jobId) {
-            this.mediaService.runJobImmediately(flare.jobId).then(() => {
-              this.logger.log(
-                `Job ${flare.jobId} promoted to start immediately`
-              );
-            });
-          }
-        })
       );
 
     const userFollowers$ = from(
@@ -152,25 +141,32 @@ export class FlareService {
       ? createFlare$()
       : from(this.mediaService.getJobData(flare.jobId)).pipe(
           this.handleFileUploadsIfJobExists(),
-          switchMap((files) => createFlare$(files)),
-          tap(() => {
-            this.mediaService.runJobImmediately(flare.jobId);
-          })
+          switchMap((files) => createFlare$(files))
         );
 
     return query$.pipe(
       withLatestFrom(userFollowers$),
-      switchMap(([flare, followers]) =>
+      tap(() => {
+        // Run if there are media files to upload
+        if (flare.jobId) {
+          this.mediaService.runJobImmediately(flare.jobId).then(() => {
+            this.logger.log(`Job ${flare.jobId} promoted to start immediately`);
+          });
+        }
+      }),
+      switchMap(([flareData, followers]) =>
         from(
           this.prisma.notification.createMany({
             data: followers.map((id) => ({
               type: NotificationType.FLARE,
               toId: id,
-              flareId: flare.id,
+              flareId: flareData.id,
               followeeId: user.id,
+              content: flare.blocks.find(({ type }) => type === BlockType.text)
+                ?.content,
             })),
           })
-        ).pipe(mapTo(flare))
+        ).pipe(mapTo(flareData))
       )
     );
   }
