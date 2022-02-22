@@ -1,21 +1,21 @@
-import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
-import GraphQLJSON from 'graphql-type-json';
-import { UsersModule } from '@flare/api/users';
-import { PrismaModule } from '@flare/api/prisma';
+import { AuthGuard, AuthModule } from '@flare/api/auth';
 import { FlareModule } from '@flare/api/flare';
+import { ApiHeaderPromoModule } from '@flare/api/header-promo';
+import { ApiMediaModule } from '@flare/api/media';
+import { ApiNotificationsModule } from '@flare/api/notifications';
+import { PrismaModule } from '@flare/api/prisma';
 import { SponsorsModule } from '@flare/api/sponsors';
 import { TipsModule } from '@flare/api/tips';
-import { ApiMediaModule } from '@flare/api/media';
-import { AuthGuard, AuthModule } from '@flare/api/auth';
+import { UsersModule } from '@flare/api/users';
 import { BullModule } from '@nestjs/bull';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { GraphQLModule } from '@nestjs/graphql';
+import GraphQLJSON from 'graphql-type-json';
 import { LoggerModule } from 'nestjs-pino';
-import { ApiHeaderPromoModule } from '@flare/api/header-promo';
-import { ApiNotificationsModule } from '@flare/api/notifications';
-
+import { join } from 'path';
+import { ENVIRONMENT_VALIDATION_SCHEMA } from './config/environment.validator';
 @Module({
   imports: [
     GraphQLModule.forRootAsync({
@@ -48,6 +48,7 @@ import { ApiNotificationsModule } from '@flare/api/notifications';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
+      validationSchema: ENVIRONMENT_VALIDATION_SCHEMA,
     }),
     LoggerModule.forRoot({
       exclude: ['auth'],

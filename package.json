@@ -66,6 +66,7 @@
     "graphql-type-json": "^0.3.2",
     "helmet": "^5.0.2",
     "immer": "^9.0.12",
+    "joi": "^17.6.0",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "mime": "^3.0.0",
