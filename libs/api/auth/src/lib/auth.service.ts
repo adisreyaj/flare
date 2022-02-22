@@ -90,7 +90,7 @@ export class AuthService {
       email: userData.email,
       username: userData.email,
       firstName: userData.firstName,
-      lastName: userData.lastName,
+      lastName: userData?.lastName ?? '',
       image: userData.image,
       onboardingState: { state: 'SIGNED_UP' },
       bio: {
