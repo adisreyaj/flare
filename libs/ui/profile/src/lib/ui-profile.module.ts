@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ProfileComponent } from './profile.component';
 import { ProfileBlogsModule } from './profile-blogs.component';
-import { ButtonModule, ModalModule } from 'zigzag';
+import { ButtonModule, DropdownModule, ModalModule } from 'zigzag';
 import { ProfileSocialModule } from './profile-social.component';
 import { ProfileKudosModule } from './profile-kudos.component';
 import { ProfileImageDefaultDirectiveModal } from '../../../shared/src/directives/profile-image-default.directive';
@@ -28,6 +28,7 @@ import { MediaUrlPipeModule } from '@flare/ui/shared';
     IconModule,
     ModalModule,
     MediaUrlPipeModule,
+    DropdownModule,
   ],
 })
 export class UiProfileModule {}

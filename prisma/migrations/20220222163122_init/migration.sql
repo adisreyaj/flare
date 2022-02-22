@@ -2,7 +2,7 @@
 CREATE TABLE `User` (
     `id` VARCHAR(191) NOT NULL,
     `firstName` VARCHAR(191) NOT NULL,
-    `lastName` VARCHAR(191) NOT NULL,
+    `lastName` VARCHAR(191) NULL,
     `image` VARCHAR(191) NULL,
     `email` VARCHAR(191) NOT NULL,
     `username` VARCHAR(191) NULL,

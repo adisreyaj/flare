@@ -59,18 +59,32 @@ import { ProfileHeaderImageUploadComponent } from './modals/profile-header-image
       </header>
       <div class="relative flex flex-col items-center pb-6">
         <ng-container *ngIf="!data.isExternalMode">
-          <button class="absolute top-4 right-3" zzButton size="sm">
-            Edit Profile
-          </button>
-
-          <button
-            class="absolute top-4 left-3"
-            zzButton
-            size="sm"
-            (click)="viewPromoProposals()"
-          >
-            View Promo Proposals
-          </button>
+          <div class="absolute top-4 right-3">
+            <button
+              [zzDropdownTrigger]="flareMoreOptions"
+              variant="link"
+              zzButton
+            >
+              <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
+              <zz-dropdown #flareMoreOptions>
+                <button
+                  class="absolute top-4 left-3"
+                  zzButton
+                  size="sm"
+                  (click)="viewPromoProposals()"
+                >
+                  Edit Profile</button
+                ><button
+                  class="absolute top-4 left-3"
+                  zzButton
+                  size="sm"
+                  (click)="viewPromoProposals()"
+                >
+                  View Promo Proposals
+                </button>
+              </zz-dropdown>
+            </button>
+          </div>
         </ng-container>
         <ng-container *ngIf="data.isExternalMode">
           <button
@@ -235,7 +249,7 @@ export class ProfileComponent {
       })
     );
     this.kudos$ = this.data$.pipe(
-      switchMap((data) => this.kudosService.getKudos(data.user.username))
+      switchMap((data) => this.kudosService.getKudos(data.user?.username ?? ''))
     );
 
     this.latestHashnodeBlogs$ = this.data$.pipe(

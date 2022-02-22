@@ -6,7 +6,7 @@ import {
 } from '@flare/api-interfaces';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersService } from './users.service';
-import { CurrentUser, Token } from '@flare/api/shared';
+import { CurrentUser } from '@flare/api/shared';
 
 @Resolver('User')
 export class UsersResolver {
@@ -17,7 +17,7 @@ export class UsersResolver {
     return this.usersService.findOne(id);
   }
   @Query('me')
-  findMe(@CurrentUser() user: CurrentUser, @Token() token: string) {
+  findMe(@CurrentUser() user: CurrentUser) {
     return this.usersService.findOne(user.id);
   }
 

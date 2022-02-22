@@ -88,7 +88,7 @@ export class AuthService {
   private async signup(userData: Partial<User>) {
     const user: Prisma.UserCreateInput = {
       email: userData.email,
-      username: userData.email,
+      username: null,
       firstName: userData.firstName,
       lastName: userData?.lastName ?? '',
       image: userData.image,

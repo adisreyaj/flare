@@ -207,7 +207,7 @@ export interface IQuery {
 export interface IMutation {
     __typename?: 'IMutation';
     createFlare(input: CreateFlareInput): Nullable<Flare> | Promise<Nullable<Flare>>;
-    deleteFlare(id: string): Nullable<Flare> | Promise<Nullable<Flare>>;
+    deleteFlare(id: string): Nullable<Success> | Promise<Nullable<Success>>;
     addComment(input: AddCommentInput): Nullable<Flare> | Promise<Nullable<Flare>>;
     addLike(input: AddLikeInput): Nullable<Flare> | Promise<Nullable<Flare>>;
     removeComment(input: RemoveCommentInput): Nullable<Flare> | Promise<Nullable<Flare>>;
@@ -331,9 +331,9 @@ export interface User {
     id: string;
     image?: Nullable<string>;
     firstName: string;
-    lastName: string;
+    lastName?: Nullable<string>;
     email: string;
-    username: string;
+    username?: Nullable<string>;
     password?: Nullable<string>;
     bio?: Nullable<UserBio>;
     _count?: Nullable<JSON>;

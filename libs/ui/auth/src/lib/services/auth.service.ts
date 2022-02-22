@@ -19,8 +19,8 @@ export class AuthService {
             me {
               id
               email
-              username
               image
+              username
               firstName
               lastName
               _count
