@@ -97,8 +97,18 @@
         ></rmx-icon>
       </button>
     </ng-container>
-    <button variant="link" zzButton>
+    <button [zzDropdownTrigger]="shareOptions" variant="link" zzButton>
       <rmx-icon class="icon-xxs" name="share-line"></rmx-icon>
+      <zz-dropdown #shareOptions>
+        <div
+          [cdkCopyToClipboard]="'https://flare.adi.so/flare/' + flare.id"
+          class="w-full text-red-500"
+          zzDropdownCloseOnClick
+          zzDropdownItem
+        >
+          Copy Flare Link
+        </div>
+      </zz-dropdown>
     </button>
   </footer>
 </article>

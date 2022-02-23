@@ -17,6 +17,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CURRENT_USER } from '@flare/ui/auth';
 import { Observable } from 'rxjs';
 import { ProfileImageDefaultDirectiveModal } from '@flare/ui/shared';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'flare-card',
@@ -92,6 +93,7 @@ export class FlareCardComponent {
     FlareBookmarkIconPipeModule,
     RouterModule,
     ProfileImageDefaultDirectiveModal,
+    ClipboardModule,
   ],
 })
 export class FlareCardModule {}

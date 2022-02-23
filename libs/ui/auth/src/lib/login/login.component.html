@@ -2,28 +2,48 @@
   <section class="grid place-items-center">
     <form class="w-full max-w-sm rounded-full">
       <header class="mb-8">
-        <h1 class="mb-2 text-2xl font-bold">Login</h1>
-        <p class="text-slate-500">Share & document your developer journey!</p>
+        <img alt="Flare" class="h-12 w-12" src="assets/images/flare.svg" />
+        <div class="mt-4">
+          <h1 class="mb-2 text-2xl font-bold">Welcome to Flare</h1>
+          <p class="text-slate-500">Share & document your developer journey!</p>
+        </div>
       </header>
-      <div class="form-group mb-4">
-        <label class="text-sm font-medium text-slate-500" for="email"
-          >Email</label
+      <section class="relative">
+        <div
+          class="absolute top-0 left-0 grid h-full w-full place-items-center bg-white bg-opacity-80"
         >
-        <input class="w-full" id="email" readonly type="email" zzInput />
-      </div>
-      <div class="form-group">
-        <label class="text-sm font-medium text-slate-500" for="password"
-          >Password</label
-        >
-        <input class="w-full" id="password" readonly type="password" zzInput />
-      </div>
-      <footer class="mt-4">
-        <button class="w-full" variant="primary" zzButton>Login</button>
-      </footer>
+          <div class="flex flex-col items-center">
+            <p class="rounded-full bg-slate-200 px-2 py-1 text-xs font-medium">
+              Coming Soon
+            </p>
+          </div>
+        </div>
+        <div class="form-group mb-4">
+          <label class="text-sm font-medium text-slate-500" for="email"
+            >Email</label
+          >
+          <input class="w-full" id="email" readonly type="email" zzInput />
+        </div>
+        <div class="form-group">
+          <label class="text-sm font-medium text-slate-500" for="password"
+            >Password</label
+          >
+          <input
+            class="w-full"
+            id="password"
+            readonly
+            type="password"
+            zzInput
+          />
+        </div>
+        <footer class="mt-4">
+          <button class="w-full" variant="primary" zzButton>Get Started</button>
+        </footer>
+      </section>
       <section class="mt-10">
         <div class="mb-8 text-center text-sm text-slate-400">
           <p class="separator mx-6">
-            &nbsp;&nbsp;or login using social accounts&nbsp;&nbsp;
+            &nbsp;&nbsp;or start using social accounts&nbsp;&nbsp;
           </p>
         </div>
         <div class="grid grid-cols-2 gap-4">
@@ -67,12 +87,7 @@
       </section>
       <section class="mt-10">
         <p class="font-medium text-slate-500">
-          Don't have an account?
-          <a
-            class="font-semibold text-primary decoration-dotted underline-offset-2 hover:underline"
-            routerLink="/signup"
-            >Sign Up</a
-          >
+          Signs you up automatically If you don't have an account yet.
         </p>
       </section>
       <section class="mt-8 text-sm text-slate-400">
