@@ -21,35 +21,76 @@
   >
     <ng-container *ngFor="let block of blocksFormArray.controls; index as i">
       <ng-container [ngSwitch]="block.value?.type">
-        <ng-container *ngSwitchDefault>
+        <section *ngSwitchDefault class="relative">
+          <div
+            *ngIf="i !== 0"
+            class="absolute -top-2 -left-2 z-20 grid h-5 w-5 place-items-center rounded-full bg-red-400 text-white"
+          >
+            <button (click)="removeBlock(i)">
+              <rmx-icon class="icon-xs" name="close-line"></rmx-icon>
+            </button>
+          </div>
           <flare-block-text-input
             [formControl]="$any(blocksFormArray.controls[i])"
           ></flare-block-text-input>
-        </ng-container>
-        <ng-container *ngSwitchCase="blockTypes.code">
+        </section>
+        <section *ngSwitchCase="blockTypes.code" class="relative">
+          <div
+            *ngIf="i !== 0"
+            class="absolute -top-2 -left-2 z-20 grid h-5 w-5 place-items-center rounded-full bg-red-400 text-white"
+          >
+            <button (click)="removeBlock(i)">
+              <rmx-icon class="icon-xs" name="close-line"></rmx-icon>
+            </button>
+          </div>
           <flare-block-code-input
             [formControl]="$any(blocksFormArray.controls[i])"
           ></flare-block-code-input>
-        </ng-container>
-        <ng-container *ngSwitchCase="blockTypes.poll">
-          <flare-block-poll-input></flare-block-poll-input> </ng-container
-        ><ng-container *ngSwitchCase="blockTypes.script">
+        </section>
+        <section *ngSwitchCase="blockTypes.poll" class="relative">
+          <div
+            *ngIf="i !== 0"
+            class="absolute -top-2 -left-2 z-20 grid h-5 w-5 place-items-center rounded-full bg-red-400 text-white"
+          >
+            <button (click)="removeBlock(i)">
+              <rmx-icon class="icon-xs" name="close-line"></rmx-icon>
+            </button>
+          </div>
+          <flare-block-poll-input></flare-block-poll-input>
+        </section>
+        <section *ngSwitchCase="blockTypes.script" class="relative">
+          <div
+            *ngIf="i !== 0"
+            class="absolute -top-2 -left-2 z-20 grid h-5 w-5 place-items-center rounded-full bg-red-400 text-white"
+          >
+            <button (click)="removeBlock(i)">
+              <rmx-icon class="icon-xs" name="close-line"></rmx-icon>
+            </button>
+          </div>
           <flare-block-script-input
             [formControl]="$any(blocksFormArray.controls[i])"
           ></flare-block-script-input>
-        </ng-container>
-        <ng-container *ngSwitchCase="blockTypes.githubRepo">
+        </section>
+        <section *ngSwitchCase="blockTypes.githubRepo" class="relative">
           <!--          <flare-block-github-repo-input></flare-block-github-repo-input>-->
-        </ng-container>
-        <ng-container *ngSwitchCase="blockTypes.images">
+        </section>
+        <section *ngSwitchCase="blockTypes.images" class="relative">
+          <div
+            *ngIf="i !== 0"
+            class="absolute -top-2 -left-2 z-20 grid h-5 w-5 place-items-center rounded-full bg-red-400 text-white"
+          >
+            <button (click)="removeBlock(i)">
+              <rmx-icon class="icon-xs" name="close-line"></rmx-icon>
+            </button>
+          </div>
           <flare-block-image-input
             (remove)="removeImageFromBlock($event, i)"
             [content]="$any(blocksFormArray.controls[i].value.content)"
           ></flare-block-image-input>
-        </ng-container>
-        <ng-container *ngSwitchCase="blockTypes.techStack">
+        </section>
+        <section *ngSwitchCase="blockTypes.techStack" class="relative">
           <!--          <flare-block-tech-stack-input></flare-block-tech-stack-input>-->
-        </ng-container>
+        </section>
       </ng-container>
     </ng-container>
   </div>

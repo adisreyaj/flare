@@ -155,6 +155,14 @@ export class ComposerComponent {
     });
   }
 
+  removeBlock(i: number) {
+    if (i === 0) {
+      return;
+    } else {
+      this.blocksFormArray.removeAt(i);
+    }
+  }
+
   private resetMediaUploadState() {
     this.mediaUploadState = {
       jobId: null,
