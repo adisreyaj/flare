@@ -1,7 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map } from 'rxjs';
 import { User } from '@flare/api-interfaces';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { AUTH_CONFIG, AuthConfig } from '../auth.token';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +12,12 @@ import { User } from '@flare/api-interfaces';
 export class AuthService {
   public readonly isLoggedIn$ = this.me().pipe(map((user) => !!user));
 
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private readonly router: Router,
+    private readonly http: HttpClient,
+    @Inject(AUTH_CONFIG) private config: AuthConfig
+  ) {}
 
   me(refresh = false) {
     return this.apollo
@@ -51,5 +59,11 @@ export class AuthService {
 
   init() {
     return this.me();
+  }
+
+  logout() {
+    this.http.get(this.config.authURL + '/logout').subscribe(() => {
+      this.router.navigate(['/']);
+    });
   }
 }

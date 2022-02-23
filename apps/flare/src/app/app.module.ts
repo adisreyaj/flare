@@ -42,7 +42,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     {
       provide: AUTH_CONFIG,
       useValue: {
-        socialLoginURL: `${environment.apiURL}/api/auth`,
+        authURL: `${environment.apiURL}/api/auth`,
       },
     },
     {

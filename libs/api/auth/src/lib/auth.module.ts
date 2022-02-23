@@ -23,12 +23,6 @@ import { PrismaModule } from '@flare/api/prisma';
     PrismaModule,
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    // LocalStrategy,
-    JwtStrategy,
-    GoogleStrategy,
-    // GithubStrategy,
-  ],
+  providers: [AuthService, JwtStrategy, GoogleStrategy],
 })
 export class AuthModule {}

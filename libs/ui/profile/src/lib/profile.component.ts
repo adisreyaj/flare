@@ -1,5 +1,13 @@
 import { Component, Inject } from '@angular/core';
-import { CURRENT_USER } from '@flare/ui/auth';
+import { ActivatedRoute } from '@angular/router';
+import {
+  Blog,
+  HeaderPromoInput,
+  Kudos,
+  User,
+  UserPreferences,
+} from '@flare/api-interfaces';
+import { AuthService, CURRENT_USER } from '@flare/ui/auth';
 import {
   combineLatest,
   filter,
@@ -9,24 +17,16 @@ import {
   switchMap,
   withLatestFrom,
 } from 'rxjs';
-import {
-  Blog,
-  HeaderPromoInput,
-  Kudos,
-  User,
-  UserPreferences,
-} from '@flare/api-interfaces';
+import { ModalService } from 'zigzag';
+import { ProfileHeaderImageUploadComponent } from './modals/profile-header-image-upload/profile-header-image-upload.component';
+import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-promo-received/profile-header-promo-received.component';
+import { ProfileHeaderPromoSubmitModalComponent } from './modals/profile-header-promo-submit/profile-header-promo-submit';
+import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos-modal.component';
 import { DevToService } from './services/devto.service';
 import { HashnodeService } from './services/hashnode.service';
-import { KudosService } from './services/kudos.service';
-import { ActivatedRoute } from '@angular/router';
-import { UsersService } from './services/users.service';
-import { ModalService } from 'zigzag';
-import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos-modal.component';
-import { ProfileHeaderPromoSubmitModalComponent } from './modals/profile-header-promo-submit/profile-header-promo-submit';
 import { HeaderPromoService } from './services/header-promo.service';
-import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-promo-received/profile-header-promo-received.component';
-import { ProfileHeaderImageUploadComponent } from './modals/profile-header-image-upload/profile-header-image-upload.component';
+import { KudosService } from './services/kudos.service';
+import { UsersService } from './services/users.service';
 
 @Component({
   selector: 'flare-profile',
@@ -59,6 +59,14 @@ import { ProfileHeaderImageUploadComponent } from './modals/profile-header-image
       </header>
       <div class="relative flex flex-col items-center pb-6">
         <ng-container *ngIf="!data.isExternalMode">
+          <button
+            class="absolute top-4 left-3"
+            zzButton
+            size="sm"
+            (click)="viewPromoProposals()"
+          >
+            Promo Proposals
+          </button>
           <div class="absolute top-4 right-3">
             <button
               [zzDropdownTrigger]="flareMoreOptions"
@@ -67,21 +75,22 @@ import { ProfileHeaderImageUploadComponent } from './modals/profile-header-image
             >
               <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
               <zz-dropdown #flareMoreOptions>
-                <button
-                  class="absolute top-4 left-3"
-                  zzButton
-                  size="sm"
+                <div
+                  zzDropdownItem
+                  class="w-full"
+                  zzDropdownCloseOnClick
                   (click)="viewPromoProposals()"
                 >
-                  Edit Profile</button
-                ><button
-                  class="absolute top-4 left-3"
-                  zzButton
-                  size="sm"
-                  (click)="viewPromoProposals()"
+                  Edit Profile
+                </div>
+                <div
+                  class="w-full text-red-500"
+                  zzDropdownItem
+                  zzDropdownCloseOnClick
+                  (click)="logout()"
                 >
-                  View Promo Proposals
-                </button>
+                  Logout
+                </div>
               </zz-dropdown>
             </button>
           </div>
@@ -231,7 +240,8 @@ export class ProfileComponent {
     private readonly activatedRoute: ActivatedRoute,
     private readonly usersService: UsersService,
     private readonly modal: ModalService,
-    private readonly headerPromoService: HeaderPromoService
+    private readonly headerPromoService: HeaderPromoService,
+    private readonly authService: AuthService
   ) {
     const userName$: Observable<string> = this.activatedRoute.params.pipe(
       map((params) => params['username']),
@@ -336,6 +346,10 @@ export class ProfileComponent {
     modalRef.afterClosed$.subscribe((success) => {
       success && this.usersService.refresh();
     });
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
 

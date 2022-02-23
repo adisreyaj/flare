@@ -7,7 +7,7 @@ export const AUTH_CONFIG = new InjectionToken<AuthConfig>(
 );
 
 export interface AuthConfig {
-  socialLoginURL: string;
+  authURL: string;
 }
 
 export const CURRENT_USER = new InjectionToken<Observable<User>>(

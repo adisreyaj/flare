@@ -20,7 +20,7 @@ import { AUTH_CONFIG, AuthConfig } from '../auth.token';
         display: block;
       }
       .separator {
-        @apply text-center border-b border-slate-300;
+        @apply border-b border-slate-300 text-center;
         height: 12px;
       }
       .separator:first-line {
@@ -34,7 +34,7 @@ export class LoginComponent {
   providers = AuthProvider;
   constructor(@Inject(AUTH_CONFIG) private readonly authConfig: AuthConfig) {}
   onSocialLogin(provider: AuthProvider) {
-    location.href = `${this.authConfig.socialLoginURL}/${provider}`;
+    location.href = `${this.authConfig.authURL}/${provider}`;
   }
 }
 

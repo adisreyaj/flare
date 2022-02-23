@@ -19,7 +19,7 @@ import { SuccessResponse, User } from '@flare/api-interfaces';
 })
 export class UsersService {
   private readonly refreshSubject = new Subject<void>();
-  constructor(private apollo: Apollo) {}
+  constructor(private readonly apollo: Apollo) {}
 
   getByUsername(username: string) {
     return this.refreshSubject.asObservable().pipe(
