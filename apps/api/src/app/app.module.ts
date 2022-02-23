@@ -16,6 +16,7 @@ import GraphQLJSON from 'graphql-type-json';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
 import { ENVIRONMENT_VALIDATION_SCHEMA } from './config/environment.validator';
+
 @Module({
   imports: [
     GraphQLModule.forRootAsync({

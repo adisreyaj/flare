@@ -9,7 +9,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private config: ConfigService) {
     super({
       jwtFromRequest: (req) => {
-        return req.signedCookies.token ?? null;
+        /**
+         * Get both the http and non http tokens from cookies
+         * and match them.
+         *
+         * For logged-out user, the `token-sync` cookie will not be present.
+         */
+        const token = req.signedCookies['token'];
+        const tokenSync = req.signedCookies['token-sync'];
+        if (token && tokenSync && token === tokenSync) {
+          return token;
+        } else {
+          return null;
+        }
       },
       ignoreExpiration: false,
       secretOrKey: config.get('JWT_SECRET'),

@@ -6,7 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const app = await NestFactory.create(AppModule);
   if (process.env.NODE_ENV === 'production') {
     app.useLogger(app.get(Logger));
   }

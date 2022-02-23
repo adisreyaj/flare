@@ -79,6 +79,17 @@ export class AuthService {
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: 'strict',
     });
+    /**
+     * Set a non http cookie which can be removed by the client on logout
+     */
+    res.cookie('token-sync', accessToken, {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      httpOnly: false,
+      secure: true,
+      signed: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'strict',
+    });
     res.redirect(
       `${this.frontendCallBackUrl}?code=SUCCESS&token=${accessToken}`
     );
