@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { PrismaModule } from '@flare/api/prisma';
+import { GithubStrategy } from './strategies/github.strategy';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { PrismaModule } from '@flare/api/prisma';
     PrismaModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GoogleStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, GithubStrategy],
 })
 export class AuthModule {}
