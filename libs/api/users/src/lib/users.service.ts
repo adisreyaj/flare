@@ -21,6 +21,7 @@ import {
   of,
   OperatorFunction,
   switchMap,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -127,7 +128,8 @@ export class UsersService {
           ...user,
           isFollowing,
         };
-      })
+      }),
+      take(1)
     );
   }
 
@@ -138,7 +140,10 @@ export class UsersService {
           username,
         },
       })
-    ).pipe(map((count) => ({ available: count === 0 })));
+    ).pipe(
+      map((count) => ({ available: count === 0 })),
+      take(1)
+    );
   }
 
   findOne(id: string) {
@@ -210,6 +215,7 @@ export class UsersService {
         },
       })
     ).pipe(
+      take(1),
       catchError((err) => {
         console.log(err);
         return throwError(() => new InternalServerErrorException());
@@ -260,6 +266,7 @@ export class UsersService {
         },
       })
     ).pipe(
+      take(1),
       catchError((err) => {
         console.log(err);
         return throwError(() => new InternalServerErrorException());
@@ -275,6 +282,7 @@ export class UsersService {
         },
       })
     ).pipe(
+      take(1),
       catchError((err) => {
         console.log(err);
         return throwError(() => new InternalServerErrorException());
@@ -307,7 +315,10 @@ export class UsersService {
 
     return from(
       this.prisma.$transaction([creatNotificationPromise, updateUserPromise])
-    ).pipe(map(([, user]) => user));
+    ).pipe(
+      map(([, user]) => user),
+      take(1)
+    );
   }
 
   unfollow(userId: string, user: CurrentUser) {
@@ -327,7 +338,7 @@ export class UsersService {
           },
         },
       })
-    );
+    ).pipe(take(1));
   }
 
   giveKudos(input: GiveKudosInput, user: CurrentUser) {
@@ -384,7 +395,7 @@ export class UsersService {
           },
         });
       }),
-      map(() => ({ success: true }))
+      map(() => ({ success: true }), take(1))
     );
   }
 
@@ -421,7 +432,8 @@ export class UsersService {
       mapToSuccess(),
       tap(() => {
         this.mediaService.runJobImmediately(input.jobId);
-      })
+      }),
+      take(1)
     );
   }
 

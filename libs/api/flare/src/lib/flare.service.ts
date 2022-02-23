@@ -25,6 +25,7 @@ import {
   of,
   OperatorFunction,
   switchMap,
+  take,
   tap,
   throwError,
   withLatestFrom,
@@ -96,7 +97,8 @@ export class FlareService {
         return getFlaresByAuthorIds$(
           following.map(({ id }) => id).concat(user.id)
         );
-      })
+      }),
+      take(1)
     );
   }
 
@@ -167,7 +169,8 @@ export class FlareService {
             })),
           })
         ).pipe(mapTo(flareData))
-      )
+      ),
+      take(1)
     );
   }
 
@@ -219,11 +222,12 @@ export class FlareService {
           )
         );
       }),
+      take(1),
+      mapToSuccess(),
       catchError((err) => {
         console.log(err);
         return throwError(() => new InternalServerErrorException());
-      }),
-      mapToSuccess()
+      })
     );
   }
 
@@ -243,7 +247,7 @@ export class FlareService {
         },
         include: getFlareFieldsToInclude(user.id),
       })
-    );
+    ).pipe(take(1));
   }
 
   removeComment(input: RemoveCommentInput, user: CurrentUser) {
@@ -261,7 +265,7 @@ export class FlareService {
         },
         include: getFlareFieldsToInclude(user.id),
       })
-    );
+    ).pipe(take(1));
   }
 
   addLike(input: AddLikeInput, user: CurrentUser) {
@@ -280,7 +284,7 @@ export class FlareService {
         },
         include: getFlareFieldsToInclude(user.id),
       })
-    );
+    ).pipe(take(1));
   }
 
   removeLike(input: RemoveLikeInput, user: CurrentUser) {
@@ -298,7 +302,7 @@ export class FlareService {
         },
         include: getFlareFieldsToInclude(user.id),
       })
-    );
+    ).pipe(take(1));
   }
 
   private getCreateFlareData(

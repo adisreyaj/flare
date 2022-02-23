@@ -1,7 +1,7 @@
 import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser } from '@flare/api/shared';
 import { Injectable } from '@nestjs/common';
-import { from, map } from 'rxjs';
+import { from, map, take } from 'rxjs';
 import { getFlareFieldsToInclude } from './flare.helper';
 
 @Injectable()
@@ -24,7 +24,10 @@ export class BookmarkService {
           createdAt: 'desc',
         },
       })
-    ).pipe(map((result) => result.map((bookmark) => bookmark.flare)));
+    ).pipe(
+      map((result) => result.map((bookmark) => bookmark.flare)),
+      take(1)
+    );
   }
 
   bookmark(flareId: string, user: CurrentUser) {
