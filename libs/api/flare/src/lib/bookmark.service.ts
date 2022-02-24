@@ -1,33 +1,28 @@
 import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser } from '@flare/api/shared';
 import { Injectable } from '@nestjs/common';
-import { from, map, take } from 'rxjs';
 import { getFlareFieldsToInclude } from './flare.helper';
 
 @Injectable()
 export class BookmarkService {
   constructor(private prisma: PrismaService) {}
 
-  findAllBookmarked(user: CurrentUser) {
-    return from(
-      this.prisma.bookmark.findMany({
-        where: {
-          authorId: user.id,
+  async findAllBookmarked(user: CurrentUser) {
+    const bookmarks = await this.prisma.bookmark.findMany({
+      where: {
+        authorId: user.id,
+      },
+      select: {
+        flare: {
+          include: getFlareFieldsToInclude(user.id),
         },
-        select: {
-          flare: {
-            include: getFlareFieldsToInclude(user.id),
-          },
-          createdAt: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      })
-    ).pipe(
-      map((result) => result.map((bookmark) => bookmark.flare)),
-      take(1)
-    );
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return bookmarks.map((bookmark) => bookmark.flare);
   }
 
   bookmark(flareId: string, user: CurrentUser) {
@@ -43,18 +38,13 @@ export class BookmarkService {
     });
   }
 
-  removeBookmark(id: string, user: CurrentUser) {
-    return from(
-      this.prisma.bookmark.deleteMany({
-        where: {
-          id,
-          authorId: user.id,
-        },
-      })
-    ).pipe(
-      map(() => ({
-        success: true,
-      }))
-    );
+  async removeBookmark(id: string, user: CurrentUser) {
+    await this.prisma.bookmark.deleteMany({
+      where: {
+        id,
+        authorId: user.id,
+      },
+    });
+    return { success: true };
   }
 }
