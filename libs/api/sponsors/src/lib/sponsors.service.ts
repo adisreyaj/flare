@@ -37,6 +37,6 @@ export class SponsorsService {
   }
 
   cancelSponsorship(id: string) {
-    return from(this.prisma.sponsor.delete({ where: { id } }));
+    return this.prisma.sponsor.delete({ where: { id } });
   }
 }
