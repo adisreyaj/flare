@@ -18,6 +18,9 @@ export class MediaQueueService {
     files: FileWithMeta[],
     expiresAfterMs: number = ONE_DAY_IN_MILLISECONDS
   ): Promise<Job> {
+    this.logger.verbose(
+      `cleanupImage ${files.length} files, expiresAfterMs: ${expiresAfterMs}`
+    );
     return this.mediaQueue.add(
       'cleanup-images',
       { files },

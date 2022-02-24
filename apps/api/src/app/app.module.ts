@@ -44,7 +44,13 @@ import { PrismaExceptionFilter } from '@flare/api/shared';
           host: configService.get('REDIS_HOST'),
           port: +configService.get('REDIS_PORT'),
           password: configService.get('REDIS_PASSWORD'),
+          maxRetriesPerRequest: 5,
+          reconnectOnError: (error) => {
+            console.error('REDIS ERROR', error);
+            return 1;
+          },
         },
+        prefix: 'flare',
       }),
       inject: [ConfigService],
     }),
