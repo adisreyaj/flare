@@ -10,12 +10,13 @@ import { UsersModule } from '@flare/api/users';
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import GraphQLJSON from 'graphql-type-json';
 import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
 import { ENVIRONMENT_VALIDATION_SCHEMA } from './config/environment.validator';
+import { PrismaExceptionFilter } from '@flare/api/shared';
 
 @Module({
   imports: [
@@ -69,6 +70,10 @@ import { ENVIRONMENT_VALIDATION_SCHEMA } from './config/environment.validator';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: PrismaExceptionFilter,
     },
   ],
 })
