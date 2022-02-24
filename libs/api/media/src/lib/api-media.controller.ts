@@ -1,5 +1,6 @@
 import {
   Controller,
+  InternalServerErrorException,
   Logger,
   Post,
   UploadedFiles,
@@ -34,15 +35,20 @@ export class ApiMediaController {
      * Job will be added to delete the files after the expiry time.
      * If the flare is successful, the job can be promoted to run immediately.
      */
-    const job = await this.apiMediaService.cleanup(files ?? []);
-    this.logger.verbose(`Cleanup job created: ${job.id}`);
-    return {
-      files: files.map((file) => ({
-        name: file.filename,
-        size: file.size,
-        mime: file.mimetype,
-      })),
-      jobId: job.id,
-    };
+    try {
+      const job = await this.apiMediaService.cleanup(files ?? []);
+      this.logger.verbose(`Cleanup job created: ${job.id}`);
+      return {
+        files: files.map((file) => ({
+          name: file.filename,
+          size: file.size,
+          mime: file.mimetype,
+        })),
+        jobId: job.id,
+      };
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException('Failed to upload image');
+    }
   }
 }
