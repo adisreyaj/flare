@@ -15,7 +15,7 @@ import { EditorConfiguration } from 'codemirror';
     </div>
 
     <div
-      class="absolute bottom-2 right-2 z-10 grid place-items-center text-white"
+      class="absolute bottom-4 right-2 z-10 grid place-items-center text-white"
     >
       <button
         zzTooltip="Copy command"
@@ -27,8 +27,11 @@ import { EditorConfiguration } from 'codemirror';
       </button>
     </div>
 
-    <div class="absolute top-0 right-0 py-1 px-2 text-white">
-      <p>{{ content.mode | codeMode }}</p>
+    <div
+      class="absolute -top-4 right-0 rounded-t-md py-1 px-2 text-xs text-white"
+      style="background-color: #292d3e;"
+    >
+      <p>{{ content.mode | codeMode: 'full' }}</p>
     </div>
   </div>`,
 })
