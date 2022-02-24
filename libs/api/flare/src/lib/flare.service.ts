@@ -62,8 +62,14 @@ export class FlareService {
         orderBy: { createdAt: 'desc' },
       });
 
+    /**
+     * Get all flares from users that the current user is following
+     * and the user itself
+     */
     return getFlaresByAuthorIds(
-      currentUsersFollowing.following.map(({ id }) => id)
+      (currentUsersFollowing.following ?? [])
+        .map(({ id }) => id)
+        .concat(user.id)
     );
   }
 

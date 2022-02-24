@@ -50,7 +50,6 @@
     "@nrwl/angular": "13.7.1",
     "@prisma/client": "^3.9.2",
     "@tailwindcss/line-clamp": "^0.3.1",
-    "@types/netlify-identity-widget": "^1.9.3",
     "angular-remix-icon": "^3.0.0",
     "apollo-angular": "^2.6.0",
     "apollo-server-express": "^3.6.2",

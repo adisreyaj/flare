@@ -59,11 +59,10 @@ export class ApiMediaService {
         this.logger.error(
           `Failed to upload ${filesToUpload.length} files to S3`
         );
-        return null;
+        return [];
       }
-      // TODO: Cleanup for error conditions
     } catch (e) {
-      return null;
+      return [];
     }
   }
 
