@@ -6,6 +6,7 @@ import { S3Service } from './s3.service';
 
 @Injectable()
 export class ApiMediaService {
+  uploadFiles;
   private readonly logger = new Logger(ApiMediaService.name);
 
   constructor(

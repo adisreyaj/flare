@@ -17,7 +17,7 @@ type Mutation {
   unfollow(userId: ID!): User
   giveKudos(input: GiveKudosInput): User
   removeKudos(id: ID!): User
-updateHeaderImage(input: UpdateHeaderImageInput!): Success
+  updateHeaderImage(input: UpdateHeaderImageInput!): Success
 }
 
 type User {

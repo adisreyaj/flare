@@ -6,29 +6,17 @@ import {
   UpdateUserInput,
 } from '@flare/api-interfaces';
 import { PrismaService } from '@flare/api/prisma';
-import { CurrentUser, mapToSuccess } from '@flare/api/shared';
+import { CurrentUser } from '@flare/api/shared';
 import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import {
-  catchError,
-  forkJoin,
-  from,
-  map,
-  of,
-  OperatorFunction,
-  switchMap,
-  take,
-  tap,
-  throwError,
-} from 'rxjs';
+import { throwError } from 'rxjs';
 import { isEmpty, isNil } from 'lodash';
-import { ApiNotificationsService } from '../../../notifications/src/lib/api-notifications.service';
-import { ApiMediaService } from '@flare/api/media';
-import { FileWithMeta } from '../../../media/src/lib/api-media.interface';
+import { ApiNotificationsService } from '@flare/api/notifications';
+import { ApiMediaService, FileWithMeta } from '@flare/api/media';
 
 @Injectable()
 export class UsersService {
@@ -75,75 +63,74 @@ export class UsersService {
     });
   }
 
-  findByUsername(username: string, currentUser: CurrentUser) {
-    const isFollowingTheUser$ =
-      username !== currentUser.username
-        ? from(
-            this.prisma.user.findUnique({
-              where: {
-                username,
-              },
-              select: {
-                followers: {
-                  where: {
-                    id: {
-                      equals: currentUser.id,
-                    },
-                  },
-                },
-              },
-            })
-          ).pipe(map((result) => result?.followers?.length > 0 ?? false))
-        : of(false);
-
-    const userDetails$ = from(
-      this.prisma.user.findUnique({
-        where: {
-          username: username,
-        },
-        include: {
-          bio: true,
-          followers: true,
-          following: true,
-          preferences: true,
-          kudos: {
-            include: {
-              kudosBy: true,
-            },
-          },
-          kudosGiven: true,
-          _count: {
-            select: {
-              following: true,
-              followers: true,
+  async findByUsername(username: string, currentUser: CurrentUser) {
+    const followersOfCurrentUser = this.prisma.user.findUnique({
+      where: {
+        username,
+      },
+      select: {
+        followers: {
+          where: {
+            id: {
+              equals: currentUser.id,
             },
           },
         },
-      })
-    );
+      },
+    });
+    const userDetailsPromise = this.prisma.user.findUnique({
+      where: {
+        username: username,
+      },
+      include: {
+        bio: true,
+        followers: true,
+        following: true,
+        preferences: true,
+        kudos: {
+          include: {
+            kudosBy: true,
+          },
+        },
+        kudosGiven: true,
+        _count: {
+          select: {
+            following: true,
+            followers: true,
+          },
+        },
+      },
+    });
+    try {
+      const [user, followers] = await Promise.all([
+        userDetailsPromise,
+        followersOfCurrentUser,
+      ]);
+      const isFollowingTheRequestedUser = followers.followers.length > 0;
 
-    return forkJoin([userDetails$, isFollowingTheUser$]).pipe(
-      map(([user, isFollowing]) => {
-        return {
-          ...user,
-          isFollowing,
-        };
-      }),
-      take(1)
-    );
+      return {
+        ...user,
+        isFollowing: isFollowingTheRequestedUser,
+      };
+    } catch (e) {
+      this.logger.error(e);
+      throw new InternalServerErrorException();
+    }
   }
 
-  isUsernameAvailable(username: string) {
-    return from(
-      this.prisma.user.count({
+  async isUsernameAvailable(username: string) {
+    try {
+      const user = await this.prisma.user.count({
         where: {
           username,
         },
-      })
-    ).pipe(
-      map((count) => ({ available: count === 0 })),
-      take(1)
-    );
+      });
+
+      return isEmpty(user);
+    } catch (e) {
+      this.logger.error(e);
+      throw new InternalServerErrorException();
+    }
   }
 
   findOne(id: string) {
@@ -176,121 +163,97 @@ export class UsersService {
 
   // TODO: Hash password
   create(user: CreateUserInput) {
-    return from(
-      this.prisma.user.create({
-        data: {
-          ...user,
-          username: user.email,
-          preferences: {
-            create: {
-              blogs: {
-                enabled: false,
-              },
-              kudos: {
-                enabled: false,
-              },
-              header: {
-                type: 'DEFAULT',
-                image: {
-                  name: '/assets/images/header.jpg',
-                },
-              },
+    return this.prisma.user.create({
+      data: {
+        ...user,
+        username: user.email,
+        preferences: {
+          create: {
+            blogs: {
+              enabled: false,
             },
-          },
-          onboardingState: {
-            state: 'SIGNED_UP',
-          },
-          isOnboarded: false,
-          bio: {
-            create: user.bio ?? {
-              description: '',
-              devto: '',
-              facebook: '',
-              github: '',
-              hashnode: '',
-              linkedin: '',
-              twitter: '',
+            kudos: {
+              enabled: false,
+            },
+            header: {
+              type: 'DEFAULT',
+              image: {
+                name: '/assets/images/header.jpg',
+              },
             },
           },
         },
-      })
-    ).pipe(
-      take(1),
-      catchError((err) => {
-        console.log(err);
-        return throwError(() => new InternalServerErrorException());
-      })
-    );
+        onboardingState: {
+          state: 'SIGNED_UP',
+        },
+        isOnboarded: false,
+        bio: {
+          create: user.bio ?? {
+            description: '',
+            devto: '',
+            facebook: '',
+            github: '',
+            hashnode: '',
+            linkedin: '',
+            twitter: '',
+          },
+        },
+      },
+    });
   }
 
-  update(
+  async update(
     updateUserInput: UpdateUserInput,
     currentUser: CurrentUser,
     onBoardingState: string | null = null
   ) {
     const { bio, preferences, ...user } = updateUserInput;
-    console.log();
-    return from(
-      this.prisma.user.update({
-        where: {
-          id: currentUser.id,
-        },
-        data: {
-          ...user,
-          ...(!isNil(onBoardingState) && {
-            onboardingState: { state: onBoardingState },
-          }),
-          ...(bio
-            ? {
-                bio: {
-                  update: {
-                    ...bio,
-                  },
+
+    return this.prisma.user.update({
+      where: {
+        id: currentUser.id,
+      },
+      data: {
+        ...user,
+        ...(!isNil(onBoardingState) && {
+          onboardingState: { state: onBoardingState },
+        }),
+        ...(bio
+          ? {
+              bio: {
+                update: {
+                  ...bio,
                 },
-              }
-            : {}),
-          ...(preferences
-            ? {
-                preferences: {
-                  update: {
-                    ...preferences,
-                  },
+              },
+            }
+          : {}),
+        ...(preferences
+          ? {
+              preferences: {
+                update: {
+                  ...preferences,
                 },
-              }
-            : {}),
-        },
-        include: {
-          bio: true,
-          followers: true,
-          following: true,
-        },
-      })
-    ).pipe(
-      take(1),
-      catchError((err) => {
-        console.log(err);
-        return throwError(() => new InternalServerErrorException());
-      })
-    );
+              },
+            }
+          : {}),
+      },
+      include: {
+        bio: true,
+        followers: true,
+        following: true,
+      },
+    });
   }
 
-  delete(id: string) {
-    return from(
-      this.prisma.user.delete({
-        where: {
-          id,
-        },
-      })
-    ).pipe(
-      take(1),
-      catchError((err) => {
-        console.log(err);
-        return throwError(() => new InternalServerErrorException());
-      })
-    );
+  async delete(id: string) {
+    return this.prisma.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 
-  follow(userId: string, user: CurrentUser) {
+  async follow(userId: string, user: CurrentUser) {
     if (user.id === userId) {
       return throwError(() => new BadRequestException());
     }
@@ -313,32 +276,29 @@ export class UsersService {
       },
     });
 
-    return from(
-      this.prisma.$transaction([creatNotificationPromise, updateUserPromise])
-    ).pipe(
-      map(([, user]) => user),
-      take(1)
-    );
+    const [, userUpdated] = await this.prisma.$transaction([
+      creatNotificationPromise,
+      updateUserPromise,
+    ]);
+    return userUpdated;
   }
 
-  unfollow(userId: string, user: CurrentUser) {
+  async unfollow(userId: string, user: CurrentUser) {
     if (user.id === userId) {
       return throwError(() => new BadRequestException());
     }
-    return from(
-      this.prisma.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          following: {
-            disconnect: {
-              id: userId,
-            },
+    return this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        following: {
+          disconnect: {
+            id: userId,
           },
         },
-      })
-    ).pipe(take(1));
+      },
+    });
   }
 
   giveKudos(input: GiveKudosInput, user: CurrentUser) {
@@ -360,109 +320,61 @@ export class UsersService {
     });
   }
 
-  completeOnboarding(user: CurrentUser) {
+  async completeOnboarding(user: CurrentUser) {
     this.logger.log('completeOnboarding', user);
-    return from(
-      this.prisma.user.findUnique({
-        where: {
-          id: user.id,
+
+    await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        isOnboarded: true,
+        onboardingState: {
+          state: 'ONBOARDING_COMPLETE',
         },
-        select: {
-          id: true,
-          isOnboarded: true,
-          onboardingState: true,
-          _count: {
-            select: {
-              following: true,
-            },
-          },
-        },
-      })
-    ).pipe(
-      switchMap((user) => {
-        if (user.isOnboarded) {
-          return throwError(() => new BadRequestException('Already onboarded'));
-        }
-        return this.prisma.user.update({
-          where: {
-            id: user.id,
-          },
-          data: {
-            isOnboarded: true,
-            onboardingState: {
-              state: 'ONBOARDING_COMPLETE',
-            },
-          },
-        });
-      }),
-      map(() => ({ success: true }), take(1))
-    );
+      },
+    });
+    return { success: true };
   }
 
-  updateHeaderImage(input: UpdateHeaderImageInput, user: CurrentUser) {
+  async updateHeaderImage(input: UpdateHeaderImageInput, user: CurrentUser) {
     if (isNil(input.jobId)) {
       return throwError(() => new BadRequestException('Media not found'));
     }
 
-    const updateHeader$ = (files: FileWithMeta[] = []) =>
-      from(
-        this.prisma.user.update({
-          where: {
-            id: user.id,
-          },
-          data: {
-            preferences: {
-              update: {
-                id: input.preferenceId,
-                header: {
-                  image: {
-                    name: files[0].filename,
-                    type: files[0].mimetype,
-                    size: files[0].size,
-                  },
+    const updateHeaderPromise = (files: FileWithMeta[] = []) =>
+      this.prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          preferences: {
+            update: {
+              id: input.preferenceId,
+              header: {
+                image: {
+                  name: files[0].filename,
+                  type: files[0].mimetype,
+                  size: files[0].size,
                 },
               },
             },
           },
-        })
-      );
-    return from(this.mediaService.getJobData(input.jobId)).pipe(
-      this.handleFileUploadsIfJobExists(),
-      switchMap((files) => updateHeader$(files)),
-      mapToSuccess(),
-      tap(() => {
-        this.mediaService.runJobImmediately(input.jobId);
-      }),
-      take(1)
-    );
-  }
+        },
+      });
 
-  private handleFileUploadsIfJobExists(): OperatorFunction<
-    { files: FileWithMeta[] },
-    FileWithMeta[]
-  > {
-    return (source) => {
-      return source.pipe(
-        switchMap((data) => {
-          if (isEmpty(data)) {
-            this.logger.error('Job Data not found');
-            return throwError(
-              () => new InternalServerErrorException('Media upload error')
-            );
-          } else {
-            return from(this.mediaService.uploadToCloud(data.files));
-          }
-        }),
-        switchMap((data: FileWithMeta[]) => {
-          if (isNil(data)) {
-            return throwError(
-              () => new InternalServerErrorException('Media upload error')
-            );
-          } else {
-            return of(data);
-          }
-        })
+    const jobData = await this.mediaService.getJobData(input.jobId);
+    if (isEmpty(jobData)) {
+      throw new BadRequestException('Media not found');
+    }
+    const uploadedFiles = await this.mediaService.uploadToCloud(jobData.files);
+    if (isEmpty(jobData)) {
+      throw new InternalServerErrorException(
+        'Failed to upload the header image'
       );
-    };
+    }
+    await updateHeaderPromise(uploadedFiles);
+    this.mediaService.runJobImmediately(input.jobId);
+    return { success: true };
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { Job, Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { FileWithMeta } from '../api-media.interface';
@@ -26,11 +30,15 @@ export class MediaQueueService {
   }
 
   async runJobImmediately(jobId: string) {
-    const job = await this.mediaQueue.getJob(jobId);
-    if (job) {
-      return await job.promote();
+    try {
+      const job = await this.mediaQueue.getJob(jobId);
+      if (job) {
+        return await job.promote();
+      }
+      return 'OK';
+    } catch (e) {
+      throw new InternalServerErrorException('Cleanup Failed');
     }
-    return;
   }
 
   async getJobData<Data = { files: FileWithMeta[] }>(
