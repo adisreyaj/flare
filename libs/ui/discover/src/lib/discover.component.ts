@@ -15,7 +15,7 @@ import { DiscoverService } from './services/discover.service';
   selector: 'flare-discover',
   template: `
     <flare-feeds-header title="Discover">
-      <button
+      <!--      <button
         [zzDropdownTrigger]="flareMoreOptions"
         placement="bottom-start"
         variant="link"
@@ -24,20 +24,20 @@ import { DiscoverService } from './services/discover.service';
         <rmx-icon class="icon-xs" name="more-fill"></rmx-icon>
         <zz-dropdown #flareMoreOptions>
           <button class="w-full rounded-md" size="sm" variant="link" zzButton>
-            <div class="flex items-center gap-2">
-              <p class="text-red-500">Remove All Bookmarks</p>
-            </div>
+
           </button>
         </zz-dropdown>
-      </button>
+      </button>-->
     </flare-feeds-header>
     <ng-container *ngIf="topUsers$ | async as topUsers">
-      <ul class="overflow-x-auto border-b border-slate-200 py-4">
+      <ul
+        class="flex items-center gap-4 overflow-x-auto border-b border-slate-200 py-4"
+      >
         <li
           class="flex cursor-pointer flex-col items-center rounded-md bg-white p-2"
           *ngFor="let user of topUsers"
           [routerLink]="['/', user.username]"
-          style="width:100px;"
+          style="width:80px;"
         >
           <img
             class="h-12 w-12 rounded-full"
@@ -45,7 +45,7 @@ import { DiscoverService } from './services/discover.service';
             [alt]="user.firstName"
           />
           <div class="mt-2 text-center">
-            <p class="font-semibold">{{ user.firstName }}</p>
+            <p class="text-xs font-semibold">{{ user.firstName }}</p>
           </div>
         </li>
       </ul>
