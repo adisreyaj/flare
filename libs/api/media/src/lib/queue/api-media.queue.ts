@@ -17,7 +17,7 @@ export class MediaQueueService {
   async cleanupImage(
     files: FileWithMeta[],
     expiresAfterMs: number = ONE_DAY_IN_MILLISECONDS
-  ) {
+  ): Promise<Job> {
     return this.mediaQueue.add(
       'cleanup-images',
       { files },
@@ -29,13 +29,13 @@ export class MediaQueueService {
     );
   }
 
-  async runJobImmediately(jobId: string) {
+  async runJobImmediately(jobId: string): Promise<void> {
     try {
       const job = await this.mediaQueue.getJob(jobId);
       if (job) {
-        return await job.promote();
+        await job.promote();
       }
-      return 'OK';
+      return;
     } catch (e) {
       throw new InternalServerErrorException('Cleanup Failed');
     }

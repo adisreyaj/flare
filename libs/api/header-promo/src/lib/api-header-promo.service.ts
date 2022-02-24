@@ -8,22 +8,12 @@ import { PrismaService } from '@flare/api/prisma';
 import { CurrentUser } from '@flare/api/shared';
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
-  InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { isNil } from 'lodash';
-import {
-  forkJoin,
-  from,
-  map,
-  of,
-  OperatorFunction,
-  switchMap,
-  tap,
-  throwError,
-} from 'rxjs';
-import { FileWithMeta } from '../../../media/src/lib/api-media.interface';
+import { isEmpty, isNil } from 'lodash';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class ApiHeaderPromoService {
@@ -59,37 +49,31 @@ export class ApiHeaderPromoService {
     });
   }
 
-  create(input: HeaderPromoInput, jobId: string, user: CurrentUser) {
+  async create(input: HeaderPromoInput, jobId: string, user: CurrentUser) {
     if (isNil(jobId)) {
       throw new BadRequestException('Media is required.');
     }
 
-    return from(this.mediaService.getJobData(jobId)).pipe(
-      this.handleFileUploadsIfJobExists(),
-      switchMap(([file]) => {
-        const image = {
-          name: file.filename,
-          type: file.mimetype,
-          size: file.size,
-        };
-        return from(
-          this.prisma.headerPromo.create({
-            data: {
-              description: input.description,
-              title: input.title,
-              price: input.price,
-              userId: user.id,
-              sponsorId: user.id,
-              state: PromoState.PENDING,
-              image,
-            },
-          })
-        );
-      }),
-      tap(() => {
-        this.mediaService.runJobImmediately(jobId);
-      })
-    );
+    const createHeaderPromo = (image) =>
+      this.prisma.headerPromo.create({
+        data: {
+          description: input.description,
+          title: input.title,
+          price: input.price,
+          userId: user.id,
+          sponsorId: user.id,
+          state: PromoState.PENDING,
+          image,
+        },
+      });
+
+    const jobData = await this.mediaService.getJobData(jobId);
+    const files = await this.mediaService.uploadToCloud(jobData.files);
+    if (isEmpty(files)) {
+      throw new BadRequestException('No files uploaded.');
+    }
+    this.mediaService.runJobImmediately(jobId);
+    return createHeaderPromo(files[0]);
   }
 
   update(id: string, input: HeaderPromoUpdateInput, user: CurrentUser) {
@@ -111,93 +95,63 @@ export class ApiHeaderPromoService {
     });
   }
 
-  applyHeaderPromo(promoId: string, user: CurrentUser) {
-    return from(
-      this.prisma.headerPromo.findUnique({
+  async applyHeaderPromo(promoId: string, user: CurrentUser) {
+    const promo = await this.prisma.headerPromo.findUnique({
+      where: {
+        id: promoId,
+      },
+      select: {
+        userId: true,
+        state: true,
+        image: true,
+      },
+    });
+
+    const hasAccess = promo.userId === user.id;
+    if (!hasAccess) {
+      throw new ForbiddenException('You do not have access to this promo.');
+    }
+    const isPromoRejected = promo.state === PromoState.REJECTED;
+    if (isPromoRejected) {
+      return throwError(
+        () => new BadRequestException('Promo is not available.')
+      );
+    }
+    const updatePromoStatePromise = (promo) =>
+      this.prisma.user.update({
         where: {
-          id: promoId,
+          id: user.id,
         },
-        select: {
-          userId: true,
-          state: true,
-          image: true,
-        },
-      })
-    ).pipe(
-      switchMap((promo) => {
-        const isPromoRejected = promo.state === PromoState.REJECTED;
-        const hasAccess = promo.userId === user.id;
-        if (isPromoRejected || !hasAccess) {
-          return throwError(
-            () => new BadRequestException('Promo is not available.')
-          );
-        }
-        const updatePromoState$ = from(
-          this.prisma.user.update({
-            where: {
-              id: user.id,
-            },
-            data: {
-              preferences: {
-                update: {
-                  header: {
-                    type: 'PROMO',
-                    image: promo.image,
-                  },
-                },
+        data: {
+          preferences: {
+            update: {
+              header: {
+                type: 'PROMO',
+                image: promo.image,
               },
             },
-          })
-        );
-        const updateUserPreference$ = this.prisma.headerPromo.update({
-          where: {
-            id: promoId,
           },
-          data: {
-            state: PromoState.ACTIVE,
-          },
-          select: {
-            image: true,
-            state: true,
-          },
-        });
+        },
+      });
 
-        return forkJoin([updatePromoState$, updateUserPreference$]).pipe(
-          map(() => ({
-            success: true,
-          }))
-        );
-      })
-    );
-  }
+    const updateUserPreferencePromise = this.prisma.headerPromo.update({
+      where: {
+        id: promoId,
+      },
+      data: {
+        state: PromoState.ACTIVE,
+      },
+      select: {
+        image: true,
+        state: true,
+      },
+    });
 
-  // TODO: Make generic
-  protected handleFileUploadsIfJobExists(): OperatorFunction<
-    { files: FileWithMeta[] },
-    FileWithMeta[]
-  > {
-    return (source) => {
-      return source.pipe(
-        switchMap((data) => {
-          if (isNil(data)) {
-            this.logger.error('Job Data not found');
-            return throwError(
-              () => new InternalServerErrorException('Media upload error')
-            );
-          } else {
-            return from(this.mediaService.uploadToCloud(data.files));
-          }
-        }),
-        switchMap((data: FileWithMeta[]) => {
-          if (isNil(data)) {
-            return throwError(
-              () => new InternalServerErrorException('Media upload error')
-            );
-          } else {
-            return of(data);
-          }
-        })
-      );
-    };
+    await Promise.all([
+      updatePromoStatePromise(promo),
+      updateUserPreferencePromise,
+    ]);
+
+    return { success: true };
   }
 }
