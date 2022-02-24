@@ -6,7 +6,6 @@ import { S3Service } from './s3.service';
 
 @Injectable()
 export class ApiMediaService {
-  uploadFiles;
   private readonly logger = new Logger(ApiMediaService.name);
 
   constructor(
@@ -36,7 +35,7 @@ export class ApiMediaService {
     return Promise.all(fileNames.map((fileName) => this.s3.delete(fileName)));
   }
 
-  async uploadToCloud(files: FileWithMeta[]) {
+  async uploadToCloud(files: FileWithMeta[]): Promise<FileWithMeta[]> {
     const filesRead = await Promise.all(
       (files ?? []).map((file) => fs.readFile(file.path))
     );

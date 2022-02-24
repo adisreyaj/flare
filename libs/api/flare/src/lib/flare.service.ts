@@ -7,30 +7,10 @@ import {
   RemoveCommentInput,
   RemoveLikeInput,
 } from '@flare/api-interfaces';
-import { ApiMediaService } from '@flare/api/media';
+import { ApiMediaService, FileWithMeta } from '@flare/api/media';
 import { PrismaService } from '@flare/api/prisma';
-import { CurrentUser, mapToSuccess } from '@flare/api/shared';
-import {
-  ForbiddenException,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
-import { isNil } from 'lodash';
-import {
-  catchError,
-  from,
-  map,
-  mapTo,
-  of,
-  OperatorFunction,
-  switchMap,
-  take,
-  tap,
-  throwError,
-  withLatestFrom,
-} from 'rxjs';
-import { FileWithMeta } from '../../../media/src/lib/api-media.interface';
+import { CurrentUser } from '@flare/api/shared';
+import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { getFlareFieldsToInclude } from './flare.helper';
 
 @Injectable()
@@ -43,62 +23,47 @@ export class FlareService {
   ) {}
 
   findPopularFlares(user: CurrentUser) {
-    return from(
-      this.prisma.flare.findMany({
-        where: {
-          deleted: false,
+    return this.prisma.flare.findMany({
+      where: {
+        deleted: false,
+      },
+      include: getFlareFieldsToInclude(user.id),
+      orderBy: {
+        likes: {
+          _count: 'desc',
         },
-        include: getFlareFieldsToInclude(user.id),
-        orderBy: {
-          likes: {
-            _count: 'desc',
-          },
-        },
-      })
-    );
+      },
+    });
   }
 
-  findAllFlaresFromFollowingUsers(user: CurrentUser) {
-    const currentUsersFollowing$ = from(
-      this.prisma.user.findUnique({
+  async findAllFlaresFromFollowingUsers(user: CurrentUser) {
+    const currentUsersFollowing = await this.prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+      select: {
+        following: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    const getFlaresByAuthorIds = async (userIds: string[]) =>
+      await this.prisma.flare.findMany({
         where: {
-          id: user.id,
-        },
-        select: {
-          following: {
-            select: {
-              id: true,
-            },
+          deleted: false,
+          authorId: {
+            in: userIds,
           },
         },
-      })
-    );
+        include: getFlareFieldsToInclude(user.id),
+        orderBy: { createdAt: 'desc' },
+      });
 
-    const getFlaresByAuthorIds$ = (userIds: string[]) =>
-      from(
-        this.prisma.flare.findMany({
-          where: {
-            deleted: false,
-            authorId: {
-              in: userIds,
-            },
-          },
-          include: getFlareFieldsToInclude(user.id),
-          orderBy: { createdAt: 'desc' },
-        })
-      );
-
-    return currentUsersFollowing$.pipe(
-      switchMap(({ following }) => {
-        if (isNil(following)) {
-          return of([]);
-        }
-
-        return getFlaresByAuthorIds$(
-          following.map(({ id }) => id).concat(user.id)
-        );
-      }),
-      take(1)
+    return getFlaresByAuthorIds(
+      currentUsersFollowing.following.map(({ id }) => id)
     );
   }
 
@@ -111,198 +76,167 @@ export class FlareService {
     });
   }
 
-  create(flare: CreateFlareInput, user: CurrentUser) {
-    const createFlare$ = (data: FileWithMeta[] = []) =>
-      from(
-        this.prisma.flare.create({
-          data: this.getCreateFlareData(flare, data, user),
-          include: getFlareFieldsToInclude(user.id),
-        })
-      );
+  async create(flareInput: CreateFlareInput, user: CurrentUser) {
+    const createFlare = (data: FileWithMeta[] = []) =>
+      this.prisma.flare.create({
+        data: this.getCreateFlareData(flareInput, data, user),
+        include: getFlareFieldsToInclude(user.id),
+      });
 
-    const userFollowers$ = from(
-      this.prisma.user.findUnique({
-        where: {
-          id: user.id,
-        },
-        select: {
-          followers: {
-            select: {
-              id: true,
-            },
+    const userFollowers = await this.prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+      select: {
+        followers: {
+          select: {
+            id: true,
           },
         },
-      })
-    ).pipe(map(({ followers }) => followers.map(({ id }) => id)));
+      },
+    });
+    const followerIds = userFollowers.followers.map(({ id }) => id);
+    const hadMediaAssociatedWithFlare = flareInput.jobId;
+
+    const cleanupFilesAfterUpload = () => {
+      if (hadMediaAssociatedWithFlare) {
+        return this.mediaService.runJobImmediately(flareInput.jobId);
+      }
+    };
+
+    const sendNotifications = (flare, users: string[]) =>
+      this.prisma.notification.createMany({
+        data: users.map((id) => ({
+          type: NotificationType.FLARE,
+          toId: id,
+          flareId: flare.id,
+          followeeId: user.id,
+          content: flare.blocks.find(({ type }) => type === BlockType.text)
+            ?.content,
+        })),
+      });
 
     /**
      * If there are images in the flare, we need to upload them to the media service
      * and then create the flare.
      */
-    const query$ = isNil(flare.jobId)
-      ? createFlare$()
-      : from(this.mediaService.getJobData(flare.jobId)).pipe(
-          this.handleFileUploadsIfJobExists(),
-          switchMap((files) => createFlare$(files))
-        );
-
-    return query$.pipe(
-      withLatestFrom(userFollowers$),
-      tap(() => {
-        // Run if there are media files to upload
-        if (flare.jobId) {
-          this.mediaService.runJobImmediately(flare.jobId).then(() => {
-            this.logger.log(`Job ${flare.jobId} promoted to start immediately`);
-          });
-        }
-      }),
-      switchMap(([flareData, followers]) =>
-        from(
-          this.prisma.notification.createMany({
-            data: followers.map((id) => ({
-              type: NotificationType.FLARE,
-              toId: id,
-              flareId: flareData.id,
-              followeeId: user.id,
-              content: flare.blocks.find(({ type }) => type === BlockType.text)
-                ?.content,
-            })),
-          })
-        ).pipe(mapTo(flareData))
-      ),
-      take(1)
-    );
+    let files: FileWithMeta[] = [];
+    if (hadMediaAssociatedWithFlare) {
+      const jobData = await this.mediaService.getJobData(flareInput.jobId);
+      files = await this.mediaService.uploadToCloud(jobData.files ?? []);
+      cleanupFilesAfterUpload();
+    }
+    const flare = await createFlare(files);
+    sendNotifications(flare, followerIds);
+    return flare;
   }
 
-  delete(id: string, user: CurrentUser) {
-    return from(
-      this.prisma.flare.findUnique({
-        where: { id },
-        select: {
-          authorId: true,
+  async delete(id: string, user: CurrentUser) {
+    const flare = await this.prisma.flare.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (flare.authorId !== user.id) {
+      throw new ForbiddenException();
+    }
+
+    const flareUpdated = await this.prisma.flare.update({
+      where: {
+        id,
+      },
+      data: {
+        deleted: true,
+      },
+      select: {
+        blocks: {
+          where: {
+            type: BlockType.images,
+          },
+          select: {
+            content: true,
+          },
         },
-      })
-    ).pipe(
-      switchMap((flare) => {
-        if (flare.authorId === user.id) {
-          return from(
-            this.prisma.flare.update({
-              where: {
-                id,
-              },
-              data: {
-                deleted: true,
-              },
-              select: {
-                blocks: {
-                  where: {
-                    type: BlockType.images,
-                  },
-                  select: {
-                    content: true,
-                  },
-                },
-              },
-            })
-          );
-        } else {
-          return throwError(() => new ForbiddenException());
+      },
+    });
+
+    this.mediaService.deleteMedia(
+      (flareUpdated.blocks ?? []).reduce((acc, curr) => {
+        const content = curr.content as { name: string }[];
+        if (content?.length > 0) {
+          return [...acc, ...(content ?? []).map((file) => file.name)];
         }
-      }),
-      switchMap((flare) => {
-        return from(
-          this.mediaService.deleteMedia(
-            (flare.blocks ?? []).reduce((acc, curr) => {
-              const content = curr.content as { name: string }[];
-              if (content?.length > 0) {
-                return [...acc, ...(content ?? []).map((file) => file.name)];
-              }
-              return acc;
-            }, [])
-          )
-        );
-      }),
-      take(1),
-      mapToSuccess(),
-      catchError((err) => {
-        console.log(err);
-        return throwError(() => new InternalServerErrorException());
-      })
+        return acc;
+      }, [])
     );
+
+    return { success: true };
   }
 
   addComment(input: AddCommentInput, user: CurrentUser) {
-    return from(
-      this.prisma.flare.update({
-        where: {
-          id: input.flareId,
-        },
-        data: {
-          comments: {
-            create: {
-              text: input.text,
-              authorId: user.id,
-            },
+    return this.prisma.flare.update({
+      where: {
+        id: input.flareId,
+      },
+      data: {
+        comments: {
+          create: {
+            text: input.text,
+            authorId: user.id,
           },
         },
-        include: getFlareFieldsToInclude(user.id),
-      })
-    ).pipe(take(1));
+      },
+      include: getFlareFieldsToInclude(user.id),
+    });
   }
 
   removeComment(input: RemoveCommentInput, user: CurrentUser) {
-    return from(
-      this.prisma.flare.update({
-        where: {
-          id: input.flareId,
-        },
-        data: {
-          comments: {
-            delete: {
-              id: input.commentId,
-            },
+    return this.prisma.flare.update({
+      where: {
+        id: input.flareId,
+      },
+      data: {
+        comments: {
+          delete: {
+            id: input.commentId,
           },
         },
-        include: getFlareFieldsToInclude(user.id),
-      })
-    ).pipe(take(1));
+      },
+      include: getFlareFieldsToInclude(user.id),
+    });
   }
 
   addLike(input: AddLikeInput, user: CurrentUser) {
-    return from(
-      this.prisma.flare.update({
-        where: {
-          id: input.flareId,
-        },
-        data: {
-          likes: {
-            create: {
-              reaction: input.reaction,
-              authorId: user.id,
-            },
+    return this.prisma.flare.update({
+      where: {
+        id: input.flareId,
+      },
+      data: {
+        likes: {
+          create: {
+            reaction: input.reaction,
+            authorId: user.id,
           },
         },
-        include: getFlareFieldsToInclude(user.id),
-      })
-    ).pipe(take(1));
+      },
+      include: getFlareFieldsToInclude(user.id),
+    });
   }
 
   removeLike(input: RemoveLikeInput, user: CurrentUser) {
-    return from(
-      this.prisma.flare.update({
-        where: {
-          id: input.flareId,
-        },
-        data: {
-          likes: {
-            delete: {
-              id: input.likeId,
-            },
+    return this.prisma.flare.update({
+      where: {
+        id: input.flareId,
+      },
+      data: {
+        likes: {
+          delete: {
+            id: input.likeId,
           },
         },
-        include: getFlareFieldsToInclude(user.id),
-      })
-    ).pipe(take(1));
+      },
+      include: getFlareFieldsToInclude(user.id),
+    });
   }
 
   private getCreateFlareData(
@@ -329,35 +263,6 @@ export class FlareService {
       },
       deleted: false,
       authorId: user.id,
-    };
-  }
-
-  private handleFileUploadsIfJobExists(): OperatorFunction<
-    { files: FileWithMeta[] },
-    FileWithMeta[]
-  > {
-    return (source) => {
-      return source.pipe(
-        switchMap((data) => {
-          if (isNil(data)) {
-            this.logger.error('Job Data not found');
-            return throwError(
-              () => new InternalServerErrorException('Media upload error')
-            );
-          } else {
-            return from(this.mediaService.uploadToCloud(data.files));
-          }
-        }),
-        switchMap((data: FileWithMeta[]) => {
-          if (isNil(data)) {
-            return throwError(
-              () => new InternalServerErrorException('Media upload error')
-            );
-          } else {
-            return of(data);
-          }
-        })
-      );
     };
   }
 }
