@@ -3,6 +3,7 @@ import { MediaQueueService } from './queue/api-media.queue';
 import { FileWithMeta } from './api-media.interface';
 import * as fs from 'fs-extra';
 import { S3Service } from './s3.service';
+import { Job } from 'bull';
 
 @Injectable()
 export class ApiMediaService {
@@ -13,7 +14,7 @@ export class ApiMediaService {
     private readonly s3: S3Service
   ) {}
 
-  cleanup(files: Express.Multer.File[]) {
+  cleanup(files: Express.Multer.File[]): Promise<Job> {
     return this.mediaQueue.cleanupImage(files);
   }
 
