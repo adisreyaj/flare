@@ -45,9 +45,6 @@ import { PrismaExceptionFilter } from '@flare/api/shared';
           port: +configService.get('REDIS_PORT'),
           password: configService.get('REDIS_PASSWORD'),
           maxRetriesPerRequest: 5,
-          tls: {
-            host: configService.get('REDIS_HOST'),
-          },
         },
         prefix: 'flare',
       }),
