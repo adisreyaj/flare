@@ -60,4 +60,19 @@ export class HeaderPromoService {
       })
       .pipe(map((result) => result.data.allHeaderPromos));
   }
+
+  applyPromoHeader(promoId: string) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation ApplyHeaderPromo($id: ID!) {
+          applyHeaderPromo(id: $id) {
+            success
+          }
+        }
+      `,
+      variables: {
+        id: promoId,
+      },
+    });
+  }
 }

@@ -57,7 +57,12 @@ import { MediaUrlPipeModule } from '@flare/ui/shared';
                     class="flex justify-between border-t border-slate-200 p-4"
                   >
                     <div class="flex gap-4">
-                      <button zzButton variant="primary" size="sm">
+                      <button
+                        zzButton
+                        variant="primary"
+                        size="sm"
+                        (click)="applyHeader(promo.id)"
+                      >
                         Apply as Header
                       </button>
                       <button zzButton size="sm">Reject</button>
@@ -95,6 +100,10 @@ export class ProfileHeaderPromoReceivedComponent {
   promos$: Observable<HeaderPromo[]>;
   constructor(private readonly headerPromoService: HeaderPromoService) {
     this.promos$ = this.headerPromoService.getPromosReceived();
+  }
+
+  applyHeader(id: string) {
+    this.headerPromoService.applyPromoHeader(id).subscribe();
   }
 }
 

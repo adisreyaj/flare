@@ -60,10 +60,14 @@ export class ApiHeaderPromoService {
           description: input.description,
           title: input.title,
           price: input.price,
-          userId: user.id,
+          userId: input.userId,
           sponsorId: user.id,
           state: PromoState.PENDING,
-          image,
+          image: {
+            name: image.filename,
+            type: image.mimetype,
+            size: image.size,
+          },
         },
       });
 
