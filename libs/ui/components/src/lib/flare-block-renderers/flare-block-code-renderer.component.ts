@@ -7,7 +7,7 @@ import { EditorConfiguration } from 'codemirror';
     style="background-color: #292d3e;"
     class="relative rounded-md p-2"
   >
-    <div class="">
+    <div class="w-full">
       <flare-code-input
         [value]="content.value"
         [config]="codeInputConfig"
@@ -34,6 +34,14 @@ import { EditorConfiguration } from 'codemirror';
       <p>{{ content.mode | codeMode: 'full' }}</p>
     </div>
   </div>`,
+  styles: [
+    `
+      :host {
+        display: block;
+        width: 100%;
+      }
+    `,
+  ],
 })
 export class FlareBlockCodeRendererComponent {
   @Input()
