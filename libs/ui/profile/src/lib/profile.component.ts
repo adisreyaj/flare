@@ -222,15 +222,6 @@ import { UsersService } from './services/users.service';
       </div>
     </ng-container>
   `,
-  styles: [
-    `
-      @media screen and (max-width: 640px) {
-        p:not(.text-xs) {
-          font-weight: 500;
-        }
-      }
-    `,
-  ],
 })
 export class ProfileComponent {
   latestHashnodeBlogs$: Observable<Blog[] | null>;

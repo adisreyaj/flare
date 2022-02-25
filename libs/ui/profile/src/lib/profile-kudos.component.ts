@@ -4,9 +4,14 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'flare-profile-kudos',
-  template: ` <ul class="grid grid-cols-1 md:grid-cols-2 md:gap-2">
-    <ng-container *ngFor="let item of kudos">
-      <li class="rounded-lg border border-slate-200 bg-white p-2">
+  template: ` <ul
+    class="flex w-full touch-pan-x snap-x snap-always gap-2 overflow-auto"
+  >
+    <ng-container *ngFor="let item of kudos | slice: 0:5">
+      <li
+        class="w-full flex-1  snap-start rounded-lg border border-slate-200 bg-white p-2"
+        style="min-width: 300px"
+      >
         <div>
           <p
             class="text-sm font-normal leading-normal text-slate-500 line-clamp-3"

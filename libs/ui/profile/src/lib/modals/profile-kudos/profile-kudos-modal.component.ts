@@ -12,6 +12,8 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
     <form>
       <div class="flex flex-col">
         <textarea
+          zzInput
+          variant="fill"
           [formControl]="kudos"
           class="rounded-md border border-slate-200 bg-slate-100 p-2"
           name="kudos"

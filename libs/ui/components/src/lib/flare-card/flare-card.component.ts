@@ -37,11 +37,6 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
           @apply text-primary;
         }
       }
-      @media screen and (max-width: 640px) {
-        p:not(.text-xs) {
-          font-weight: 500;
-        }
-      }
     `,
   ],
 })

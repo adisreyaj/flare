@@ -9,7 +9,7 @@ import { User } from '@flare/api-interfaces';
     <aside class="z-50">
       <flare-sidebar [user]="user$ | async"></flare-sidebar>
     </aside>
-    <main class="border-x border-slate-200 pb-20 sm:pb-10">
+    <main class="w-screen border-x border-slate-200 pb-20 sm:w-full sm:pb-10">
       <router-outlet></router-outlet>
     </main>
     <aside></aside>

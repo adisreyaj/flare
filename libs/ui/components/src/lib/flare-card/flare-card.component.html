@@ -57,13 +57,11 @@
           <ng-container *ngSwitchCase="blockTypes.script">
             <flare-block-script-renderer
               [content]="block?.content"
-              style="max-width: calc(100vw - 34px)"
             ></flare-block-script-renderer>
           </ng-container>
           <ng-container *ngSwitchCase="blockTypes.code">
             <flare-block-code-renderer
               [content]="block.content"
-              style="max-width: calc(100vw - 34px)"
             ></flare-block-code-renderer>
           </ng-container>
           <ng-container *ngSwitchCase="blockTypes.images">
