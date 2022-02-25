@@ -114,9 +114,17 @@ import { UsersService } from './services/users.service';
           />
         </div>
         <section class="w-full px-6">
-          <h1 class="text-center text-2xl font-bold">
-            {{ data.user?.firstName }} {{ data.user?.lastName }}
-          </h1>
+          <div class="flex items-center justify-center gap-2">
+            <h1 class="text-center text-2xl font-bold">
+              {{ data.user?.firstName }} {{ data.user?.lastName }}
+            </h1>
+            <img
+              *ngIf="true"
+              class="h-5 w-5"
+              src="assets/icons/verified.svg"
+              alt="Verified user"
+            />
+          </div>
           <p class="text-center">@{{ data.user?.username }}</p>
         </section>
         <section class="my-1">

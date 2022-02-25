@@ -32,9 +32,16 @@
         class="h-10 w-10 rounded-full"
       />
       <div class="gap-2 group-hover:text-primary">
-        <p class="text-sm font-medium">
-          {{ flare.author.firstName }} {{ flare.author.lastName }}
-        </p>
+        <div class="flex items-center gap-1">
+          <p class="text-sm font-medium">
+            {{ flare.author.firstName }} {{ flare.author.lastName }}
+          </p>
+          <img
+            alt="Verified user"
+            class="h-3 w-3"
+            src="assets/icons/verified.svg"
+          />
+        </div>
         <p class="cursor-pointer text-xs font-medium">
           @{{ flare.author.username }}
         </p>

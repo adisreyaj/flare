@@ -17,6 +17,11 @@ export class PrismaExceptionFilter implements GqlExceptionFilter {
       code: 500,
       message: 'Internal server error',
     };
+    this.logger.error({
+      code,
+      message,
+      exception,
+    });
     return new HttpException(message, code);
   }
 }
