@@ -126,7 +126,7 @@ export class UsersService {
         },
       });
 
-      return isEmpty(user);
+      return { available: user === 0 };
     } catch (e) {
       this.logger.error(e);
       throw new InternalServerErrorException();

@@ -20,7 +20,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '@flare/ui/auth';
 import { UpdateUserInput } from '@flare/api-interfaces';
 import { UiOnboardingService } from './services/ui-onboarding.service';
-import { map, Observable, take } from 'rxjs';
+import { catchError, map, Observable, of, take } from 'rxjs';
 
 @Component({
   selector: 'flare-ui-onboarding-profile',
@@ -106,6 +106,7 @@ import { map, Observable, take } from 'rxjs';
                 rows="3"
                 variant="fill"
                 zzInput
+                required
               ></textarea>
             </zz-form-group>
           </section>
@@ -197,6 +198,8 @@ import { map, Observable, take } from 'rxjs';
         <ng-container *ngIf="step < maxStep">
           <button
             zzButton
+            [attr.data-invalid]="profileForm.invalid"
+            [disabled]="step === 0 && profileForm.invalid"
             [variant]="step !== 1 ? 'primary' : 'neutral'"
             (click)="next()"
           >
@@ -272,9 +275,12 @@ export class UiOnboardingProfileComponent {
         this.router.navigate(['/onboarding/explore']);
       }
       this.profileForm.patchValue({
-        ...user,
-        description: user?.bio?.description ?? '',
-        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        bio: {
+          id: user?.bio?.id,
+        },
       });
     });
   }
@@ -335,7 +341,8 @@ export class UiOnboardingProfileComponent {
             }
             return null;
           }),
-          take(1)
+          take(1),
+          catchError(() => of(null))
         );
     };
 }
