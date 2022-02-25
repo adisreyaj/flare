@@ -5,6 +5,7 @@ import {
   ComposerModule,
   CreateFlareEvent,
   FlareCardActions,
+  FlareCardEventData,
   FlareCardModule,
   FlareFeedsHeaderModule,
   SidebarComponentModule,
@@ -43,16 +44,21 @@ export class HomeComponent {
     this.flareService.newFlare(input).subscribe();
   }
 
-  handleFlareCardActions($event: { type: FlareCardActions; data: Flare }) {
-    const trigger: Record<FlareCardActions, () => void> = {
-      LIKE: () => this.like($event.data),
-      UNLIKE: () => this.unlike($event.data),
-      BOOKMARK: () => this.addBookmark($event.data),
-      REMOVE_BOOKMARK: () => this.removeBookmark($event.data),
-      DELETE: () => this.deleteFlare($event.data),
+  handleFlareCardActions($event: FlareCardEventData) {
+    const trigger: Partial<Record<FlareCardActions, () => void>> = {
+      LIKE: () => this.like($event.data as Flare),
+      UNLIKE: () => this.unlike($event.data as Flare),
+      BOOKMARK: () => this.addBookmark($event.data as Flare),
+      REMOVE_BOOKMARK: () => this.removeBookmark($event.data as Flare),
+      DELETE: () => this.deleteFlare($event.data as Flare),
     };
 
-    trigger[$event.type]();
+    (
+      trigger[$event.type] ??
+      (() => {
+        return;
+      })
+    )();
   }
 
   private addBookmark(flare: Flare) {

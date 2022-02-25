@@ -6,7 +6,12 @@ import {
   NgModule,
   Output,
 } from '@angular/core';
-import { ButtonModule, DropdownModule, TooltipModule } from 'zigzag';
+import {
+  ButtonModule,
+  DropdownModule,
+  FormInputModule,
+  TooltipModule,
+} from 'zigzag';
 import { IconModule } from '@flare/ui/components';
 import { BlockType, Flare, User } from '@flare/api-interfaces';
 import { CommonModule } from '@angular/common';
@@ -18,6 +23,7 @@ import { CURRENT_USER } from '@flare/ui/auth';
 import { Observable } from 'rxjs';
 import { ProfileImageDefaultDirectiveModal } from '@flare/ui/shared';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'flare-card',
@@ -29,6 +35,11 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
         &.rmx-icon-heart-2-fill,
         &.rmx-icon-bookmark-fill {
           @apply text-primary;
+        }
+      }
+      @media screen and (max-width: 640px) {
+        p:not(.text-xs) {
+          font-weight: 500;
         }
       }
     `,
@@ -44,8 +55,12 @@ export class FlareCardComponent {
   context: FlareCardContext = 'FEED';
 
   @Output()
-  action = new EventEmitter<{ type: FlareCardActions; data: Flare }>();
+  action = new EventEmitter<FlareCardEventData>();
 
+  commentControl = new FormControl('', [
+    Validators.required,
+    Validators.maxLength(255),
+  ]);
   constructor(
     @Inject(CURRENT_USER) public readonly user$: Observable<User>,
     private readonly router: Router
@@ -71,7 +86,16 @@ export class FlareCardComponent {
   }
 
   removeBookmark(flare: Flare) {
-    this.action.emit({ type: 'REMOVE_BOOKMARK', data: flare });
+    if (this.commentControl.valid) {
+      this.action.emit({ type: 'REMOVE_BOOKMARK', data: flare });
+    }
+  }
+
+  addComment(flare: Flare) {
+    this.action.emit({
+      type: 'ADD_COMMENT',
+      data: { flare, comment: this.commentControl.value },
+    });
   }
 
   routeToFlareDetail(id: string) {
@@ -94,6 +118,8 @@ export class FlareCardComponent {
     RouterModule,
     ProfileImageDefaultDirectiveModal,
     ClipboardModule,
+    FormInputModule,
+    ReactiveFormsModule,
   ],
 })
 export class FlareCardModule {}
@@ -104,4 +130,27 @@ export type FlareCardActions =
   | 'REMOVE_BOOKMARK'
   | 'LIKE'
   | 'UNLIKE'
+  | 'ADD_COMMENT'
+  | 'REMOVE_COMMENT'
   | 'DELETE';
+
+export interface FlareCardEventDataBase<TData = unknown> {
+  data: TData;
+  type: FlareCardActions;
+}
+
+export interface FlareEventsData extends FlareCardEventDataBase {
+  data: Flare;
+  type: 'BOOKMARK' | 'REMOVE_BOOKMARK' | 'LIKE' | 'UNLIKE' | 'DELETE';
+}
+
+export interface FlareCommentEventsData extends FlareCardEventDataBase {
+  data: {
+    flare: Flare;
+    comment: string;
+    commentId?: string;
+  };
+  type: 'ADD_COMMENT' | 'REMOVE_COMMENT';
+}
+
+export type FlareCardEventData = FlareEventsData | FlareCommentEventsData;

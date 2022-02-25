@@ -3,7 +3,11 @@ import { Prisma } from '@prisma/client';
 export const getFlareFieldsToInclude = (
   userId: string
 ): Prisma.FlareInclude => ({
-  comments: true,
+  comments: {
+    include: {
+      author: true,
+    },
+  },
   author: true,
   blocks: true,
   likes: {

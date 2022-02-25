@@ -37,6 +37,7 @@ type Flare {
 type Comment {
   id: ID!
   text: String
+  author: User!
   createdAt: String!
 }
 

@@ -15,6 +15,7 @@ import { Flare } from '@flare/api-interfaces';
 import { FlareService } from './services/flare.service';
 import {
   FlareCardActions,
+  FlareCardEventData,
   FlareCardModule,
   FlareFeedsHeaderModule,
 } from '@flare/ui/components';
@@ -57,16 +58,27 @@ export class FlareComponent {
     );
   }
 
-  handleFlareCardActions($event: { type: FlareCardActions; data: Flare }) {
-    const trigger: Record<FlareCardActions, () => void> = {
-      LIKE: () => this.like($event.data),
-      UNLIKE: () => this.unlike($event.data),
-      BOOKMARK: () => this.addBookmark($event.data),
-      REMOVE_BOOKMARK: () => this.removeBookmark($event.data),
-      DELETE: () => this.deleteFlare($event.data),
+  handleFlareCardActions($event: FlareCardEventData) {
+    const trigger: Partial<Record<FlareCardActions, () => void>> = {
+      LIKE: () => this.like($event.data as Flare),
+      UNLIKE: () => this.unlike($event.data as Flare),
+      BOOKMARK: () => this.addBookmark($event.data as Flare),
+      REMOVE_BOOKMARK: () => this.removeBookmark($event.data as Flare),
+      DELETE: () => this.deleteFlare($event.data as Flare),
+      ADD_COMMENT: () =>
+        this.addComment($event.data as { flare: Flare; comment: string }),
+      REMOVE_COMMENT: () =>
+        this.removeComment(
+          $event.data as { flare: Flare; comment: string; commentId: string }
+        ),
     };
 
-    trigger[$event.type]();
+    (
+      trigger[$event.type] ??
+      (() => {
+        return;
+      })
+    )();
   }
 
   private addBookmark(flare: Flare) {
@@ -96,6 +108,22 @@ export class FlareComponent {
   private deleteFlare(flare: Flare) {
     this.flareService
       .delete(flare.id)
+      .subscribe(() => this.refreshSubject.next());
+  }
+
+  private addComment(data: { flare: Flare; comment: string }) {
+    this.flareService
+      .addComment(data)
+      .subscribe(() => this.refreshSubject.next());
+  }
+
+  private removeComment(data: {
+    flare: Flare;
+    comment: string;
+    commentId: string;
+  }) {
+    this.flareService
+      .removeComment(data)
       .subscribe(() => this.refreshSubject.next());
   }
 }

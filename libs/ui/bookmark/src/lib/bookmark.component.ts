@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { UiBookmarkService } from './ui-bookmark.service';
 import { Observable } from 'rxjs';
 import { Flare } from '@flare/api-interfaces';
-import { FlareCardActions } from '@flare/ui/components';
+import { FlareCardActions, FlareCardEventData } from '@flare/ui/components';
 import { FlareService } from '@flare/ui/flare';
 
 @Component({
@@ -66,18 +66,20 @@ export class BookmarkComponent {
     this.bookmarkedFlares$ = this.bookmarkService.bookmarkedFlares$;
   }
 
-  handleFlareCardActions($event: { type: FlareCardActions; data: Flare }) {
-    const trigger: Record<FlareCardActions, () => void> = {
-      LIKE: () => this.like($event.data),
-      UNLIKE: () => this.unlike($event.data),
-      BOOKMARK: () => this.addBookmark($event.data),
-      REMOVE_BOOKMARK: () => this.removeBookmark($event.data),
-      DELETE: () => {
-        return;
-      },
+  handleFlareCardActions($event: FlareCardEventData) {
+    const trigger: Partial<Record<FlareCardActions, () => void>> = {
+      LIKE: () => this.like($event.data as Flare),
+      UNLIKE: () => this.unlike($event.data as Flare),
+      BOOKMARK: () => this.addBookmark($event.data as Flare),
+      REMOVE_BOOKMARK: () => this.removeBookmark($event.data as Flare),
     };
 
-    trigger[$event.type]();
+    (
+      trigger[$event.type] ??
+      (() => {
+        return;
+      })
+    )();
   }
 
   removeBookmark(flare: Flare) {

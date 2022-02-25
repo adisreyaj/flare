@@ -36,6 +36,15 @@ import { NotificationCardModule } from './notification-card.component';
         </div>
       </ng-container>
     </ng-container>`,
+  styles: [
+    `
+      @media screen and (max-width: 640px) {
+        p:not(.text-xs) {
+          font-weight: 500;
+        }
+      }
+    `,
+  ],
 })
 export class NotificationsComponent {
   notifications$: Observable<Notification[]>;

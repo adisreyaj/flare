@@ -1,7 +1,4 @@
-<article
-  *ngIf="user$ | async as loggedInUser"
-  class="relative border-b border-slate-200 bg-white p-4"
->
+<article *ngIf="user$ | async as loggedInUser" class="relative bg-white p-4">
   <ng-container
     *ngIf="loggedInUser.id === flare.author.id && context !== 'FLARE_DETAIL'"
   >
@@ -78,14 +75,20 @@
       </ng-container>
     </ul>
   </div>
-  <footer class="flex gap-4">
+  <footer class="flex gap-4 border-b border-slate-200">
     <button (click)="toggleLike(flare)" size="sm" variant="link" zzButton>
       <div class="flex items-center gap-2">
         <rmx-icon [name]="flare | flareLikeIcon" class="icon-xxs"></rmx-icon>
         <p>{{ flare._count?.likes }}</p>
       </div>
     </button>
-    <button class="flex items-center gap-2" size="sm" variant="link" zzButton>
+    <button
+      (click)="context !== 'FLARE_DETAIL' && routeToFlareDetail(flare.id)"
+      class="flex items-center gap-2"
+      size="sm"
+      variant="link"
+      zzButton
+    >
       <div class="flex items-center gap-1">
         <rmx-icon class="icon-xxs" name="chat-1-line"></rmx-icon>
         <p>{{ flare._count?.comments }}</p>
@@ -113,4 +116,56 @@
       </zz-dropdown>
     </button>
   </footer>
+
+  <section *ngIf="context === 'FLARE_DETAIL' && flare.comments" class="mt-4">
+    <ul class="">
+      <li class="mb-4">
+        <textarea
+          [formControl]="commentControl"
+          class="w-full"
+          rows="3"
+          variant="fill"
+          zzInput
+        ></textarea>
+        <button
+          (click)="addComment(flare)"
+          [disabled]="commentControl.invalid"
+          size="sm"
+          variant="primary"
+          zzButton
+        >
+          Comment
+        </button>
+      </li>
+      <ng-container *ngFor="let comment of flare.comments">
+        <li class="border-t border-slate-200 py-3">
+          <header class="relative flex items-center justify-start">
+            <div
+              [routerLink]="['/', comment?.author?.username]"
+              class="group flex cursor-pointer items-center gap-2"
+            >
+              <img
+                [alt]="comment?.author?.firstName"
+                [flareDefaultImage]="comment?.author?.username"
+                [src]="comment?.author?.image"
+                class="h-10 w-10 rounded-full"
+              />
+              <div class="gap-2 group-hover:text-primary">
+                <p class="text-sm font-medium">
+                  {{ comment?.author?.firstName }}
+                  {{ comment?.author?.lastName }}
+                </p>
+                <p class="cursor-pointer text-xs font-medium">
+                  @{{ comment?.author?.username }}
+                </p>
+              </div>
+            </div>
+          </header>
+          <section class="mt-2">
+            <p>{{ comment?.text }}</p>
+          </section>
+        </li>
+      </ng-container>
+    </ul>
+  </section>
 </article>

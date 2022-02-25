@@ -251,6 +251,7 @@ export interface Comment {
     __typename?: 'Comment';
     id: string;
     text?: Nullable<string>;
+    author: User;
     createdAt: string;
 }
 

@@ -197,6 +197,13 @@ export class FlareService {
               comments {
                 id
                 text
+                author {
+                  id
+                  firstName
+                  lastName
+                  image
+                  username
+                }
                 createdAt
               }
               createdAt
@@ -210,5 +217,43 @@ export class FlareService {
         fetchPolicy: refresh ? 'network-only' : 'cache-first',
       })
       .pipe(map(({ data }) => data.flare));
+  }
+
+  addComment(data: { flare: Flare; comment: string }) {
+    return this.apollo
+      .mutate({
+        mutation: gql`
+          mutation AddComment($input: AddCommentInput!) {
+            addComment(input: $input) {
+              id
+            }
+          }
+        `,
+        variables: {
+          input: {
+            text: data.comment,
+            flareId: data.flare.id,
+          },
+        },
+      })
+      .pipe(tap(() => this.refreshSubject.next()));
+  }
+
+  removeComment(data: { flare: Flare; comment: string; commentId: string }) {
+    return this.apollo
+      .mutate({
+        mutation: gql`
+          mutation RemoveComment($input: RemoveCommentInput!) {
+            removeComment(input: $input) {
+              id
+            }
+          }
+        `,
+        variables: {
+          flareId: data.flare.id,
+          commentId: data.commentId,
+        },
+      })
+      .pipe(tap(() => this.refreshSubject.next()));
   }
 }
