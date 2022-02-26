@@ -27,7 +27,11 @@ Flare is my take on a social network for developers. It's built entirely around 
 
 TL;DR: Flare is a new kind of social networking site made especially for software developers. Twitter is a really great place where developers hang out and share insightful tweets. But there is something that is lacking there.
 
-Features ✨
+<p align="center">
+  <img src="flare-header.png">
+</p>
+
+## Features ✨
 Here are some features that I planned for Flare. The ones implemented right now are marked. The fundamental idea is to support writing small posts within Flare. So the concept of blocks came. Blocks are used to create a flare, you can have text, code, images, etc in a single flare. Each of these smaller items that make up a flare is called a block.
 
 - Share Code snippets ✅
@@ -39,6 +43,17 @@ Here are some features that I planned for Flare. The ones implemented right now 
 - Header Image promotions ✅
 - Kudos ✅
 - Connect Hashnode blog ✅
+
+
+<p align="center">
+  <img src="flare.png">
+</p>
+<p align="center">
+  <img src="mobile-view.png">
+</p>
+<p align="center">
+  <img src="profile.png">
+</p>
 
 ## Running Locally 💻
 
