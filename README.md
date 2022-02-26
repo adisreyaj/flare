@@ -44,15 +44,18 @@ Here are some features that I planned for Flare. The ones implemented right now 
 - Kudos ✅
 - Connect Hashnode blog ✅
 
-
 <p align="center">
   <img src="flare.png">
 </p>
-<p align="center">
-  <img src="mobile-view.png">
-</p>
+
+### Profile Page
 <p align="center">
   <img src="profile.png">
+</p>
+
+### Mobile View
+<p align="center">
+  <img src="mobile-view.png">
 </p>
 
 ## Running Locally 💻
