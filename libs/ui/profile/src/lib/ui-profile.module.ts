@@ -7,6 +7,7 @@ import {
   ButtonModule,
   DropdownModule,
   FormGroupModule,
+  FormInputModule,
   ModalModule,
   ModalService,
 } from 'zigzag';
@@ -17,6 +18,7 @@ import {
   MediaUrlPipeModule,
   ProfileImageDefaultDirectiveModal,
 } from '@flare/ui/shared';
+import { ProfileSpotifyModule } from './profile-spotify.component';
 
 @NgModule({
   declarations: [ProfileComponent],
@@ -77,6 +79,8 @@ import {
         },
       },
     }),
+    ProfileSpotifyModule,
+    FormInputModule,
   ],
   providers: [ModalService],
 })

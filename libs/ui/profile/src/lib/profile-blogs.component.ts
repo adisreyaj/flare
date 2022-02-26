@@ -1,6 +1,6 @@
 import { Component, Input, NgModule } from '@angular/core';
-import { Blog } from '../../../../api-interfaces/src/blogs.interface';
 import { CommonModule } from '@angular/common';
+import { Blog } from '@flare/api-interfaces';
 
 @Component({
   selector: 'flare-profile-blogs',

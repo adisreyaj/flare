@@ -1,4 +1,4 @@
-import { Component, Inject, Injector } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   Blog,
@@ -28,6 +28,8 @@ import { HeaderPromoService } from './services/header-promo.service';
 import { KudosService } from './services/kudos.service';
 import { UsersService } from './services/users.service';
 import { ProfileEditModalComponent } from './modals/profile-edit/profile-edit.component';
+import { SpotifyLastPlayed, SpotifyService } from './services/spotify.service';
+import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
 
 @Component({
   selector: 'flare-profile',
@@ -165,6 +167,57 @@ import { ProfileEditModalComponent } from './modals/profile-edit/profile-edit.co
         >
           <flare-profile-social [bio]="data.user.bio"></flare-profile-social>
         </section>
+        <section
+          class="borer-slate-200 w-full border-b py-6 px-6"
+          *ngIf="(spotifyLastPlayed$ | async) || !data.isExternalMode"
+        >
+          <ng-container>
+            <header class="mb-4 flex items-center justify-between">
+              <h4 class="font-semibold">Recently Played Songs</h4>
+              <div class="flex gap-2">
+                <p class="text-sm text-slate-500">Powered by</p>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  viewBox="0 0 2931 2931"
+                >
+                  <path
+                    d="M1465.5 0C656.1 0 0 656.1 0 1465.5S656.1 2931 1465.5 2931 2931 2274.9 2931 1465.5C2931 656.2 2274.9.1 1465.5 0zm672.1 2113.6c-26.3 43.2-82.6 56.7-125.6 30.4-344.1-210.3-777.3-257.8-1287.4-141.3-49.2 11.3-98.2-19.5-109.4-68.7-11.3-49.2 19.4-98.2 68.7-109.4C1242.1 1697.1 1721 1752 2107.3 1988c43 26.5 56.7 82.6 30.3 125.6zm179.3-398.9c-33.1 53.8-103.5 70.6-157.2 37.6-393.8-242.1-994.4-312.2-1460.3-170.8-60.4 18.3-124.2-15.8-142.6-76.1-18.2-60.4 15.9-124.1 76.2-142.5 532.2-161.5 1193.9-83.3 1646.2 194.7 53.8 33.1 70.8 103.4 37.7 157.1zm15.4-415.6c-472.4-280.5-1251.6-306.3-1702.6-169.5-72.4 22-149-18.9-170.9-91.3-21.9-72.4 18.9-149 91.4-171 517.7-157.1 1378.2-126.8 1922 196 65.1 38.7 86.5 122.8 47.9 187.8-38.5 65.2-122.8 86.7-187.8 48z"
+                    style="fill:#2ebd59"
+                  />
+                </svg>
+              </div>
+            </header>
+            <ng-container
+              *ngIf="
+                spotifyLastPlayed$ | async as spotifyLastPlayed;
+                else noSpotify
+              "
+            >
+              <flare-profile-spotify
+                [tracks]="spotifyLastPlayed"
+              ></flare-profile-spotify>
+            </ng-container>
+            <ng-template #noSpotify>
+              <div class="grid place-items-center" *ngIf="!data.isExternalMode">
+                <div class="flex flex-col items-center">
+                  <button
+                    zzButton
+                    variant="primary"
+                    class="mt-4 mb-2"
+                    size="sm"
+                    (click)="authorizeSpotify(data.user.username)"
+                  >
+                    Connect Spotify
+                  </button>
+                  <p class="text-slate-500">
+                    Integrate spotify to show the last played songs...
+                  </p>
+                </div>
+              </div>
+            </ng-template>
+          </ng-container>
+        </section>
         <section class="borer-slate-200 w-full border-b py-6 px-6">
           <header class="mb-4 flex items-center justify-between">
             <h4 class="font-semibold">Kudos</h4>
@@ -235,6 +288,7 @@ import { ProfileEditModalComponent } from './modals/profile-edit/profile-edit.co
 export class ProfileComponent {
   latestHashnodeBlogs$: Observable<Blog[] | null>;
   kudos$: Observable<Kudos[]>;
+  spotifyLastPlayed$: Observable<SpotifyLastPlayed[] | boolean>;
 
   data$: Observable<{
     isExternalMode: boolean;
@@ -251,7 +305,7 @@ export class ProfileComponent {
     private readonly modal: ModalService,
     private readonly headerPromoService: HeaderPromoService,
     private readonly authService: AuthService,
-    private readonly injector: Injector
+    private readonly spotifyService: SpotifyService
   ) {
     const userName$: Observable<string> = this.activatedRoute.params.pipe(
       map((params) => params['username']),
@@ -269,6 +323,12 @@ export class ProfileComponent {
     );
     this.kudos$ = this.data$.pipe(
       switchMap((data) => this.kudosService.getKudos(data.user?.username ?? ''))
+    );
+
+    this.spotifyLastPlayed$ = this.data$.pipe(
+      switchMap((data) =>
+        this.spotifyService.getLastPlayed(data.user?.username ?? '')
+      )
     );
 
     this.latestHashnodeBlogs$ = this.data$.pipe(
@@ -369,6 +429,10 @@ export class ProfileComponent {
 
   logout() {
     this.authService.logout();
+  }
+
+  authorizeSpotify(username: Nullable<string>) {
+    if (username) this.spotifyService.authorize(username).subscribe();
   }
 }
 

@@ -51,6 +51,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
       useValue: {
         baseURL: `${environment.apiURL}/api`,
         mediaURL: environment.mediaURL,
+        coolStuffsURL: environment.coolStuffsURL,
       },
     },
     // { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

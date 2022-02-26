@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   apiURL: 'http://localhost:3333',
   mediaURL: 'https://flare-cdn.adi.so/file/flare-media',
+  coolStuffsURL: 'http://localhost:8888/.netlify/functions',
 };
 
 /*
