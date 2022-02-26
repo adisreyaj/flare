@@ -80,10 +80,15 @@ export const handler: Handler = async (event, context) => {
       return errorResponse('Token set failed', { error });
     }
     return {
-      statusCode: 302,
-      headers: {
-        Location: FRONT_END_REDIRECT_URI,
-      },
+      statusCode: 200,
+      body: `<script>
+              if (window.opener) {
+                // send them to the opening window
+                window.opener.postMessage({message:'refresh'});
+                // close the popup
+                window.close();
+              }    
+      </script>`,
     };
   } catch (error) {
     console.error(error);

@@ -432,7 +432,20 @@ export class ProfileComponent {
   }
 
   authorizeSpotify(username: Nullable<string>) {
-    if (username) location.href = this.spotifyService.authorize(username);
+    if (username) {
+      window.open(
+        this.spotifyService.authorize(username),
+        '_blank',
+        'toolbar=no, menubar=no, width=600, height=700'
+      );
+      window.addEventListener(
+        'message',
+        (event) => {
+          this.usersService.refresh();
+        },
+        false
+      );
+    }
   }
 }
 
