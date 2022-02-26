@@ -207,7 +207,7 @@ export class UsersService {
     currentUser: CurrentUser,
     onBoardingState: string | null = null
   ) {
-    const { bio, preferences, ...user } = updateUserInput;
+    const { bio, preferences, username, password, ...user } = updateUserInput;
 
     return this.prisma.user.update({
       where: {

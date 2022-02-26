@@ -12,7 +12,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { SuccessResponse, User } from '@flare/api-interfaces';
+import { SuccessResponse, UpdateUserInput, User } from '@flare/api-interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +31,21 @@ export class UsersService {
 
   refresh() {
     this.refreshSubject.next();
+  }
+
+  updateUserProfile(input: UpdateUserInput) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation UpdateUser($input: UpdateUserInput) {
+          updateUser(input: $input) {
+            id
+          }
+        }
+      `,
+      variables: {
+        input,
+      },
+    });
   }
 
   updateHeaderImage(jobId: string, preferenceId: string): Observable<boolean> {

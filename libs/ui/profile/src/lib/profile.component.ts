@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, Injector } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   Blog,
@@ -20,13 +20,14 @@ import {
 import { ModalService } from 'zigzag';
 import { ProfileHeaderImageUploadComponent } from './modals/profile-header-image-upload/profile-header-image-upload.component';
 import { ProfileHeaderPromoReceivedComponent } from './modals/profile-header-promo-received/profile-header-promo-received.component';
-import { ProfileHeaderPromoSubmitModalComponent } from './modals/profile-header-promo-submit/profile-header-promo-submit';
+import { ProfileHeaderPromoSubmitModalComponent } from './modals/profile-header-promo-submit/profile-header-promo-submit.component';
 import { ProfileKudosModalComponent } from './modals/profile-kudos/profile-kudos-modal.component';
 import { DevToService } from './services/devto.service';
 import { HashnodeService } from './services/hashnode.service';
 import { HeaderPromoService } from './services/header-promo.service';
 import { KudosService } from './services/kudos.service';
 import { UsersService } from './services/users.service';
+import { ProfileEditModalComponent } from './modals/profile-edit/profile-edit.component';
 
 @Component({
   selector: 'flare-profile',
@@ -79,7 +80,7 @@ import { UsersService } from './services/users.service';
                   zzDropdownItem
                   class="w-full"
                   zzDropdownCloseOnClick
-                  (click)="viewPromoProposals()"
+                  (click)="editProfile()"
                 >
                   Edit Profile
                 </div>
@@ -249,13 +250,13 @@ export class ProfileComponent {
     private readonly usersService: UsersService,
     private readonly modal: ModalService,
     private readonly headerPromoService: HeaderPromoService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly injector: Injector
   ) {
     const userName$: Observable<string> = this.activatedRoute.params.pipe(
       map((params) => params['username']),
       filterOutAppRoutes()
     );
-
     this.data$ = combineLatest([this.loggedInUser$, userName$]).pipe(
       switchMap(([loggedInUser, username]) => {
         return this.usersService.getByUsername(username).pipe(
@@ -333,6 +334,16 @@ export class ProfileComponent {
         )
       )
       .subscribe();
+  }
+
+  editProfile() {
+    const modalRef = this.modal.open(ProfileEditModalComponent, {
+      size: 'lg',
+    });
+
+    modalRef.afterClosed$.subscribe((success) => {
+      success && this.usersService.refresh();
+    });
   }
 
   viewPromoProposals() {

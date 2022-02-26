@@ -2,7 +2,7 @@ import { Component, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule, FormInputModule, ModalRef } from 'zigzag';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { FileUploadModule } from '../../../../../components/src/lib/file-upload/file-upload.module';
+import { FileUploadModule } from '@flare/ui/components';
 import { MediaService, SanitizeUrlPipeModule } from '@flare/ui/shared';
 import { MediaUploadResponse } from '@flare/api-interfaces';
 

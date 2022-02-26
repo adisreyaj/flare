@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HeaderPromo } from '@flare/api-interfaces';
 import { HeaderPromoService } from '../../services/header-promo.service';
 import { CommonModule } from '@angular/common';
-import { ButtonModule } from 'zigzag';
+import { ButtonModule, ModalRef } from 'zigzag';
 import { MediaUrlPipeModule } from '@flare/ui/shared';
 
 @Component({
@@ -65,11 +65,11 @@ import { MediaUrlPipeModule } from '@flare/ui/shared';
                       >
                         Apply as Header
                       </button>
-                      <button zzButton size="sm">Reject</button>
+                      <!--                      <button zzButton size="sm">Reject</button>-->
                     </div>
-                    <button zzButton variant="link" size="sm">
-                      Mark As Spam
-                    </button>
+                    <!--                    <button zzButton variant="link" size="sm">-->
+                    <!--                      Mark As Spam-->
+                    <!--                    </button>-->
                   </footer>
                 </li>
               </ng-container>
@@ -98,12 +98,17 @@ import { MediaUrlPipeModule } from '@flare/ui/shared';
 })
 export class ProfileHeaderPromoReceivedComponent {
   promos$: Observable<HeaderPromo[]>;
-  constructor(private readonly headerPromoService: HeaderPromoService) {
+  constructor(
+    private readonly headerPromoService: HeaderPromoService,
+    private readonly modalRef: ModalRef
+  ) {
     this.promos$ = this.headerPromoService.getPromosReceived();
   }
 
   applyHeader(id: string) {
-    this.headerPromoService.applyPromoHeader(id).subscribe();
+    this.headerPromoService.applyPromoHeader(id).subscribe(() => {
+      this.modalRef.close();
+    });
   }
 }
 

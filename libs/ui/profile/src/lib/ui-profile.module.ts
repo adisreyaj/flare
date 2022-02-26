@@ -3,12 +3,20 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ProfileComponent } from './profile.component';
 import { ProfileBlogsModule } from './profile-blogs.component';
-import { ButtonModule, DropdownModule, ModalModule } from 'zigzag';
+import {
+  ButtonModule,
+  DropdownModule,
+  FormGroupModule,
+  ModalModule,
+  ModalService,
+} from 'zigzag';
 import { ProfileSocialModule } from './profile-social.component';
 import { ProfileKudosModule } from './profile-kudos.component';
-import { ProfileImageDefaultDirectiveModal } from '../../../shared/src/directives/profile-image-default.directive';
 import { IconModule } from '@flare/ui/components';
-import { MediaUrlPipeModule } from '@flare/ui/shared';
+import {
+  MediaUrlPipeModule,
+  ProfileImageDefaultDirectiveModal,
+} from '@flare/ui/shared';
 
 @NgModule({
   declarations: [ProfileComponent],
@@ -29,6 +37,47 @@ import { MediaUrlPipeModule } from '@flare/ui/shared';
     ModalModule,
     MediaUrlPipeModule,
     DropdownModule,
+    FormGroupModule.configure({
+      profileForm: {
+        username: {
+          required: 'Username is required',
+          usernameTaken: 'Username is taken',
+          minlength: 'Username must be at least 3 characters',
+          maxlength: 'Max length is 20 characters',
+          pattern: 'Username can only contain alphabets, numbers & underscores',
+        },
+        firstName: {
+          required: 'First name is required',
+        },
+        lastName: {
+          required: 'Last name is required',
+        },
+        description: {
+          required: 'Description is required',
+          minlength: 'Minimum 3 characters',
+          maxlength: 'Max allowed length is 256 characters',
+        },
+        github: {
+          link: 'Please enter a valid Github URL',
+        },
+        twitter: {
+          link: 'Please enter a valid twitter URL',
+        },
+        facebook: {
+          link: 'Please enter a valid Facebook URL',
+        },
+        linkedin: {
+          link: 'Please enter a valid LinkedIn URL',
+        },
+        hashnode: {
+          link: 'Please enter your hashnode URL',
+        },
+        devto: {
+          link: 'Please enter a valid dev.to profile URL',
+        },
+      },
+    }),
   ],
+  providers: [ModalService],
 })
 export class UiProfileModule {}
