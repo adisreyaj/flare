@@ -1,105 +1,175 @@
+<p align="center">
+  <a href="https://github.com/adisreyaj/flare">
+    <img src="apps/flare/src/assets/images/favicon.png" alt="Logo" width="100" height="100">
+  </a>
 
+  <h3 align="center">Flare - Social Network for Developers</h3>
 
-# Flare
+  <p align="center">
+    The social networking developers have been longing for.
+    <br />
+    <br />
+    <a href="https://flare.adi.so">View Demo</a>
+    ·
+    <a href="https://github.com/adisreyaj/flare/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/adisreyaj/flare/issues">Request Feature</a>
+  </p>
 
-This project was generated using [Nx](https://nx.dev).
+<p align="center">
+  <img src="https://cardify.vercel.app/api/badges?border=false&borderColor=%23ddd&borderWidth=2&iconColor=&icons=angular%2Ctailwindcss%2Cnestjs%2Capollographql%2Cprisma%2Cgraphql%2Cmysql%2Credis%2Cnx%2Ctypescript%2Cgithubactions%2Cpm2&preset=default&shadow=true&width=100">
+</p>
+</p>
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+---
+# Flare - Social Network for Developers
+Flare is my take on a social network for developers. It's built entirely around the needs and interests of software developers. Flare is my entry for the Netlify x Hashnode Hackathon 🔥
 
-🔎 **Smart, Fast and Extensible Build System**
+TL;DR: Flare is a new kind of social networking site made especially for software developers. Twitter is a really great place where developers hang out and share insightful tweets. But there is something that is lacking there.
 
-## Quick Start & Documentation
+Features ✨
+Here are some features that I planned for Flare. The ones implemented right now are marked. The fundamental idea is to support writing small posts within Flare. So the concept of blocks came. Blocks are used to create a flare, you can have text, code, images, etc in a single flare. Each of these smaller items that make up a flare is called a block.
 
-[Nx Documentation](https://nx.dev/angular)
+- Share Code snippets ✅
+- Share terminal scripts ✅
+- Share Images ✅
+- Comments ✅
+- Bookmarks ✅
+- Show Spotify last played songs ✅
+- Header Image promotions ✅
+- Kudos ✅
+- Connect Hashnode blog ✅
 
-[10-minute video showing all Nx features](https://nx.dev/getting-started/intro)
+## Running Locally 💻
 
-[Interactive Tutorial](https://nx.dev/tutorial/01-create-application)
+### 1. Clone the repo
+```sh
+git clone https://github.com/adisreyaj/flare.git
+```
+### 2. Initialize the submodule (UI components)
 
-## Adding capabilities to your workspace
+I created a small UI component library called Zigzag that is used in the project as a submodule. 
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+```sh
+git submodule update --init
+```
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+### 3.  Install the dependencies
+```sh
+npm install
+```
 
-Below are our core plugins:
+### 4. Setup the environment variables
 
-- [Angular](https://angular.io)
-  - `ng add @nrwl/angular`
-- [React](https://reactjs.org)
-  - `ng add @nrwl/react`
-- Web (no framework frontends)
-  - `ng add @nrwl/web`
-- [Nest](https://nestjs.com)
-  - `ng add @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `ng add @nrwl/express`
-- [Node](https://nodejs.org)
-  - `ng add @nrwl/node`
+Set up all the required environment variables required for the back-end:
+```
+NODE_ENV=development
+DATABASE_URL=mysql://root:root@localhost:3307/flare
+FRONT_END_CALLBACK_URL=http://localhost:4200/auth/callback
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+# JWT sign secret
+JWT_SECRET=veryverysecretkey
+JWT_EXPIRY="3d"
+COOKIE_SECRET=veryverysecretsessionkey
 
-## Generate an application
+# Google OAuth Details
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URI=http://localhost:3333/api/auth/google/callback
 
-Run `ng g @nrwl/angular:app my-app` to generate an application.
+# Github OAuth Details
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GITHUB_CALLBACK_URI=http://localhost:3333/api/auth/github/callback
 
-> You can use any of the plugins above to generate applications as well.
+# Queue
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+# Object Storage
+S3_ENDPOINT=
+S3_REGION=
+S3_BUCKET=
+S3_ACCESS_KEY_ID=
+S3_SECRET_ACCESS_KEY=
+```
 
-## Generate a library
+### 5. Prepare the Database
 
-Run `ng g @nrwl/angular:lib my-lib` to generate a library.
+Use docker-compose to spin up MySQL and Redis databases.
+```yml
+version: '3.1'
+services:
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flare
+    ports:
+      - '3307:3306'
+    volumes:
+      - /Users/<username>/Desktop/code/db:/var/lib/mysql
+  cache:
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - /Users/<username>/Desktop/code/cache:/var/lib/redis
+```
 
-> You can also use any of the plugins above to generate libraries as well.
+### 6. Set up the Database
+Run the command to populate the DB with tables:
+```sh
+npm run prisma:migrate
+```
 
-Libraries are shareable across libraries and applications. They can be imported from `@flare/mylib`.
+### 7. Generate the GraphQL interfaces from the schema
 
-## Development server
+Run the command to generate the required types:
+```sh
+npm run generate:gql
+```
 
-Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+### 8. Start up the UI and Back-end
+For UI:
+```sh
+npm start
+```
 
-## Code scaffolding
+For Back-end
+```sh
+npm start api
+```
 
-Run `ng g component my-component --project=my-app` to generate a new component.
+UI: `http://localhost:4200` & GQL: `http://localhost:3333`
 
-## Build
+You are all set for exploring Flare locally.
 
-Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Links and References 🔗
 
-## Running unit tests
+| Title        | Link                            | Description                                      |
+|--------------|---------------------------------|--------------------------------------------------|
+| Angular      | https://angular.io/             | Front-end framework                              |
+| NestJs       | https://docs.nestjs.com/        | Back-end framework based on NodeJs               |
+| Netlify      | https://www.netlify.com/        | Deployment for UI                                |
+| Prisma       | https://www.prisma.io/          | Node.js and TypeScript ORM                       |
+| Tailwind CSS | https://tailwindcss.com/        | Utility first CSS framework                      |
+| Nx           | https://nx.dev/#getting-started | Build system with monorepo support               |
+| PM2          | https://app.pm2.io/             | Advanced, production process manager for Node.JS |
+| Upstash      | https://upstash.com/            | Serverless Redis DB                              |
+| Backblaze    | https://www.backblaze.com/      | Cloud Storage                                    |
 
-Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+## Roadmap
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+See the [open issues](https://github.com/adisreyaj/flare/issues) for a list of proposed features (and known issues).
 
-## Running end-to-end tests
+## License
 
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+Distributed under the MIT License. See `LICENSE` for more information.
 
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
+## Show your support
 
-## Understand your workspace
-
-Run `nx graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
-
-
-
-
-
-
-## ☁ Nx Cloud
-
-### Distributed Computation Caching & Distributed Task Execution
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+Please ⭐️ this repository if this project helped you!
