@@ -98,10 +98,18 @@ export class ComposerComponent {
     let files: File[] = [];
     for (let index = 0; index < fileList.length; index++) {
       const file = fileList.item(index);
-      if (file) {
+      if (
+        file &&
+        ['image/jpg', 'image/png', 'image/jpeg'].includes(file.type) &&
+        file.size < 2 * 1024 * 1024
+      ) {
         files = [...files, file];
+      } else {
+        console.warn(`File  is not an image or is too large.`);
       }
     }
+
+    files = [files[0]]; // TODO: restricting to one image for now
     const images = files.map((file) => ({
       file,
       url: URL.createObjectURL(file),
