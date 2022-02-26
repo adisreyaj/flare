@@ -14,7 +14,7 @@ function decrypt(text) {
       createHash('sha256')
         .update(String(process.env.ENCRYPTION_SECRET))
         .digest('base64')
-        .substr(0, 32),
+        .substr(0, 32)
     );
     let decipher = createDecipheriv('aes-256-cbc', key, ivHex);
     let decrypted = decipher.update(encryptedText);
@@ -23,16 +23,18 @@ function decrypt(text) {
 
     return decrypted.toString();
   } catch (error) {
-    console.error(error);
+    return null;
   }
 }
 const getAccessToken = async (refreshToken) => {
   const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env;
-  const basic = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64');
+  const basic = Buffer.from(
+    `${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`
+  ).toString('base64');
   const { statusCode, body } = await request(TOKEN_ENDPOINT, {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${basic}`,
+      Authorization: `Basic ${basic}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: new URLSearchParams({
@@ -54,15 +56,19 @@ const getNowPlayingSongFromSpotify = async (accessToken) => {
 
 const getSongResponseDataWithRefreshToken = async (username) => {
   const { data } = await get(username);
-  const refreshToken = decrypt(data);
-  console.log({ refreshToken });
-  const { access_token: accessToken } = await getAccessToken(refreshToken);
-  return getSongDataFromSpotify(accessToken);
+  if (data !== null || data === '') {
+    const refreshToken = decrypt(data);
+    const { access_token: accessToken } = await getAccessToken(refreshToken);
+    return getSongDataFromSpotify(accessToken);
+  }
+  return null;
 };
 
 const getSongDataFromSpotify = async (
-  accessToken: string,
-): Promise<{ title: string; artist: string; albumName: string; image: string }[]> => {
+  accessToken: string
+): Promise<
+  { title: string; artist: string; albumName: string; image: string }[]
+> => {
   const { body } = await getNowPlayingSongFromSpotify(accessToken);
   const result = await body.json();
   const { items } = result;
@@ -109,8 +115,7 @@ exports.handler = async (event) => {
   }
   try {
     songInfo = await getSongResponseDataWithRefreshToken(username);
-
-    if (songInfo) {
+    if (songInfo != null) {
       await set(`${username}###last`, JSON.stringify(songInfo));
       return {
         statusCode: 200,
@@ -121,7 +126,12 @@ exports.handler = async (event) => {
         body: JSON.stringify(songInfo),
       };
     }
-    return errorResponse;
+    return {
+      statusCode: 403,
+      body: JSON.stringify({
+        message: 'Not configured',
+      }),
+    };
   } catch (e) {
     return errorResponse;
   }

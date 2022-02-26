@@ -169,7 +169,7 @@ import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
         </section>
         <section
           class="borer-slate-200 w-full border-b py-6 px-6"
-          *ngIf="(spotifyLastPlayed$ | async) || !data.isExternalMode"
+          *ngIf="(spotifyLastPlayed$ | async) !== false || !data.isExternalMode"
         >
           <ng-container>
             <header class="mb-4 flex items-center justify-between">

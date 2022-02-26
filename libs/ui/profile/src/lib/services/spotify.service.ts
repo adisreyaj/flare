@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_CONFIG, ApiConfig } from '@flare/ui/shared';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, Observable, of, startWith } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -23,10 +23,9 @@ export class SpotifyService {
         `${this.spotifyURL}/spotify-last-played/@${username}`
       )
       .pipe(
+        startWith(false),
         catchError((err) => {
-          console.log(err);
           return of(false);
-          return of(err?.message === 'Not configured' ? false : []);
         })
       );
   }
