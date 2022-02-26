@@ -432,7 +432,7 @@ export class ProfileComponent {
   }
 
   authorizeSpotify(username: Nullable<string>) {
-    if (username) this.spotifyService.authorize(username).subscribe();
+    if (username) location.href = this.spotifyService.authorize(username);
   }
 }
 

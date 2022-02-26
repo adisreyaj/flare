@@ -14,7 +14,7 @@ export class SpotifyService {
   ) {}
 
   authorize(username: string) {
-    return this.http.get(`${this.spotifyURL}/spotify-authorize/@${username}`);
+    return `${this.spotifyURL}/spotify-authorize/@${username}`;
   }
 
   getLastPlayed(username: string): Observable<boolean | SpotifyLastPlayed[]> {
