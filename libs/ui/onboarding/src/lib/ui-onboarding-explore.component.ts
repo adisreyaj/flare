@@ -5,7 +5,7 @@ import { UiOnboardingService } from './services/ui-onboarding.service';
 import { mapTo, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { User } from '@flare/api-interfaces';
 import { CommonModule } from '@angular/common';
-import { UsersService } from '@flare/api/users';
+import { UsersService } from '@flare/ui/profile';
 
 @Component({
   selector: 'flare-onboarding-explore',
