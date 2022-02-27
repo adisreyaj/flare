@@ -17,12 +17,6 @@ import { throwError } from 'rxjs';
 import { isEmpty, isNil } from 'lodash';
 import { ApiNotificationsService } from '@flare/api/notifications';
 import { ApiMediaService, FileWithMeta } from '@flare/api/media';
-import {
-  adjectives,
-  animals,
-  colors,
-  uniqueNamesGenerator,
-} from 'unique-names-generator';
 
 @Injectable()
 export class UsersService {
@@ -213,22 +207,13 @@ export class UsersService {
     currentUser: CurrentUser,
     onBoardingState: string | null = null
   ) {
-    const shortName = uniqueNamesGenerator({
-      dictionaries: [adjectives, animals, colors], // colors can be omitted here as not used
-      length: 2,
-      separator: '_',
-    });
-    const { bio, preferences, password, username, ...user } = updateUserInput;
-    const needToUpdateUsername =
-      Object.keys(updateUserInput).findIndex((key) => key === 'username') !==
-      -1;
+    const { bio, preferences, password, ...user } = updateUserInput;
     return this.prisma.user.update({
       where: {
         id: currentUser.id,
       },
       data: {
         ...user,
-        ...(needToUpdateUsername && isNil(username) && { username: shortName }),
         ...(!isNil(onBoardingState) && {
           onboardingState: { state: onBoardingState },
         }),
