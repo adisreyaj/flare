@@ -29,9 +29,7 @@ export class FlareService {
       },
       include: getFlareFieldsToInclude(user.id),
       orderBy: {
-        likes: {
-          _count: 'desc',
-        },
+        createdAt: 'desc',
       },
     });
   }
