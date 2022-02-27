@@ -59,7 +59,7 @@ export class UsersService {
           },
         },
       },
-      take: 10,
+      take: 100,
     });
   }
 
