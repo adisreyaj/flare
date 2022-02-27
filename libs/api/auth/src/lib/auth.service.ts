@@ -10,6 +10,12 @@ import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '@flare/api/prisma';
 import { isEmpty } from 'lodash';
+import {
+  adjectives,
+  animals,
+  colors,
+  uniqueNamesGenerator,
+} from 'unique-names-generator';
 
 @Injectable()
 export class AuthService {
@@ -180,9 +186,14 @@ export class AuthService {
   }
 
   private async signup(userData: Partial<User>) {
+    const username = uniqueNamesGenerator({
+      dictionaries: [adjectives, animals, colors], // colors can be omitted here as not used
+      length: 2,
+      separator: '_',
+    });
     const user: Prisma.UserCreateInput = {
       email: userData.email,
-      username: null,
+      username: username,
       firstName: userData.firstName,
       lastName: userData?.lastName ?? '',
       image: userData.image,

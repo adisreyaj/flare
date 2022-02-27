@@ -216,6 +216,7 @@ export class UsersService {
     const shortName = uniqueNamesGenerator({
       dictionaries: [adjectives, animals, colors], // colors can be omitted here as not used
       length: 2,
+      separator: '_',
     });
     const { bio, preferences, password, username, ...user } = updateUserInput;
     const needToUpdateUsername =

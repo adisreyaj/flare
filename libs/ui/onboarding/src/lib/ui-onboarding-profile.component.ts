@@ -316,6 +316,9 @@ export class UiOnboardingProfileComponent {
     };
 
   private getProfileFormValue() {
+    if ((this.profileForm.get('username')?.value ?? '').trim() === '') {
+      this.profileForm.get('username')?.setErrors({ required: true });
+    }
     const data: UpdateUserInput = {
       bio: {
         ...this.profileForm.get('bio')?.value,
