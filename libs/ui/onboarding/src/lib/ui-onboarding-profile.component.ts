@@ -275,6 +275,7 @@ export class UiOnboardingProfileComponent {
         this.router.navigate(['/onboarding/explore']);
       }
       this.profileForm.patchValue({
+        username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
