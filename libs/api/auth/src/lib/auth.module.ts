@@ -24,6 +24,7 @@ import { GithubStrategy } from './strategies/github.strategy';
     PrismaModule,
   ],
   controllers: [AuthController],
+  exports: [AuthService],
   providers: [AuthService, JwtStrategy, GoogleStrategy, GithubStrategy],
 })
 export class AuthModule {}

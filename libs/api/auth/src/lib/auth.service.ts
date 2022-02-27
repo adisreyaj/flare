@@ -9,6 +9,7 @@ import { Prisma, User } from '@prisma/client';
 import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '@flare/api/prisma';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class AuthService {
@@ -94,6 +95,88 @@ export class AuthService {
       `${this.frontendCallBackUrl}?code=SUCCESS&token=${accessToken}`
     );
     return;
+  }
+
+  async handleDemoLogin(req: Request, res: Response) {
+    let user: any = await this.prisma.user.findUnique({
+      where: {
+        username: 'flare_demo',
+      },
+    });
+    if (isEmpty(user)) {
+      const topUsers = await this.prisma.user.findMany({
+        take: 10,
+        select: {
+          id: true,
+        },
+      });
+      user = await this.prisma.user.create({
+        data: {
+          email: 'demo@adi.so',
+          username: 'flare_demo',
+          firstName: 'Flare',
+          lastName: 'Demo',
+          image: 'https://avatar.tobi.sh/',
+          onboardingState: { state: 'ONBOARDING_COMPLETE' },
+          following: { connect: (topUsers ?? []).map((u) => ({ id: u.id })) },
+          bio: {
+            create: {
+              twitter: 'https://twitter.com/adisreyaj',
+              description: 'Flare official demo account.',
+              github: 'https://github.com/adisreyaj/flare',
+              facebook: '',
+              devto: '',
+              hashnode: '',
+              linkedin: '',
+            },
+          },
+          isOnboarded: true,
+          preferences: {
+            create: {
+              kudos: {
+                enabled: false,
+              },
+              header: {
+                enabled: true,
+                type: 'DEFAULT',
+                image: { name: 'default-header.jpeg' },
+              },
+              blogs: {
+                enabled: false,
+              },
+            },
+          },
+        },
+      });
+    }
+
+    console.info(user);
+    if (user) {
+      const accessToken = await this.generateAccessToken(user);
+      res.cookie('token', accessToken, {
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true,
+        signed: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'strict',
+      });
+      /**
+       * Set a non http cookie which can be removed by the client on logout
+       */
+      res.cookie('token-sync', accessToken, {
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        httpOnly: false,
+        secure: true,
+        signed: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'strict',
+      });
+      return res.redirect(
+        `${this.frontendCallBackUrl}?code=SUCCESS&token=${accessToken}`
+      );
+    }
+    throw new InternalServerErrorException('Failed to authenticate');
   }
 
   private async signup(userData: Partial<User>) {

@@ -17,6 +17,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
 import { ENVIRONMENT_VALIDATION_SCHEMA } from './config/environment.validator';
 import { PrismaExceptionFilter } from '@flare/api/shared';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -67,7 +68,7 @@ import { PrismaExceptionFilter } from '@flare/api/shared';
     ApiNotificationsModule,
     ApiHeaderPromoModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
