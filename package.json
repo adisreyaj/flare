@@ -84,6 +84,7 @@
     "ts-toolbelt": "^9.6.0",
     "tslib": "^2.0.0",
     "undici": "^4.14.1",
+    "unique-names-generator": "^4.7.1",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

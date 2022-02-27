@@ -5,7 +5,7 @@ import { UiOnboardingService } from './services/ui-onboarding.service';
 import { mapTo, Observable, startWith, Subject, switchMap, tap } from 'rxjs';
 import { User } from '@flare/api-interfaces';
 import { CommonModule } from '@angular/common';
-import { UsersService } from '../../../profile/src/lib/services/users.service';
+import { UsersService } from '@flare/api/users';
 
 @Component({
   selector: 'flare-onboarding-explore',
@@ -17,8 +17,8 @@ import { UsersService } from '../../../profile/src/lib/services/users.service';
     </header>
     <div class="grid flex-1 place-items-center pt-10">
       <section>
-        <ul class="flex items-center gap-4">
-          <ng-container *ngFor="let user of topUsers$ | async">
+        <ul class="flex items-center gap-4 overflow-x-auto">
+          <ng-container *ngFor="let user of topUsers$ | async | slice: 0:5">
             <li class="w-60 rounded-md border border-slate-200 p-4">
               <header class="mb-2 flex w-full justify-center">
                 <img
