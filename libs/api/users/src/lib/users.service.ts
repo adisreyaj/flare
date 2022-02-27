@@ -107,9 +107,9 @@ export class UsersService {
         followersOfCurrentUser,
       ]);
       const isFollowingTheRequestedUser = followers.followers.length > 0;
-
+      const { email, password, ...rest } = user;
       return {
-        ...user,
+        ...rest,
         isFollowing: isFollowingTheRequestedUser,
       };
     } catch (e) {

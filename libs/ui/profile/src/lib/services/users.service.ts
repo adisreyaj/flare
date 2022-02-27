@@ -128,7 +128,6 @@ export class UsersService {
           query getUser($username: String!) {
             userByUsername(username: $username) {
               id
-              email
               username
               image
               firstName

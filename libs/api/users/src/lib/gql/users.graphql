@@ -25,7 +25,7 @@ type User {
   image: String
   firstName: String!
   lastName: String
-  email: String!
+  email: String
   username: String
   password: String
   bio: UserBio
