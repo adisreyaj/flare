@@ -343,7 +343,7 @@ export interface User {
     kudos?: Nullable<Nullable<Kudos>[]>;
     kudosGiven?: Nullable<Nullable<Kudos>[]>;
     isFollowing: boolean;
-    preferences?: Nullable<UserPreferences>;
+    preferences: UserPreferences;
     isOnboarded: boolean;
     onboardingState?: Nullable<JSON>;
 }
