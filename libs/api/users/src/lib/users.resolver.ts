@@ -12,10 +12,6 @@ import { CurrentUser } from '@flare/api/shared';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Query('user')
-  findOne(@Args('id') id: string) {
-    return this.usersService.findOne(id);
-  }
   @Query('me')
   findMe(@CurrentUser() user: CurrentUser) {
     return this.usersService.findOne(user.id);

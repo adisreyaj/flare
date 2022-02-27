@@ -61,7 +61,7 @@ import { ProfileImageDefaultDirectiveModal } from '@flare/ui/shared';
           </li>
         </ul>
       </nav>
-      <div class="mt-10 hidden px-2 sm:block md:px-0">
+      <div class="mt-10 hidden px-2 md:px-0">
         <button
           class="w-full justify-center text-lg"
           zzButton

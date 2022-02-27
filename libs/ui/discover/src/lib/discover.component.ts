@@ -30,11 +30,11 @@ import { DiscoverService } from './services/discover.service';
       </button>-->
     </flare-feeds-header>
     <ng-container *ngIf="topUsers$ | async as topUsers">
-      <ul
-        class="flex items-center gap-4 overflow-x-auto border-b border-slate-200 py-4"
+      <div
+        class="flex w-full justify-start gap-4 overflow-x-auto border-b border-slate-200 py-4"
       >
-        <li
-          class="flex cursor-pointer flex-col items-center rounded-md bg-white p-2"
+        <div
+          class="flex shrink-0 cursor-pointer flex-col items-center rounded-md bg-white p-2"
           *ngFor="let user of topUsers"
           [routerLink]="['/', user.username]"
           style="width:80px;"
@@ -47,8 +47,8 @@ import { DiscoverService } from './services/discover.service';
           <div class="mt-2 text-center">
             <p class="text-xs font-semibold">{{ user.firstName }}</p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </ng-container>
     <ng-container *ngIf="popularFlares$ | async as popularFlares">
       <ng-container *ngFor="let flare of popularFlares">

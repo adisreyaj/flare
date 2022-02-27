@@ -91,6 +91,7 @@ export class FlareCardComponent {
       type: 'ADD_COMMENT',
       data: { flare, comment: this.commentControl.value },
     });
+    this.commentControl.reset();
   }
 
   routeToFlareDetail(id: string) {
