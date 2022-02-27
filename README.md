@@ -186,7 +186,7 @@ See the [open issues](https://github.com/adisreyaj/flare/issues) for a list of p
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the Apache 2.0 License. See `LICENSE` for more information.
 
 ## Show your support
 
