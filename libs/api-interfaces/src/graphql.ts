@@ -333,7 +333,7 @@ export interface User {
     image?: Nullable<string>;
     firstName: string;
     lastName?: Nullable<string>;
-    email: string;
+    email?: Nullable<string>;
     username?: Nullable<string>;
     password?: Nullable<string>;
     bio?: Nullable<UserBio>;
@@ -343,7 +343,7 @@ export interface User {
     kudos?: Nullable<Nullable<Kudos>[]>;
     kudosGiven?: Nullable<Nullable<Kudos>[]>;
     isFollowing: boolean;
-    preferences: UserPreferences;
+    preferences?: Nullable<UserPreferences>;
     isOnboarded: boolean;
     onboardingState?: Nullable<JSON>;
 }

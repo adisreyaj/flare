@@ -35,7 +35,7 @@ type User {
   kudos: [Kudos]
   kudosGiven: [Kudos]
   isFollowing: Boolean!
-  preferences: UserPreferences!
+  preferences: UserPreferences
   isOnboarded : Boolean!
   onboardingState: JSON
 }
