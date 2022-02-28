@@ -1,6 +1,7 @@
 import { Component, Input, NgModule } from '@angular/core';
 import { Kudos } from '@flare/api-interfaces';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'flare-profile-kudos',
@@ -19,7 +20,10 @@ import { CommonModule } from '@angular/common';
             {{ item.content.text }}
           </p>
         </div>
-        <footer class="mt-4 flex items-center gap-2">
+        <footer
+          class="mt-4 flex cursor-pointer items-center gap-2"
+          [routerLink]="['/', item.kudosBy.username]"
+        >
           <img
             class="h-10 w-10 rounded-full object-cover object-center"
             [src]="item.kudosBy.image"
@@ -41,7 +45,7 @@ export class ProfileKudosComponent {
 
 @NgModule({
   declarations: [ProfileKudosComponent],
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   exports: [ProfileKudosComponent],
 })
 export class ProfileKudosModule {}
