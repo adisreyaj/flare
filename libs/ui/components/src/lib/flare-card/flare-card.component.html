@@ -1,6 +1,9 @@
 <article *ngIf="user$ | async as loggedInUser" class="relative bg-white p-4">
   <ng-container
-    *ngIf="loggedInUser.id === flare.author.id && context !== 'FLARE_DETAIL'"
+    *ngIf="
+      loggedInUser.id === flare.author.id &&
+      !['FLARE_DETAIL', 'EXPLORE'].includes(context)
+    "
   >
     <div class="absolute top-2 right-2 z-10">
       <button [zzDropdownTrigger]="flareMoreOptions" variant="link" zzButton>
