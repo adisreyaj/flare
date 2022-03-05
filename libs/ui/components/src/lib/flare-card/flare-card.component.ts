@@ -37,6 +37,10 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
           @apply text-primary;
         }
       }
+
+      flare-block-code-renderer {
+        @apply mb-4;
+      }
     `,
   ],
 })
