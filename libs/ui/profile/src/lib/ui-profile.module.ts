@@ -46,7 +46,7 @@ import { ProfileSpotifyModule } from './profile-spotify.component';
           usernameTaken: 'Username is taken',
           minlength: 'Username must be at least 3 characters',
           maxlength: 'Max length is 20 characters',
-          pattern: 'Username can only contain alphabets, numbers & underscores',
+          pattern: 'Username can only contain alphanumeric characters and underscores',
         },
         firstName: {
           required: 'First name is required',
@@ -60,10 +60,10 @@ import { ProfileSpotifyModule } from './profile-spotify.component';
           maxlength: 'Max allowed length is 256 characters',
         },
         github: {
-          link: 'Please enter a valid Github URL',
+          link: 'Please enter a valid GitHub URL',
         },
         twitter: {
-          link: 'Please enter a valid twitter URL',
+          link: 'Please enter a valid Twitter URL',
         },
         facebook: {
           link: 'Please enter a valid Facebook URL',
@@ -72,7 +72,7 @@ import { ProfileSpotifyModule } from './profile-spotify.component';
           link: 'Please enter a valid LinkedIn URL',
         },
         hashnode: {
-          link: 'Please enter your hashnode URL',
+          link: 'Please enter your Hashnode URL',
         },
         devto: {
           link: 'Please enter a valid dev.to profile URL',
