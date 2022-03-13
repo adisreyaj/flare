@@ -59,7 +59,7 @@ import { BehaviorSubject, finalize } from 'rxjs';
             >
               Upload Image
             </button>
-            <p class="font-medium">Drag and Drop or Browser Image</p>
+            <p class="font-medium">Drag and Drop or browse for an image</p>
             <p>
               Image <strong>(png/jpg)</strong> resolution should be
               <strong>800x300px</strong>.
