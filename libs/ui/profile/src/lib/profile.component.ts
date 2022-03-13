@@ -211,7 +211,7 @@ import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
                     Connect Spotify
                   </button>
                   <p class="text-slate-500">
-                    Integrate spotify to show the last played songs...
+                    Integrate Spotify to show your recently played songs.
                   </p>
                 </div>
               </div>
@@ -243,7 +243,7 @@ import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
                   />
                   <p class="font-semibold">No kudos received</p>
                   <p class="text-slate-500">
-                    Do amazing stuff and things will follow...
+                    Do amazing stuff and things will follow.
                   </p>
                 </div>
               </div>
@@ -273,7 +273,7 @@ import { Nullable } from 'ts-toolbelt/out/Union/Nullable';
                   />
                   <p class="font-semibold">No blogs added</p>
                   <p class="text-slate-500">
-                    Start by adding your hashnode or dev.to blog usernames in
+                    Start by adding your Hashnode or dev.to blog usernames to your
                     profile.
                   </p>
                 </div>
