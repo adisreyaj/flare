@@ -43,11 +43,10 @@ import { FlareService } from '@flare/ui/flare';
             />
             <div class="text-center">
               <p class="text-lg font-semibold">
-                Uhoh...You don't have any bookmarks yet.
+                Uh-oh...You don't have any bookmarks yet.
               </p>
               <p class="text-slate-500">
-                Go start bookmarking your favorite flares so you don't loose
-                them...
+                  Bookmark your favorite flares so you don't lose them.
               </p>
             </div>
           </div>
