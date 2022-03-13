@@ -87,7 +87,7 @@ import { MediaUrlPipeModule } from '@flare/ui/shared';
               <p class="font-semibold">No Promos received</p>
               <p class="text-slate-500">
                 Do amazing stuff and you'll receive your first promo in no
-                time...
+                time!
               </p>
             </div>
           </div>
