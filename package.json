@@ -127,7 +127,7 @@
     "@types/pell": "^1.0.1",
     "@typescript-eslint/eslint-plugin": "~5.10.0",
     "@typescript-eslint/parser": "~5.10.0",
-    "@upstash/redis": "^0.2.1",
+    "@upstash/redis": "^1.0.1",
     "cookie": "^0.4.2",
     "copyfiles": "^2.4.1",
     "cypress": "^9.1.0",

@@ -1,4 +1,4 @@
-import { auth, get, set } from '@upstash/redis';
+import { Redis } from '@upstash/redis';
 import { createDecipheriv, createHash } from 'crypto';
 import { request } from 'undici';
 
@@ -101,22 +101,25 @@ exports.handler = async (event) => {
   }
 
   let songInfo = null;
-  auth(REDIS_URL, REDIS_WRITE_TOKEN);
-  const { data } = await get(`${username}###last`);
-  if (data != null && data !== '') {
+  const redis = new Redis({
+    url: REDIS_URL,
+    token: REDIS_WRITE_TOKEN,
+  });
+  const data = await redis.get(`${username}###last`);
+  if (data != null) {
     return {
       statusCode: 200,
       headers: {
         'Cache-Control': 'max-age=3600',
         'Content-Type': 'application/json',
       },
-      body: data,
+      body: JSON.stringify(data),
     };
   }
   try {
     songInfo = await getSongResponseDataWithRefreshToken(username);
     if (songInfo != null) {
-      await set(`${username}###last`, JSON.stringify(songInfo));
+      await redis.set(`${username}###last`, songInfo);
       return {
         statusCode: 200,
         headers: {

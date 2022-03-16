@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import { auth, set } from '@upstash/redis';
+import { Redis } from '@upstash/redis';
 import { createCipheriv, createHash, randomBytes } from 'crypto';
 import { request } from 'undici';
 
@@ -73,12 +73,10 @@ export const handler: Handler = async (event, context) => {
   }
 
   try {
-    auth(REDIS_URL, REDIS_WRITE_TOKEN);
+    const redis = new Redis({ url: REDIS_URL, token: REDIS_WRITE_TOKEN });
     const encrypted = encrypt(bodyParsed['refresh_token']);
-    const { error } = await set(state, encrypted);
-    if (error) {
-      return errorResponse('Token set failed', { error });
-    }
+    await redis.set(state, encrypted);
+
     return {
       statusCode: 200,
       body: `<script>
