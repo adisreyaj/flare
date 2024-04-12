@@ -38,7 +38,7 @@
       "@flare/ui/profile": ["libs/ui/profile/src/index.ts"],
       "@flare/ui/shared": ["libs/ui/shared/src/index.ts"],
       "@flare/ui/utils": ["libs/ui/utils/src/index.ts"],
-      "zigzag": ["zigzag/projects/zigzag/src/public-api.ts"]
+      "zigzag": ["zigzag-ui/projects/zigzag/src/public-api.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

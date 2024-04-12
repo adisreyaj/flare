@@ -1,3 +1,6 @@
 [submodule "zigzag"]
 	path = zigzag
 	url = git@github.com:adisreyaj/zigzag.git
+[submodule "zigzag-ui"]
+	path = zigzag-ui
+	url = https://github.com/adisreyaj/zigzag.git
