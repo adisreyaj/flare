@@ -10,12 +10,12 @@ NIXPACKS_NX_APP_NAME = 'api'
 
 [phases.build]
 dependsOn = ['install']
-cmds = ['npm install --legacy-peer-deps', 'npm run postinstall', 'npm run prisma:migrate:prod']
+cmds = ['npm run build api']
 cacheDirectories = ['node_modules/.cache']
 
 [phases.install]
 dependsOn = ['setup']
-cmds = ['npm ci']
+cmds = ['npm install --legacy-peer-deps', 'npm run postinstall', 'npm run prisma:migrate:prod']
 cacheDirectories = [
     '/root/.cache/Cypress',
     '/root/.npm',
